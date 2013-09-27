@@ -7,7 +7,7 @@ Interface
 ------------
 The two basic types are `Double` and `Split`; both have two floating-point fields: `hi`, storing the leading bits, and `lo` storing the remainder. 
 
-A `Double` is the simplest type, with `hi` stored to full precision, rounded to nearest. As a result for any `Double` `x`, `x.lo <= 0.5*eps(x.hi)`.
+A `Double` is the simplest type, with `hi` stored to full precision, rounded to nearest. As a result for any `Double` `x`, `abs(x.lo) <= 0.5*eps(x.hi)`.
 
 ```julia
 julia> using TwoFloat
