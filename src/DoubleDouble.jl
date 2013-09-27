@@ -79,7 +79,7 @@ double{S}(x::MathConst{S}) = convert(Double{Float64},x)
 # Dekker add2
 function +{T<:BitsFloat}(x::Double{T}, y::Double{T})
     r = x.hi + y.hi
-    s = abs(x) > abs(y) ? (((x.hi - r) + y.hi) + y.lo) + x.lo : (((y.hi - r) + x.hi) + x.lo) + y.lo
+    s = abs(x.hi) > abs(y.hi) ? (((x.hi - r) + y.hi) + y.lo) + x.lo : (((y.hi - r) + x.hi) + x.lo) + y.lo
     double(r,s)
 end
 
