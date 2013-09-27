@@ -4,16 +4,16 @@ export Double, Split, double, split
 import Base.convert, Base.*, Base.+, Base./, Base.sqrt, Base.rem, Base.rand, Base.promote_rule
 
 typealias BitsFloat Union(Float32,Float64) # Floating point BitTypes
-abstract Two{T} <: FloatingPoint
+abstract AbstractDouble{T} <: FloatingPoint
 
 # In a Split, hi uses only half of the mantissa (hence x.hi * y.hi will be exact).
-immutable Split{T<:BitsFloat} <: Two{T}
+immutable Split{T<:BitsFloat} <: AbstractDouble{T}
     hi::T
     lo::T
 end
 
 # In a Double, hi uses the full mantissa, and abs(lo) <= 0.5eps(hi)
-immutable Double{T<:BitsFloat} <: Two{T}
+immutable Double{T<:BitsFloat} <: AbstractDouble{T}
     hi::T
     lo::T
 end
@@ -43,7 +43,7 @@ function convert{T<:BitsFloat}(::Type{Split{T}}, x::Double{T})
     Split(z, (x.hi - z) + x.lo)
 end
 
-convert{T<:BitsFloat}(::Type{BigFloat}, x::Two{T}) = big(x.hi) + big(x.lo)
+convert{T<:BitsFloat}(::Type{BigFloat}, x::AbstractDouble{T}) = big(x.hi) + big(x.lo)
 
 
 split(x::BitsFloat) = convert(Split{typeof(x)},x)
@@ -52,13 +52,14 @@ double(x::BitsFloat) = convert(Double{typeof(x)},x)
 
 promote_rule{T<:BitsFloat}(::Type{Split{T}}, ::Type{T}) = Split{T}
 promote_rule{T<:BitsFloat}(::Type{Double{T}}, ::Type{T}) = Double{T}
+promote_rule{T<:BitsFloat}(::Type{Split{T}}, ::Type{Double{T}}) = Double{T}
 promote_rule{T<:BitsFloat}(::Type{Split{T}}, ::Type{BigFloat}) = BigFloat
 promote_rule{T<:BitsFloat}(::Type{Double{T}}, ::Type{BigFloat}) = BigFloat
-promote_rule{s,T<:Two}(::Type{MathConst{s}}, ::Type{T}) = T
+promote_rule{s,T<:AbstractDouble}(::Type{MathConst{s}}, ::Type{T}) = T
 
 # "Normalise" doubles to ensure abs(lo) <= 0.5eps(hi)
-# assumes abs(v) << abs(u)
-# this could be moved to the constructor if necessary
+# assumes abs(u) > abs(v)
+# could be moved to the constructor?
 function double{T<:BitsFloat}(u::T,v::T) 
     w = u + v
     Double(w,(u-w) + v)
@@ -79,9 +80,17 @@ double{S}(x::MathConst{S}) = convert(Double{Float64},x)
 function +{T<:BitsFloat}(x::Double{T}, y::Double{T})
     r = x.hi + y.hi
     s = abs(x) > abs(y) ? (((x.hi - r) + y.hi) + y.lo) + x.lo : (((y.hi - r) + x.hi) + x.lo) + y.lo
-    z = r + s
-    Double(z, (r - z) + s)
+    double(r,s)
 end
+
+-{T<:BitsFloat}(x::Double{T}) = Double(-x.hi,-y.hi)
+
+function -{T<:BitsFloat}(x::Double{T}, y::Double{T})
+    r = x.hi - y.hi
+    s = abs(x.hi) > abs(y.hi) ? (((x.hi - r) - y.hi) - y.lo) + x.lo : (((-y.hi - r) + x.hi) + x.lo) - y.lo
+    double(r,s)
+end
+
 
 # the product of two Splits that are equivalent to Float64s gives an exact Double
 # Dekker mul12
@@ -103,7 +112,7 @@ end
 function /{T<:BitsFloat}(x::Double{T}, y::Double{T})
     c = x.hi / y.hi
     u = split(c) * split(y.hi)
-    cc = ((((x-u.hi) - u.lo) + x.lo) - c*y.lo)/y.hi
+    cc = ((((x.hi - u.hi) - u.lo) + x.lo) - c*y.lo)/y.hi
     double(c,cc)
 end
 
