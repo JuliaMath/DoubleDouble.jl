@@ -58,7 +58,7 @@ julia> rem(u*v,1.0)
 
 julia> float64(rem(big(u)*big(v),1.0))
 0.309711208618584
-	```
+```
 However the `TwoFloat` version is all performed using ordinary floating point operations, and is approximately 1000x faster than the `BigFloat` version.
 
 Example: correct rounding with non-exact floats
