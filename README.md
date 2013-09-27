@@ -1,7 +1,7 @@
-TwoFloat.jl
+DoubleDouble.jl
 ===========
 
-`TwoFloat.jl` is a Julia package for performing extended-precision arithmetic using pairs of floating-point numbers, based on the ideas and algorithms of [Dekker (1971)][dekker1971]. Its aim is to provide accurate results without the overhead of `BigFloat` types.
+`DoubleDouble.jl` is a Julia package for performing extended-precision arithmetic using pairs of floating-point numbers, based on the ideas and algorithms of [Dekker (1971)][dekker1971]. Its aim is to provide accurate results without the overhead of `BigFloat` types.
 
 Interface
 ------------
@@ -10,7 +10,7 @@ The two basic types are `Double` and `Split`; both have two floating-point field
 A `Double` is the simplest type, with `hi` stored to full precision, rounded to nearest. As a result for any `Double` `x`, `abs(x.lo) <= 0.5*eps(x.hi)`.
 
 ```julia
-julia> using TwoFloat
+julia> using DoubleDouble
 
 julia> x = double(pi)
 Double{Float64}(3.141592653589793,1.2246467991473532e-16)
@@ -59,7 +59,7 @@ julia> rem(u*v,1.0)
 julia> float64(rem(big(u)*big(v),1.0))
 0.309711208618584
 ```
-However the `TwoFloat` version is all performed using ordinary floating point operations, and is approximately 1000x faster than the `BigFloat` version.
+However the `DoubleDouble` version is all performed using ordinary floating point operations, and is approximately 1000x faster than the `BigFloat` version.
 
 Example: correct rounding with non-exact floats
 ------------------------------------------------

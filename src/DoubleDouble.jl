@@ -1,4 +1,4 @@
-module TwoFloat
+module DoubleDouble
 
 export Double, Split, double, split
 import Base.convert, Base.*, Base.+, Base./, Base.sqrt, Base.rem, Base.rand, Base.promote_rule

@@ -1,4 +1,4 @@
-The TwoFloat.jl module is licensed under the MIT License:
+The DoubleDouble.jl module is licensed under the MIT License:
 
 > Copyright (c) 2013: Simon Byrne
 > 

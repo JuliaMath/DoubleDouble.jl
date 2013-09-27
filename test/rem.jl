@@ -1,4 +1,4 @@
-using TwoFloat
+using DoubleDouble
 
 n = 100_000
 X = 64*rand(n)
