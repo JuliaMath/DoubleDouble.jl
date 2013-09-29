@@ -1,19 +1,19 @@
 module DoubleDouble
 
-export Double, Split, double, split
+export Double, SplitDouble, double, splitdouble
 import Base.convert, Base.*, Base.+, Base./, Base.sqrt, Base.rem, Base.rand, Base.promote_rule
 
 typealias BitsFloat Union(Float32,Float64) # Floating point BitTypes
 abstract AbstractDouble{T} <: FloatingPoint
 
-# In a Split, hi uses only half of the mantissa (hence x.hi * y.hi will be exact).
-immutable Split{T<:BitsFloat} <: AbstractDouble{T}
+# In a Double, hi uses the full mantissa, and abs(lo) <= 0.5eps(hi)
+immutable Double{T<:BitsFloat} <: AbstractDouble{T}
     hi::T
     lo::T
 end
 
-# In a Double, hi uses the full mantissa, and abs(lo) <= 0.5eps(hi)
-immutable Double{T<:BitsFloat} <: AbstractDouble{T}
+# In a SplitDouble, hi uses only half of the mantissa (hence x.hi * y.hi will be exact).
+immutable SplitDouble{T<:BitsFloat} <: AbstractDouble{T}
     hi::T
     lo::T
 end
@@ -30,30 +30,30 @@ function convert{T<:BitsFloat}(::Type{Double{T}}, x::FloatingPoint)
 end
 convert{T<:BitsFloat}(::Type{T}, x::Double{T}) = x.hi
 
-convert{T<:BitsFloat}(::Type{Split{T}}, x::Split{T}) = x 
-function convert{T<:BitsFloat}(::Type{Split{T}}, x::FloatingPoint)
+convert{T<:BitsFloat}(::Type{SplitDouble{T}}, x::SplitDouble{T}) = x 
+function convert{T<:BitsFloat}(::Type{SplitDouble{T}}, x::FloatingPoint)
     z = halfprec(oftype(T,x))
-    Split(z,oftype(T,x-z))
+    SplitDouble(z,oftype(T,x-z))
 end
-convert{T<:BitsFloat}(::Type{T}, x::Split{T}) = x.hi + x.lo
+convert{T<:BitsFloat}(::Type{T}, x::SplitDouble{T}) = x.hi + x.lo
 
-convert{T<:BitsFloat}(::Type{Double{T}}, x::Split{T}) = double(x.hi, x.lo)
-function convert{T<:BitsFloat}(::Type{Split{T}}, x::Double{T}) 
+convert{T<:BitsFloat}(::Type{Double{T}}, x::SplitDouble{T}) = double(x.hi, x.lo)
+function convert{T<:BitsFloat}(::Type{SplitDouble{T}}, x::Double{T}) 
     z = halfprec(x.hi)
-    Split(z, (x.hi - z) + x.lo)
+    SplitDouble(z, (x.hi - z) + x.lo)
 end
 
 convert{T<:BitsFloat}(::Type{BigFloat}, x::AbstractDouble{T}) = big(x.hi) + big(x.lo)
 
 
-split(x::BitsFloat) = convert(Split{typeof(x)},x)
+splitdouble(x::BitsFloat) = convert(SplitDouble{typeof(x)},x)
 double(x::BitsFloat) = convert(Double{typeof(x)},x)
 
 
-promote_rule{T<:BitsFloat}(::Type{Split{T}}, ::Type{T}) = Split{T}
+promote_rule{T<:BitsFloat}(::Type{SplitDouble{T}}, ::Type{T}) = SplitDouble{T}
 promote_rule{T<:BitsFloat}(::Type{Double{T}}, ::Type{T}) = Double{T}
-promote_rule{T<:BitsFloat}(::Type{Split{T}}, ::Type{Double{T}}) = Double{T}
-promote_rule{T<:BitsFloat}(::Type{Split{T}}, ::Type{BigFloat}) = BigFloat
+promote_rule{T<:BitsFloat}(::Type{SplitDouble{T}}, ::Type{Double{T}}) = Double{T}
+promote_rule{T<:BitsFloat}(::Type{SplitDouble{T}}, ::Type{BigFloat}) = BigFloat
 promote_rule{T<:BitsFloat}(::Type{Double{T}}, ::Type{BigFloat}) = BigFloat
 promote_rule{s,T<:AbstractDouble}(::Type{MathConst{s}}, ::Type{T}) = T
 
@@ -64,15 +64,15 @@ function double{T<:BitsFloat}(u::T,v::T)
     w = u + v
     Double(w,(u-w) + v)
 end
-function split{T<:BitsFloat}(u::T,v::T) 
+function splitdouble{T<:BitsFloat}(u::T,v::T) 
     w = halfprec(u + v)
     Double(w,(u-w) + v)
 end
 
 
-split(x::BigFloat) = convert(Split{Float64},x)
+splitdouble(x::BigFloat) = convert(SplitDouble{Float64},x)
 double(x::BigFloat) = convert(Double{Float64},x)
-split{S}(x::MathConst{S}) = convert(Split{Float64},x)
+splitdouble{S}(x::MathConst{S}) = convert(SplitDouble{Float64},x)
 double{S}(x::MathConst{S}) = convert(Double{Float64},x)
 
 
@@ -92,9 +92,9 @@ function -{T<:BitsFloat}(x::Double{T}, y::Double{T})
 end
 
 
-# the product of two Splits that are equivalent to Float64s gives an exact Double
+# the product of two SplitDoubles that are equivalent to Float64s gives an exact Double
 # Dekker mul12
-function *{T<:BitsFloat}(x::Split{T}, y::Split{T})
+function *{T<:BitsFloat}(x::SplitDouble{T}, y::SplitDouble{T})
     p = x.hi * y.hi
     q = x.hi * y.lo + x.lo * y.hi
     z = p + q
@@ -103,7 +103,7 @@ end
 
 # Dekker mul2
 function *{T<:BitsFloat}(x::Double{T}, y::Double{T})
-    c = split(x.hi) * split(y.hi)
+    c = splitdouble(x.hi) * splitdouble(y.hi)
     cc = (x.hi * y.lo + x.lo* y.hi) + c.lo
     double(c.hi, cc)
 end
@@ -111,7 +111,7 @@ end
 # Dekker div2
 function /{T<:BitsFloat}(x::Double{T}, y::Double{T})
     c = x.hi / y.hi
-    u = split(c) * split(y.hi)
+    u = splitdouble(c) * splitdouble(y.hi)
     cc = ((((x.hi - u.hi) - u.lo) + x.lo) - c*y.lo)/y.hi
     double(c,cc)
 end
@@ -122,7 +122,7 @@ function sqrt{T<:BitsFloat}(x::Double{T})
         throw(DomainError("sqrt will only return a complex result if called with a complex argument."))
     end
     c = sqrt(x.hi)
-    sc = split(c)
+    sc = splitdouble(c)
     u = sc*sc
     cc = (((x.hi - u.hi) - u.lo) + x.lo)*0.5/c
     double(c,cc)
@@ -139,7 +139,7 @@ function rand(::Type{Double{Float64}})
     ur = uf > u ? uf-u : u-uf
     Double(5.421010862427522e-20*f, 5.421010862427522e-20*float64(ur))
 end
-rand(::Type{Split{Float64}}) = split(rand(Double{Float64}))
+rand(::Type{SplitDouble{Float64}}) = splitdouble(rand(Double{Float64}))
 
 
 # calculate constants from big numbers
@@ -148,8 +148,8 @@ macro twofloat_const_frombig(sym)
     qsym = esc(Expr(:quote, sym))
     bigval = @eval big($sym)
     quote
-        Base.convert(::Type{Split{Float64}}, ::MathConst{$qsym}) = $(convert(Split{Float64}, bigval))
-        Base.convert(::Type{Split{Float32}}, ::MathConst{$qsym}) = $(convert(Split{Float32}, bigval))
+        Base.convert(::Type{SplitDouble{Float64}}, ::MathConst{$qsym}) = $(convert(SplitDouble{Float64}, bigval))
+        Base.convert(::Type{SplitDouble{Float32}}, ::MathConst{$qsym}) = $(convert(SplitDouble{Float32}, bigval))
         Base.convert(::Type{Double{Float64}}, ::MathConst{$qsym}) = $(convert(Double{Float64}, bigval))
         Base.convert(::Type{Double{Float32}}, ::MathConst{$qsym}) = $(convert(Double{Float32}, bigval))        
     end

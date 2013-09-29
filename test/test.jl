@@ -2,11 +2,11 @@ using DoubleDouble
 
 x = sqrt(2.0)
 bx = big(x)
-sx = split(x)
+sx = splitdouble(x)
 dx = double(x)
 y = gamma(7.1)
 by = big(y)
-sy = split(y)
+sy = splitdouble(y)
 dy = double(y)
 
 @assert x == sx == dx

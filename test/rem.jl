@@ -15,7 +15,7 @@ end
 
 function tworem!(X,Y,Z)
     for i = 1:length(Z)
-        Z[i] = float64(rem(split(X[i])*split(Y[i]),1.0))
+        Z[i] = float64(rem(splitdouble(X[i])*splitdouble(Y[i]),1.0))
     end
 end
 
