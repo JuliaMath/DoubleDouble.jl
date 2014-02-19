@@ -1,6 +1,6 @@
 using DoubleDouble
 
-n = 100_000
+n = 1_000_000
 X = 64*rand(n)
 Y = 64*rand(n)
 
@@ -21,11 +21,11 @@ end
 
 
 bigrem!(X,Y,Zbig)
-tworem!(X,Y,Zdouble)
+doublerem!(X,Y,Zdouble)
 
 X = 64*rand(n)
 Y = 64*rand(n)
 
 @time bigrem!(X,Y,Zbig)
 @time doublerem!(X,Y,Zdouble)
-@assert Zbig == Ztwo
+@assert Zbig == Zdouble
