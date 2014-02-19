@@ -85,7 +85,17 @@ at the last step. This operation is not available on x86 and x86_64
 architures, but can be emulated via double-double arithmetic:
 
 ```julia
-fma(a::Float64,b::Float64,c::Float64) = float64(Single(a)*Single(b) + Single(c))
+julia> 0.1*0.1+0.1
+0.11000000000000001
+
+julia> float64(big(0.1)*0.1+0.1)
+0.11
+
+julia> fma(a::Float64,b::Float64,c::Float64) = float64(Single(a)*Single(b) + Single(c))
+fma (generic function with 1 method)
+
+julia> fma(0.1,0.1,0.1)
+0.11
 ```
 
 [dekker1971]: http://link.springer.com/article/10.1007%2FBF01397083  "T.J. Dekker (1971) 'A floating-point technique for extending the available precision', Numerische Mathematik, Volume 18, Issue 3, pp 224-242"
