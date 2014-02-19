@@ -19,15 +19,8 @@ julia> eps(x.hi)
 4.440892098500626e-16
 ```
 
-The other type defined is a `SplitDouble`, in which `hi` is stored only to half-precision: e.g., a `Float64` has a 53 bit mantissa, so only the first 26 bits are used. Again, the `splitdouble` function can be used to create these types:
-```julia
-julia> s = splitdouble(pi)
-SplitDouble{Float64}(3.1415926814079285,-2.7818135228334233e-8)
-
-julia> bits(s.hi)
-"0100000000001001001000011111101101011000000000000000000000000000"
-```
-The advantage of this is that the product of two half-precision floats can be stored exactly in a full precision float. `SplitDouble`s have fewer methods defined, and are mostly used internally, but can also be used directly for exact multiplication of floats (see examples below).
+The other type defined is a `Single` which is simply a wrapper for a
+floating-point type, but whose results will be promoted to `Double`.
 
 Examples 
 ---------
@@ -39,10 +32,12 @@ By exploiting this property, we can compute exact products of floating point num
 julia> u, v = 64*rand(), 64*rand()
 (15.59263373822506,39.07676672446341)
 
-julia> w = splitdouble(u)*splitdouble(v)
+julia> w = Single(u)*Single(v)
 Double{Float64}(609.3097112086186,-5.3107663829696295e-14)
 ```
-Note that the product of two `SplitDouble`s is a `Double`: the `hi` element of this double is equal to the usual product. If both `SplitDouble`s are derived from exact floats (and not other numbers, such as `pi`), this product will be exact.
+Note that the product of two `Single`s is a `Double`: the `hi` element of this
+double is equal to the usual rounded product, and the `lo` element contains the exact
+difference between the exact value and the rounded.
 
 This can be used to get an accurate remainder 
 ```julia
@@ -73,13 +68,24 @@ julia> pi*0.1
 julia> float64(big(pi)*0.1)
 0.31415926535897937
 ```
-We can also do this computation using `SplitDouble`s (note that the promotion rules mean that only one needs to be a `SplitDouble`):
+We can also do this computation using `Double`s (note that the promotion rules mean that only one needs to be specified).
 ```julia
-julia> float64(splitdouble(pi)*0.1)
+julia> float64(double(pi)*0.1)
 0.31415926535897937
 
-julia> float64(pi*splitdouble(0.1))
+julia> float64(pi*Single(0.1))
 0.31415926535897937
+```
+
+## Emulated FMA
+
+The [fused multiply-add (FMA)](http://en.wikipedia.org/wiki/Multiply%E2%80%93accumulate_operation) operation is an intrinsic floating-point
+operation that allows the evaluation of `a*b+c`, with rounding only occuring
+at the last step. This operation is not available on x86 and x86_64
+architures, but can be emulated via double-double arithmetic:
+
+```julia
+fma(a::Float64,b::Float64,c::Float64) = float64(Single(a)*Single(b) + Single(c))
 ```
 
 [dekker1971]: http://link.springer.com/article/10.1007%2FBF01397083  "T.J. Dekker (1971) 'A floating-point technique for extending the available precision', Numerische Mathematik, Volume 18, Issue 3, pp 224-242"

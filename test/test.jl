@@ -2,12 +2,13 @@ using DoubleDouble
 
 x = sqrt(2.0)
 bx = big(x)
-sx = splitdouble(x)
-dx = double(x)
-y = gamma(7.1)
+sx = Single(x)
+dx = Double(x)
+
+y = 0.1
 by = big(y)
-sy = splitdouble(y)
-dy = double(y)
+sy = Single(y)
+dy = Double(y)
 
 @assert x == sx == dx
 @assert y == sy == dy

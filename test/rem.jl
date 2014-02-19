@@ -5,7 +5,7 @@ X = 64*rand(n)
 Y = 64*rand(n)
 
 Zbig = Array(Float64,n)
-Ztwo = Array(Float64,n)
+Zdouble = Array(Float64,n)
 
 function bigrem!(X,Y,Z)
     for i = 1:length(Z)
@@ -13,19 +13,19 @@ function bigrem!(X,Y,Z)
     end
 end
 
-function tworem!(X,Y,Z)
+function doublerem!(X,Y,Z)
     for i = 1:length(Z)
-        Z[i] = float64(rem(splitdouble(X[i])*splitdouble(Y[i]),1.0))
+        Z[i] = float64(rem(Single(X[i])*Single(Y[i]),1.0))
     end
 end
 
 
 bigrem!(X,Y,Zbig)
-tworem!(X,Y,Ztwo)
+tworem!(X,Y,Zdouble)
 
 X = 64*rand(n)
 Y = 64*rand(n)
 
 @time bigrem!(X,Y,Zbig)
-@time tworem!(X,Y,Ztwo)
+@time doublerem!(X,Y,Zdouble)
 @assert Zbig == Ztwo
