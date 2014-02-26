@@ -77,7 +77,7 @@ julia> float64(pi*Single(0.1))
 0.31415926535897937
 ```
 
-## Emulated FMA
+### Emulated FMA
 
 The [fused multiply-add (FMA)](http://en.wikipedia.org/wiki/Multiply%E2%80%93accumulate_operation) operation is an intrinsic floating-point
 operation that allows the evaluation of `a*b+c`, with rounding only occuring
