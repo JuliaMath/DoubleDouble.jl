@@ -82,7 +82,7 @@ julia> float64(pi*Single(0.1))
 The [fused multiply-add (FMA)](http://en.wikipedia.org/wiki/Multiply%E2%80%93accumulate_operation) operation is an intrinsic floating-point
 operation that allows the evaluation of `a*b+c`, with rounding only occuring
 at the last step. This operation is not available on x86 and x86_64
-architures, but can be emulated via double-double arithmetic:
+architectures, but can be emulated via double-double arithmetic:
 
 ```julia
 julia> 0.1*0.1+0.1
