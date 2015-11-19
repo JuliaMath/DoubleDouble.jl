@@ -3,10 +3,11 @@ module DoubleDouble
 export Double, Single, double
 import Base.convert, Base.*, Base.+, Base./, Base.sqrt, Base.rem, Base.rand, Base.promote_rule
 
-typealias BitsFloat Union{BigFloat,Float32,Float64} # Floating point BitTypes AbstractFloat
+typealias BitsFloat Union{BigFloat,Float16,Float32,Float64} # Floating point BitTypes AbstractFloat
 
 abstract AbstractDouble{T} <: AbstractFloat
 
+println("novo4")
 
 # a Single is a wrapper for an ordinary floating point type such that arithmetic operations will return Doubles
 immutable Single{T<:BitsFloat} <: AbstractDouble{T}
@@ -20,8 +21,10 @@ immutable Double{T<:BitsFloat} <: AbstractDouble{T}
 end
 Double{T<:BitsFloat}(x::T) = Double(x,zero(T))
 
+
 const half64 = 1.34217729e8
 const half32 = 4097f0
+const half16 = Float16(33.0)
 const halfBig = 3.402823669209384634633746074317682114570000000000000000000000000000000000000000e+38
 # 6.805647338418769269267492148635364229120000000000000000000000000000000000000000e38
 
@@ -29,7 +32,8 @@ const halfBig = 3.40282366920938463463374607431768211457000000000000000000000000
 # TODO: fix overflow for large values
 halfprec(x::Float64) = (p = x*half64; (x-p)+p) # signif(x,26,2) for 26 is 6.7108865e7, this seems like 27
 halfprec(x::Float32) = (p = x*half32; (x-p)+p) # float32(signif(x,12,2))
-halfprec(x::BigFloat) = (p = x*halfBig; (x-p)+p) # BigFloat(signif(x,12,2))
+halfprec(x::Float16) = (p = x*half16; (x-p)+p) # float16(signif(x,5,2))
+halfprec(x::BigFloat) = (p = x*halfBig; (x-p)+p) # BigFloat(signif(x,128,2))
 
 function splitprec(x::BitsFloat)
     h = halfprec(x)
@@ -145,14 +149,39 @@ end
 
 rem{T}(x::Double{T},d::Real) = double(rem(x.hi,d),rem(x.lo,d))
 
-# random numbers using full Uint64 range
+# random numbers using full Uint64 range (respectively, UInt32, UInt16 and UInt128)
 function rand(::Type{Double{Float64}})
-    u = rand(Uint64)
-    f = float64(u)
-    uf = uint64(f)
+    u = rand(UInt64)
+    f = Float64(u)
+    uf = UInt64(f)
     ur = uf > u ? uf-u : u-uf
-    Double(5.421010862427522e-20*f, 5.421010862427522e-20*float64(ur))
+    Double(5.421010862427522e-20*f, 5.421010862427522e-20*Float64(ur))
 end
+
+function rand(::Type{Double{Float32}})
+    u = rand(UInt32)
+    f = Float32(u)
+    uf = UInt32(f)
+    ur = uf > u ? uf-u : u-uf
+    Double(2.3283064f-10*f, 2.3283064f-10*Float32(ur))
+end
+
+function rand(::Type{Double{Float16}})
+    u = rand(UInt16)
+    f = Float16(u)
+    uf = UInt16(f)
+    ur = uf > u ? uf-u : u-uf
+    Double(Float16(1.526e-5)*f, Float16(1.526e-5)*Float16(ur))
+end
+
+function rand(::Type{Double{BigFloat}})
+    u = rand(UInt128)
+    f = BigFloat(u)
+    uf = UInt128(f)
+    ur = uf > u ? uf-u : u-uf
+    Double(2.938735877055718769921841343055614194546663891930218803771879265696043148636818e-39*f, 2.938735877055718769921841343055614194546663891930218803771879265696043148636818e-39*BigFloat(ur))
+end
+
 
 # calculate constants from big numbers
 macro twofloat_const_frombig(sym)
@@ -162,6 +191,7 @@ macro twofloat_const_frombig(sym)
     quote
         Base.convert(::Type{Double{Float64}}, ::Irrational{$qsym}) = $(convert(Double{Float64}, bigval))
         Base.convert(::Type{Double{Float32}}, ::Irrational{$qsym}) = $(convert(Double{Float32}, bigval))
+        Base.convert(::Type{Double{Float16}}, ::Irrational{$qsym}) = $(convert(Double{Float16}, bigval))
         Base.convert(::Type{Double{BigFloat}}, ::Irrational{$qsym}) = $(convert(Double{BigFloat}, bigval)) 
     end
 end
