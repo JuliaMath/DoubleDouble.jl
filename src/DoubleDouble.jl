@@ -12,6 +12,8 @@ immutable Single{T<:BitsFloat} <: AbstractDouble{T}
     hi::T
 end
 
+println("moj")
+
 # In a Double, hi uses the full mantissa, and abs(lo) <= 0.5eps(hi)
 immutable Double{T<:BitsFloat} <: AbstractDouble{T}
     hi::T
