@@ -7,8 +7,6 @@ typealias BitsFloat Union{BigFloat,Float16,Float32,Float64} # Floating point Bit
 
 abstract AbstractDouble{T} <: AbstractFloat
 
-println("novo4")
-
 # a Single is a wrapper for an ordinary floating point type such that arithmetic operations will return Doubles
 immutable Single{T<:BitsFloat} <: AbstractDouble{T}
     hi::T
