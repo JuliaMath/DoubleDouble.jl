@@ -1,11 +1,11 @@
 module DoubleDouble
 
 export Double, Single, double
-import Base.convert, Base.*, Base.+, Base./, Base.sqrt, Base.rem, Base.rand, Base.promote_rule
+import Base.convert, Base.*, Base.+, Base.-, Base./, Base.sqrt, Base.<, Base.rem, Base.abs, Base.rand, Base.promote_rule, Base.one, Base.zero, Base.ones, Base.zeros, Base.show
 
 typealias BitsFloat Union{BigFloat,Float16,Float32,Float64} # Floating point BitTypes AbstractFloat
 
-abstract AbstractDouble{T} <: AbstractFloat
+abstract AbstractDouble{T} <: Number 
 
 # a Single is a wrapper for an ordinary floating point type such that arithmetic operations will return Doubles
 immutable Single{T<:BitsFloat} <: AbstractDouble{T}
@@ -38,6 +38,21 @@ function splitprec(x::BitsFloat)
     h, x-h
 end
 
+# Dodano
+one(x::Double) = oftype(x,1.0)
+one{T<:Double}(::Type{T}) = convert(T,1.0)
+zero(x::Double) = oftype(x,0.0)
+zero{T<:Double}(::Type{T}) = convert(T,0.0)
+show(x::Double) = show(STDOUT::IO, [x.hi,x.lo])
+ones(T::Double, dims...) = fill!(Array(T, dims...), (one)(T))
+zeros(T::Double, dims...) = fill!(Array(T, dims...), (zero)(T))
+
+
+convert{T}(::Type{Double{T}}, x::Int64) = Double(Float64(x))
+double(x::Int64) = convert(Double{Float64},x)
+Double(x::Int64) = double(x)
+promote_rule{T<:BitsFloat}(::Type{Double{T}},::Type{Int64})=Double{T}
+promote_rule{T<:BitsFloat}(::Type{Int64},::Type{Double{T}})=Double{T}
 
 ## conversion and promotion
 convert{T<:BitsFloat}(::Type{Single{T}}, x::T) = Single(x)
@@ -80,6 +95,12 @@ end
 double(x::BigFloat) = convert(Double{BigFloat},x)
 double{S}(x::Irrational{S}) = convert(Double{BigFloat},x)
 
+# <
+
+function <{T}(x::Double{T},y::Double{T})
+    x.hi+x.lo < y.hi+y.lo ? true : false
+end
+
 # add12
 function +{T}(x::Single{T},y::Single{T})
     abs(x.hi) > abs(y.hi) ? double(x.hi,y.hi) : double(y.hi,x.hi)
@@ -101,7 +122,7 @@ end
 +{T}(x::Double{T}, y::Single{T}) = y + x
 
 
--{T<:BitsFloat}(x::Double{T}) = Double(-x.hi,-y.hi)
+-{T<:BitsFloat}(x::Double{T}) = Double(-x.hi,-x.lo)
 
 function -{T}(x::Double{T}, y::Double{T})
     r = x.hi - y.hi
@@ -146,6 +167,7 @@ end
 
 
 rem{T}(x::Double{T},d::Real) = double(rem(x.hi,d),rem(x.lo,d))
+abs{T}(x::Double{T})=x.hi>0 ?x:-x
 
 # random numbers using full Uint64 range (respectively, UInt32, UInt16 and UInt128)
 function rand(::Type{Double{Float64}})
