@@ -93,7 +93,7 @@ function double{T<:BitsFloat}(u::T,v::T)
     Double(w,(u-w) + v)
 end
 double(x::BigFloat) = convert(Double{BigFloat},x)
-double{S}(x::Irrational{S}) = convert(Double{BigFloat},x)
+double{S}(x::Irrational{S}) = convert(Double{Float64},x)
 
 # <
 
