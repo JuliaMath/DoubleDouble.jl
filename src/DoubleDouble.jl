@@ -3,7 +3,7 @@ module DoubleDouble
 export Double, Single, double
 import Base.convert, Base.*, Base.+, Base.-, Base./, Base.sqrt, Base.<, Base.rem, Base.abs, Base.rand, Base.promote_rule, Base.one, Base.zero, Base.ones, Base.zeros, Base.show
 
-abstract AbstractDouble{T} <: Number
+abstract AbstractDouble{T} <: Real
 
 # a Single is a wrapper for an ordinary floating point type such that arithmetic operations will return Doubles
 immutable Single{T<:AbstractFloat} <: AbstractDouble{T}
