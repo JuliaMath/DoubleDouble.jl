@@ -1,7 +1,11 @@
 module DoubleDouble
 
 export Double, Single, double
-import Base.convert, Base.*, Base.+, Base.-, Base./, Base.sqrt, Base.<, Base.rem, Base.abs, Base.rand, Base.promote_rule, Base.one, Base.zero, Base.ones, Base.zeros, Base.show
+import Base:
+    convert,
+    *, +, -, /, sqrt, isless,
+    rem, abs, rand, promote_rule,
+    show
 
 abstract AbstractDouble{T} <: Real
 
@@ -84,18 +88,18 @@ promote_rule{s,T<:AbstractFloat}(::Type{Irrational{s}}, ::Type{Single{T}}) = Dou
 # "Normalise" doubles to ensure abs(lo) <= 0.5eps(hi)
 # assumes abs(u) > abs(v): if not, use Single + Single
 # could be moved to the constructor?
-function double{T<:AbstractFloat}(u::T,v::T)
+function double{T<:AbstractFloat}(u::T, v::T)
     w = u + v
-    Double(w,(u-w) + v)
+    Double(w, (u-w) + v)
 end
 
 double(x::Real) = convert(Double{Float64}, x)
-double(x::Irrational) = convert(Double{Float64}, x)
+
 
 # <
 
-function <{T}(x::Double{T},y::Double{T})
-    x.hi+x.lo < y.hi+y.lo ? true : false
+function isless{T}(x::Double{T}, y::Double{T})
+    x.hi + x.lo <= y.hi + y.lo
 end
 
 # add12
@@ -206,10 +210,10 @@ macro twofloat_const_frombig(sym)
     qsym = esc(Expr(:quote, sym))
     bigval = @eval big($sym)
     quote
-        Base.convert(::Type{Double{Float64}}, ::Irrational{$qsym}) = $(convert(Double{Float64}, bigval))
-        Base.convert(::Type{Double{Float32}}, ::Irrational{$qsym}) = $(convert(Double{Float32}, bigval))
-        Base.convert(::Type{Double{Float16}}, ::Irrational{$qsym}) = $(convert(Double{Float16}, bigval))
-        Base.convert(::Type{Double{BigFloat}}, ::Irrational{$qsym}) = $(convert(Double{BigFloat}, bigval))
+        convert(::Type{Double{Float64}}, ::Irrational{$qsym}) = $(convert(Double{Float64}, bigval))
+        convert(::Type{Double{Float32}}, ::Irrational{$qsym}) = $(convert(Double{Float32}, bigval))
+        convert(::Type{Double{Float16}}, ::Irrational{$qsym}) = $(convert(Double{Float16}, bigval))
+        convert(::Type{Double{BigFloat}}, ::Irrational{$qsym}) = $(convert(Double{BigFloat}, bigval))
     end
 end
 
