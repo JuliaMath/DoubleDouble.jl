@@ -41,14 +41,14 @@ end
 # ones(T::Double, dims...) = fill!(Array(T, dims...), (one)(T))
 # zeros(T::Double, dims...) = fill!(Array(T, dims...), (zero)(T))
 
+double(x::Int64) = convert(Double{Float64}, x)
 
+## promotion
+promote_rule{T<:AbstractFloat}(::Type{Double{T}}, ::Type{Int64}) = Double{T}
+
+## conversion
 convert{T}(::Type{Double{T}}, x::Int64) = Double(Float64(x))
-double(x::Int64) = convert(Double{Float64},x)
-Double(x::Int64) = double(x)
-promote_rule{T<:AbstractFloat}(::Type{Double{T}},::Type{Int64})=Double{T}
-promote_rule{T<:AbstractFloat}(::Type{Int64},::Type{Double{T}})=Double{T}
 
-## conversion and promotion
 convert{T<:AbstractFloat}(::Type{Single{T}}, x::T) = Single(x)
 convert{T<:AbstractFloat}(::Type{Double{T}}, x::T) = Double(x)
 
