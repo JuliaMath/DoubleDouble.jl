@@ -15,7 +15,8 @@ immutable Double{T<:AbstractFloat} <: AbstractDouble{T}
     hi::T
     lo::T
 end
-Double{T<:AbstractFloat}(x::T) = Double(x,zero(T))
+
+Double{T<:AbstractFloat}(x::T) = Double(x, zero(T))
 
 
 const half64 = 1.34217729e8
@@ -39,9 +40,11 @@ end
 # Dodano
 one(x::Double) = oftype(x,1.0)
 one{T<:Double}(::Type{T}) = convert(T,1.0)
+
 zero(x::Double) = oftype(x,0.0)
 zero{T<:Double}(::Type{T}) = convert(T,0.0)
-show(x::Double) = show(STDOUT::IO, [x.hi,x.lo])
+
+
 ones(T::Double, dims...) = fill!(Array(T, dims...), (one)(T))
 zeros(T::Double, dims...) = fill!(Array(T, dims...), (zero)(T))
 
@@ -219,5 +222,12 @@ end
 @twofloat_const_frombig γ
 @twofloat_const_frombig catalan
 @twofloat_const_frombig φ
+
+
+function show(io::IO, x::Double)
+    println(io, "Double(", x.hi, ", ", x.lo, ")")
+    print(io, " - value: ")
+    @printf io "%.32g" convert(BigFloat, x)  # crude approximation to valid number of digits
+end
 
 end #module
