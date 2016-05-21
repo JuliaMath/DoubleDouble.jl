@@ -3,7 +3,7 @@ module DoubleDouble
 export Double, Single, double
 import Base:
     convert,
-    *, +, -, /, sqrt, isless,
+    *, +, -, /, sqrt, <,
     rem, abs, rand, promote_rule,
     show
 
@@ -99,7 +99,7 @@ double(x::Irrational) = convert(Double{Float64}, x)
 
 # <
 
-function isless{T}(x::Double{T}, y::Double{T})
+function <{T}(x::Double{T}, y::Double{T})
     x.hi + x.lo < y.hi + y.lo
 end
 
