@@ -16,6 +16,7 @@ immutable Double{T<:AbstractFloat} <: AbstractDouble{T}
     lo::T
 end
 
+# constructor
 Double{T<:AbstractFloat}(x::T) = Double(x, zero(T))
 
 
@@ -40,6 +41,7 @@ end
 
 # ones(T::Double, dims...) = fill!(Array(T, dims...), (one)(T))
 # zeros(T::Double, dims...) = fill!(Array(T, dims...), (zero)(T))
+
 
 double(x::Int64) = convert(Double{Float64}, x)
 
@@ -67,8 +69,8 @@ function convert{T<:AbstractFloat}(::Type{Double{T}}, x::AbstractFloat)
     Double(z,convert(T,x-z))
 end
 
-convert{T<:AbstractFloat}(::Type{BigFloat}, x::Single{T}) = big(x.hi)
-convert{T<:AbstractFloat}(::Type{BigFloat}, x::Double{T}) = big(x.hi) + big(x.lo)
+convert(::Type{BigFloat}, x::Single) = big(x.hi)
+convert(::Type{BigFloat}, x::Double) = big(x.hi) + big(x.lo)
 
 
 promote_rule{T<:AbstractFloat}(::Type{Single{T}}, ::Type{T}) = Single{T}
@@ -76,9 +78,9 @@ promote_rule{T<:AbstractFloat}(::Type{Double{T}}, ::Type{T}) = Double{T}
 promote_rule{T<:AbstractFloat}(::Type{Double{T}}, ::Type{Single{T}}) = Double{T}
 
 # promote_rule{T<:AbstractFloat}(::Type{AbstractDouble{T}}, ::Type{BigFloat}) = BigFloat  !!
-promote_rule{s,T<:AbstractFloat}(::Type{Irrational{s}}, ::Type{Single{T}}) = Double{BigFloat}
+promote_rule{s,T<:AbstractFloat}(::Type{Irrational{s}}, ::Type{Single{T}}) = Double{Float64}
 
-double(x::AbstractFloat) = Double(x)
+
 # "Normalise" doubles to ensure abs(lo) <= 0.5eps(hi)
 # assumes abs(u) > abs(v): if not, use Single + Single
 # could be moved to the constructor?
@@ -86,8 +88,9 @@ function double{T<:AbstractFloat}(u::T,v::T)
     w = u + v
     Double(w,(u-w) + v)
 end
-double(x::BigFloat) = convert(Double{BigFloat},x)
-double{S}(x::Irrational{S}) = convert(Double{Float64},x)
+
+double(x::Real) = convert(Double{Float64}, x)
+double(x::Irrational) = convert(Double{Float64}, x)
 
 # <
 

@@ -2,7 +2,6 @@
 using DoubleDouble
 using Base.Test
 
-double(x::BigFloat) = convert(Double{Float64},x)
 
 x = sqrt(2.0)
 bx = big(x)
@@ -36,3 +35,9 @@ bxy = bx*by
 @test sqrt(dy) == double(sqrt(by))
 
 @test rem(dxy,1.0) == double(rem(bxy,1.0))
+
+
+## New
+@test double(pi) == Double{Float64}(3.141592653589793, 1.2246467991473532e-16)
+@test Double(3.5) == Double{Float64}(3.5, 0.0)
+@test double(3.5) == Double{Float64}(3.5, 0.0)
