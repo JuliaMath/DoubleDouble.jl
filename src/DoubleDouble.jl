@@ -1,6 +1,6 @@
 module DoubleDouble
 
-export Double, Single, double
+export Double, Single
 import Base:
     convert,
     *, +, -, /, sqrt, <,
@@ -19,7 +19,7 @@ immutable Double{T<:AbstractFloat} <: AbstractDouble{T}
     hi::T
     lo::T
 
-    # "Normalise" doubles to ensure abs(lo) <= 0.5eps(hi)
+    # "Normalise" Doubles to ensure abs(lo) <= 0.5eps(hi)
     # assumes abs(u) > abs(v): if not, use Single + Single
     function Double(u::T, v::T)
         w = u + v
@@ -27,16 +27,9 @@ immutable Double{T<:AbstractFloat} <: AbstractDouble{T}
     end
 end
 
-# constructor
+# constructors
 Double{T<:AbstractFloat}(u::T, v::T) = Double{T}(u, v)
 Double{T<:AbstractFloat}(x::T) = Double(x, zero(T))
-
-
-# could be moved to the constructor?
-# function Double{T<:AbstractFloat}(u::T, v::T)
-#     w = u + v
-#     Double(w, (u-w) + v)
-# end
 
 
 const half64 = 1.34217729e8
@@ -101,9 +94,9 @@ promote_rule{s,T<:AbstractFloat}(::Type{Irrational{s}}, ::Type{Single{T}}) = Dou
 
 
 
-double(x::Real) = convert(Double{Float64}, Float64(x))
-double(x::BigFloat) = convert(Double{Float64}, x)
-double(x::Irrational) = convert(Double{Float64}, x)
+Double(x::Real) = convert(Double{Float64}, Float64(x))
+Double(x::BigFloat) = convert(Double{Float64}, x)
+Double(x::Irrational) = convert(Double{Float64}, x)
 
 # <
 
@@ -113,7 +106,7 @@ end
 
 # add12
 function +{T}(x::Single{T},y::Single{T})
-    abs(x.hi) > abs(y.hi) ? double(x.hi,y.hi) : double(y.hi,x.hi)
+    abs(x.hi) > abs(y.hi) ? Double(x.hi, y.hi) : Double(y.hi, x.hi)
 end
 
 # Dekker add2
@@ -176,7 +169,7 @@ function sqrt{T}(x::Double{T})
 end
 
 
-rem{T}(x::Double{T},d::Real) = double(rem(x.hi,d),rem(x.lo,d))
+rem{T}(x::Double{T},d::Real) = Double(rem(x.hi,d), rem(x.lo,d))
 abs{T}(x::Double{T})=x.hi>0 ?x:-x
 
 # random numbers using full Uint64 range (respectively, UInt32, UInt16 and UInt128)
