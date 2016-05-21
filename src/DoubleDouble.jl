@@ -1,6 +1,6 @@
 module DoubleDouble
 
-export Double, Single, double
+export Double, Single, double, @doub_str
 import Base:
     convert,
     *, +, -, /, sqrt, isless,
@@ -229,6 +229,10 @@ function show(io::IO, x::Double)
     println(io, "Double(", x.hi, ", ", x.lo, ")")
     print(io, " - value: ")
     @printf io "%.32g" convert(BigFloat, x)  # crude approximation to valid number of digits
+end
+
+macro doub_str(ex)
+    double(parse(BigFloat, ex))
 end
 
 end #module
