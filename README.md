@@ -1,6 +1,8 @@
 DoubleDouble.jl
 ===========
 
+[![Build Status](https://travis-ci.org/simonbyrne/DoubleDouble.jl.svg?branch=master)](https://travis-ci.org/simonbyrne/DoubleDouble.jl)
+
 `DoubleDouble.jl` is a Julia package for performing extended-precision arithmetic using pairs of floating-point numbers. This is commonly known as "double-double" arithmetic, as the most common format is a pair of C-doubles (`Float64` in julia), though `DoubleDouble.jl` will actually work for any floating point type. Its aim is to provide accurate results without the overhead of `BigFloat` types.
 
 The core routines are based on the ideas and algorithms of [Dekker (1971)][dekker1971]. 
