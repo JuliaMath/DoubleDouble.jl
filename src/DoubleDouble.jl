@@ -3,21 +3,19 @@ module DoubleDouble
 export Double, Single, double
 import Base.convert, Base.*, Base.+, Base.-, Base./, Base.sqrt, Base.<, Base.rem, Base.abs, Base.rand, Base.promote_rule, Base.one, Base.zero, Base.ones, Base.zeros, Base.show
 
-typealias BitsFloat Union{BigFloat,Float16,Float32,Float64} # Floating point BitTypes AbstractFloat
-
-abstract AbstractDouble{T} <: Number 
+abstract AbstractDouble{T} <: Number
 
 # a Single is a wrapper for an ordinary floating point type such that arithmetic operations will return Doubles
-immutable Single{T<:BitsFloat} <: AbstractDouble{T}
+immutable Single{T<:AbstractFloat} <: AbstractDouble{T}
     hi::T
 end
 
 # In a Double, hi uses the full mantissa, and abs(lo) <= 0.5eps(hi)
-immutable Double{T<:BitsFloat} <: AbstractDouble{T}
+immutable Double{T<:AbstractFloat} <: AbstractDouble{T}
     hi::T
     lo::T
 end
-Double{T<:BitsFloat}(x::T) = Double(x,zero(T))
+Double{T<:AbstractFloat}(x::T) = Double(x,zero(T))
 
 
 const half64 = 1.34217729e8
@@ -33,7 +31,7 @@ halfprec(x::Float32) = (p = x*half32; (x-p)+p) # float32(signif(x,12,2))
 halfprec(x::Float16) = (p = x*half16; (x-p)+p) # float16(signif(x,5,2))
 halfprec(x::BigFloat) = (p = x*halfBig; (x-p)+p) # BigFloat(signif(x,128,2))
 
-function splitprec(x::BitsFloat)
+function splitprec(x::AbstractFloat)
     h = halfprec(x)
     h, x-h
 end
@@ -51,44 +49,44 @@ zeros(T::Double, dims...) = fill!(Array(T, dims...), (zero)(T))
 convert{T}(::Type{Double{T}}, x::Int64) = Double(Float64(x))
 double(x::Int64) = convert(Double{Float64},x)
 Double(x::Int64) = double(x)
-promote_rule{T<:BitsFloat}(::Type{Double{T}},::Type{Int64})=Double{T}
-promote_rule{T<:BitsFloat}(::Type{Int64},::Type{Double{T}})=Double{T}
+promote_rule{T<:AbstractFloat}(::Type{Double{T}},::Type{Int64})=Double{T}
+promote_rule{T<:AbstractFloat}(::Type{Int64},::Type{Double{T}})=Double{T}
 
 ## conversion and promotion
-convert{T<:BitsFloat}(::Type{Single{T}}, x::T) = Single(x)
-convert{T<:BitsFloat}(::Type{Double{T}}, x::T) = Double(x)
+convert{T<:AbstractFloat}(::Type{Single{T}}, x::T) = Single(x)
+convert{T<:AbstractFloat}(::Type{Double{T}}, x::T) = Double(x)
 
-convert{T<:BitsFloat}(::Type{Double{T}}, x::Single{T}) = Double(x.hi)
-convert{T<:BitsFloat}(::Type{Single{T}}, x::Double{T}) = Single(x.hi)
+convert{T<:AbstractFloat}(::Type{Double{T}}, x::Single{T}) = Double(x.hi)
+convert{T<:AbstractFloat}(::Type{Single{T}}, x::Double{T}) = Single(x.hi)
 
-convert{T<:BitsFloat}(::Type{T}, x::AbstractDouble{T}) = x.hi
+convert{T<:AbstractFloat}(::Type{T}, x::AbstractDouble{T}) = x.hi
 
-convert{T<:BitsFloat}(::Type{Single{T}}, x::Single{T}) = x # needed because Double <: FloatingPoint
-convert{T<:BitsFloat}(::Type{Double{T}}, x::Double{T}) = x # needed because Double <: FloatingPoint
+convert{T<:AbstractFloat}(::Type{Single{T}}, x::Single{T}) = x # needed because Double <: FloatingPoint
+convert{T<:AbstractFloat}(::Type{Double{T}}, x::Double{T}) = x # needed because Double <: FloatingPoint
 
-convert{T<:BitsFloat}(::Type{Single{T}}, x::AbstractFloat) = Single(convert(T,x))
+convert{T<:AbstractFloat}(::Type{Single{T}}, x::AbstractFloat) = Single(convert(T,x))
 
-function convert{T<:BitsFloat}(::Type{Double{T}}, x::AbstractFloat)
+function convert{T<:AbstractFloat}(::Type{Double{T}}, x::AbstractFloat)
     z = convert(T,x)
     Double(z,convert(T,x-z))
 end
 
-convert{T<:BitsFloat}(::Type{BigFloat}, x::Single{T}) = big(x.hi)
-convert{T<:BitsFloat}(::Type{BigFloat}, x::Double{T}) = big(x.hi) + big(x.lo)
+convert{T<:AbstractFloat}(::Type{BigFloat}, x::Single{T}) = big(x.hi)
+convert{T<:AbstractFloat}(::Type{BigFloat}, x::Double{T}) = big(x.hi) + big(x.lo)
 
 
-promote_rule{T<:BitsFloat}(::Type{Single{T}}, ::Type{T}) = Single{T}
-promote_rule{T<:BitsFloat}(::Type{Double{T}}, ::Type{T}) = Double{T}
-promote_rule{T<:BitsFloat}(::Type{Double{T}}, ::Type{Single{T}}) = Double{T}
+promote_rule{T<:AbstractFloat}(::Type{Single{T}}, ::Type{T}) = Single{T}
+promote_rule{T<:AbstractFloat}(::Type{Double{T}}, ::Type{T}) = Double{T}
+promote_rule{T<:AbstractFloat}(::Type{Double{T}}, ::Type{Single{T}}) = Double{T}
 
-# promote_rule{T<:BitsFloat}(::Type{AbstractDouble{T}}, ::Type{BigFloat}) = BigFloat  !!
-promote_rule{s,T<:BitsFloat}(::Type{Irrational{s}}, ::Type{Single{T}}) = Double{BigFloat}
+# promote_rule{T<:AbstractFloat}(::Type{AbstractDouble{T}}, ::Type{BigFloat}) = BigFloat  !!
+promote_rule{s,T<:AbstractFloat}(::Type{Irrational{s}}, ::Type{Single{T}}) = Double{BigFloat}
 
-double(x::BitsFloat) = Double(x)
+double(x::AbstractFloat) = Double(x)
 # "Normalise" doubles to ensure abs(lo) <= 0.5eps(hi)
 # assumes abs(u) > abs(v): if not, use Single + Single
 # could be moved to the constructor?
-function double{T<:BitsFloat}(u::T,v::T) 
+function double{T<:AbstractFloat}(u::T,v::T)
     w = u + v
     Double(w,(u-w) + v)
 end
@@ -113,7 +111,7 @@ function +{T}(x::Double{T}, y::Double{T})
     double(r,s)
 end
 
-# add122 
+# add122
 function +{T}(x::Single{T}, y::Double{T})
     r = x.hi + y.hi
     s = abs(x.hi) > abs(y.hi) ? ((x.hi - r) + y.hi) + y.lo : ((y.hi - r) + x.hi) + y.lo
@@ -122,7 +120,7 @@ end
 +{T}(x::Double{T}, y::Single{T}) = y + x
 
 
--{T<:BitsFloat}(x::Double{T}) = Double(-x.hi,-x.lo)
+-{T<:AbstractFloat}(x::Double{T}) = Double(-x.hi,-x.lo)
 
 function -{T}(x::Double{T}, y::Double{T})
     r = x.hi - y.hi
@@ -212,7 +210,7 @@ macro twofloat_const_frombig(sym)
         Base.convert(::Type{Double{Float64}}, ::Irrational{$qsym}) = $(convert(Double{Float64}, bigval))
         Base.convert(::Type{Double{Float32}}, ::Irrational{$qsym}) = $(convert(Double{Float32}, bigval))
         Base.convert(::Type{Double{Float16}}, ::Irrational{$qsym}) = $(convert(Double{Float16}, bigval))
-        Base.convert(::Type{Double{BigFloat}}, ::Irrational{$qsym}) = $(convert(Double{BigFloat}, bigval)) 
+        Base.convert(::Type{Double{BigFloat}}, ::Irrational{$qsym}) = $(convert(Double{BigFloat}, bigval))
     end
 end
 
@@ -223,4 +221,3 @@ end
 @twofloat_const_frombig φ
 
 end #module
-
