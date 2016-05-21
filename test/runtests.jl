@@ -45,3 +45,6 @@ bxy = bx*by
 a = double(big"3.1")
 @test a == Double(3.1, -8.881784197001253e-17)
 @test BigFloat(a) == big"3.099999999999999999999999999999995069619342368676216176696466982586064542459781"
+
+@test double(3) == Double(3.0, 0.0)
+@test double(big(3)) == Double(3.0, 0.0)

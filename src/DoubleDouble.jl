@@ -47,7 +47,6 @@ end
 # zeros(T::Double, dims...) = fill!(Array(T, dims...), (zero)(T))
 
 
-double(x::Int64) = convert(Double{Float64}, x)
 
 ## promotion
 promote_rule{T<:AbstractFloat}(::Type{Double{T}}, ::Type{Int64}) = Double{T}
@@ -94,7 +93,8 @@ function double{T<:AbstractFloat}(u::T, v::T)
     Double(w, (u-w) + v)
 end
 
-double(x::Real) = convert(Double{Float64}, x)
+double(x::Real) = convert(Double{Float64}, Float64(x))
+double(x::BigFloat) = convert(Double{Float64}, x)
 double(x::Irrational) = convert(Double{Float64}, x)
 
 # <
