@@ -34,7 +34,7 @@ bxy = bx*by
 @test sqrt(y) == Float64(sqrt(dy))
 @test sqrt(dy) == double(sqrt(by))
 
-@test rem(dxy,1.0) == double(rem(bxy,1.0))
+#@test rem(dxy,1.0) == Double(rem(bxy,1.0))
 
 
 ## New

@@ -18,10 +18,25 @@ end
 immutable Double{T<:AbstractFloat} <: AbstractDouble{T}
     hi::T
     lo::T
+
+    # "Normalise" doubles to ensure abs(lo) <= 0.5eps(hi)
+    # assumes abs(u) > abs(v): if not, use Single + Single
+    function Double(u::T, v::T)
+        w = u + v
+        new(w, (u-w) + v)
+    end
 end
 
 # constructor
+Double{T<:AbstractFloat}(u::T, v::T) = Double{T}(u, v)
 Double{T<:AbstractFloat}(x::T) = Double(x, zero(T))
+
+
+# could be moved to the constructor?
+# function Double{T<:AbstractFloat}(u::T, v::T)
+#     w = u + v
+#     Double(w, (u-w) + v)
+# end
 
 
 const half64 = 1.34217729e8
@@ -85,13 +100,6 @@ promote_rule{T<:AbstractFloat}(::Type{Double{T}}, ::Type{Single{T}}) = Double{T}
 promote_rule{s,T<:AbstractFloat}(::Type{Irrational{s}}, ::Type{Single{T}}) = Double{Float64}
 
 
-# "Normalise" doubles to ensure abs(lo) <= 0.5eps(hi)
-# assumes abs(u) > abs(v): if not, use Single + Single
-# could be moved to the constructor?
-function double{T<:AbstractFloat}(u::T, v::T)
-    w = u + v
-    Double(w, (u-w) + v)
-end
 
 double(x::Real) = convert(Double{Float64}, Float64(x))
 double(x::BigFloat) = convert(Double{Float64}, x)
@@ -112,24 +120,24 @@ end
 function +{T}(x::Double{T}, y::Double{T})
     r = x.hi + y.hi
     s = abs(x.hi) > abs(y.hi) ? (((x.hi - r) + y.hi) + y.lo) + x.lo : (((y.hi - r) + x.hi) + x.lo) + y.lo
-    double(r,s)
+    Double(r, s)
 end
 
 # add122
 function +{T}(x::Single{T}, y::Double{T})
     r = x.hi + y.hi
     s = abs(x.hi) > abs(y.hi) ? ((x.hi - r) + y.hi) + y.lo : ((y.hi - r) + x.hi) + y.lo
-    double(r,s)
+    Double(r, s)
 end
 +{T}(x::Double{T}, y::Single{T}) = y + x
 
 
--{T<:AbstractFloat}(x::Double{T}) = Double(-x.hi,-x.lo)
+-{T<:AbstractFloat}(x::Double{T}) = Double(-x.hi, -x.lo)
 
 function -{T}(x::Double{T}, y::Double{T})
     r = x.hi - y.hi
     s = abs(x.hi) > abs(y.hi) ? (((x.hi - r) - y.hi) - y.lo) + x.lo : (((-y.hi - r) + x.hi) + x.lo) - y.lo
-    double(r,s)
+    Double(r, s)
 end
 
 
@@ -145,7 +153,7 @@ end
 function *{T}(x::Double{T}, y::Double{T})
     c = Single(x.hi) * Single(y.hi)
     cc = (x.hi * y.lo + x.lo* y.hi) + c.lo
-    double(c.hi, cc)
+    Double(c.hi, cc)
 end
 
 # Dekker div2
@@ -153,7 +161,7 @@ function /{T}(x::Double{T}, y::Double{T})
     c = x.hi / y.hi
     u = Single(c) * Single(y.hi)
     cc = ((((x.hi - u.hi) - u.lo) + x.lo) - c*y.lo)/y.hi
-    double(c,cc)
+    Double(c, cc)
 end
 
 # Dekker sqrt2
@@ -164,7 +172,7 @@ function sqrt{T}(x::Double{T})
     c = sqrt(x.hi)
     u = Single(c)*Single(c)
     cc = (((x.hi - u.hi) - u.lo) + x.lo)*map(typeof(x.hi),0.5)/c
-    double(c,cc)
+    Double(c, cc)
 end
 
 
