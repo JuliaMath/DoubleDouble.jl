@@ -53,7 +53,6 @@ double(x::Int64) = convert(Double{Float64}, x)
 promote_rule{T<:AbstractFloat}(::Type{Double{T}}, ::Type{Int64}) = Double{T}
 
 ## conversion
-convert{T}(::Type{Double{T}}, x::Int64) = Double(Float64(x))
 
 convert{T<:AbstractFloat}(::Type{Single{T}}, x::T) = Single(x)
 convert{T<:AbstractFloat}(::Type{Double{T}}, x::T) = Double(x)
@@ -69,9 +68,11 @@ convert{T<:AbstractFloat}(::Type{Double{T}}, x::Double{T}) = x # needed because 
 convert{T<:AbstractFloat}(::Type{Single{T}}, x::AbstractFloat) = Single(convert(T,x))
 
 function convert{T<:AbstractFloat}(::Type{Double{T}}, x::AbstractFloat)
-    z = convert(T,x)
-    Double(z,convert(T,x-z))
+    z = convert(T, x)
+    Double(z, convert(T, x-z))
 end
+
+convert{T<:AbstractFloat}(::Type{Double{T}}, x::Irrational) = convert(Double{T}, big(x))
 
 convert(::Type{BigFloat}, x::Single) = big(x.hi)
 convert(::Type{BigFloat}, x::Double) = big(x.hi) + big(x.lo)
@@ -94,12 +95,12 @@ function double{T<:AbstractFloat}(u::T, v::T)
 end
 
 double(x::Real) = convert(Double{Float64}, x)
-
+double(x::Irrational) = convert(Double{Float64}, x)
 
 # <
 
 function isless{T}(x::Double{T}, y::Double{T})
-    x.hi + x.lo <= y.hi + y.lo
+    x.hi + x.lo < y.hi + y.lo
 end
 
 # add12
