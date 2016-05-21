@@ -37,16 +37,9 @@ function splitprec(x::AbstractFloat)
     h, x-h
 end
 
-# Dodano
-one(x::Double) = oftype(x,1.0)
-one{T<:Double}(::Type{T}) = convert(T,1.0)
 
-zero(x::Double) = oftype(x,0.0)
-zero{T<:Double}(::Type{T}) = convert(T,0.0)
-
-
-ones(T::Double, dims...) = fill!(Array(T, dims...), (one)(T))
-zeros(T::Double, dims...) = fill!(Array(T, dims...), (zero)(T))
+# ones(T::Double, dims...) = fill!(Array(T, dims...), (one)(T))
+# zeros(T::Double, dims...) = fill!(Array(T, dims...), (zero)(T))
 
 
 convert{T}(::Type{Double{T}}, x::Int64) = Double(Float64(x))
