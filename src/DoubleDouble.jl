@@ -5,7 +5,7 @@ import Base:
     convert,
     *, +, -, /, sqrt, <,
     rem, abs, rand, promote_rule,
-    show
+    show, big
 
 abstract AbstractDouble{T} <: Real
 
@@ -225,6 +225,8 @@ end
 @twofloat_const_frombig catalan
 @twofloat_const_frombig φ
 
+
+big(x::Double) = BigFloat(x)
 
 function show(io::IO, x::Double)
     println(io, "Double(", x.hi, ", ", x.lo, ")")
