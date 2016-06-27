@@ -92,7 +92,7 @@ promote_rule{T<:AbstractFloat}(::Type{Double{T}}, ::Type{Single{T}}) = Double{T}
 # promote_rule{T<:AbstractFloat}(::Type{AbstractDouble{T}}, ::Type{BigFloat}) = BigFloat  !!
 promote_rule{s,T<:AbstractFloat}(::Type{Irrational{s}}, ::Type{Single{T}}) = Double{Float64}
 
-
+convert{T}(::Type{Double{T}}, x::Real) = convert(Double{T}, float(x))
 
 Double(x::Real) = convert(Double{Float64}, Float64(x))
 Double(x::BigFloat) = convert(Double{Float64}, x)
