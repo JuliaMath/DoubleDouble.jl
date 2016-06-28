@@ -7,7 +7,7 @@ import Base:
     rem, abs, rand, promote_rule,
     show, big
 
-abstract AbstractDouble{T} <: Real
+abstract AbstractDouble{T} <: AbstractFloat 
 
 # a Single is a wrapper for an ordinary floating point type such that arithmetic operations will return Doubles
 immutable Single{T<:AbstractFloat} <: AbstractDouble{T}
@@ -97,6 +97,8 @@ convert{T}(::Type{Double{T}}, x::Real) = convert(Double{T}, float(x))
 Double(x::Real) = convert(Double{Float64}, Float64(x))
 Double(x::BigFloat) = convert(Double{Float64}, x)
 Double(x::Irrational) = convert(Double{Float64}, x)
+
+convert{T}(::Type{AbstractFloat}, x::Double{T}) = x
 
 # <
 
