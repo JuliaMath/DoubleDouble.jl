@@ -84,6 +84,8 @@ convert{T<:AbstractFloat}(::Type{Double{T}}, x::Irrational) = convert(Double{T},
 convert(::Type{BigFloat}, x::Single) = big(x.hi)
 convert(::Type{BigFloat}, x::Double) = big(x.hi) + big(x.lo)
 
+convert{T}(::Type{Single{T}}, x::Integer) = convert(Single{T}, T(x))
+convert{T}(::Type{Double{T}}, x::Integer) = convert(Double{T}, T(x))
 
 promote_rule{T<:AbstractFloat}(::Type{Single{T}}, ::Type{T}) = Single{T}
 promote_rule{T<:AbstractFloat}(::Type{Double{T}}, ::Type{T}) = Double{T}
@@ -93,6 +95,7 @@ promote_rule{T<:AbstractFloat}(::Type{Double{T}}, ::Type{Single{T}}) = Double{T}
 promote_rule{s,T<:AbstractFloat}(::Type{Irrational{s}}, ::Type{Single{T}}) = Double{Float64}
 
 
+Single(x::Real) = convert(Single{Float64}, Float64(x))
 
 Double(x::Real) = convert(Double{Float64}, Float64(x))
 Double(x::BigFloat) = convert(Double{Float64}, x)
