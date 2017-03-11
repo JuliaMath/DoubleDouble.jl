@@ -5,7 +5,8 @@ import Base:
     convert,
     *, +, -, /, sqrt, <,
     rem, abs, rand, promote_rule,
-    show, big
+    show, big,
+    zero, one
 
 abstract AbstractDouble{T} <: Real
 
@@ -50,6 +51,11 @@ function splitprec(x::AbstractFloat)
     h, x-h
 end
 
+
+zero{T<:AbstractFloat}(::Type{Double{T}}) = Double(zero(T))
+one{T<:AbstractFloat}(::Type{Double{T}}) = Double(one(T))
+zero(a::Double) = Double(zero(a.hi))
+one(a::Double) = Double(one(a.hi))
 
 # ones(T::Double, dims...) = fill!(Array(T, dims...), (one)(T))
 # zeros(T::Double, dims...) = fill!(Array(T, dims...), (zero)(T))

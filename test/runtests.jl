@@ -16,6 +16,11 @@ dy = Double(y)
 @test x == sx == dx
 @test y == sy == dy
 
+@test zero(Double{Float64}) == Double(0.0, 0.0)
+@test one(Double{Float64}) == Double(1.0, 0.0)
+@test zero(Double(0.0, 0.0)) == Double(0.0, 0.0)
+@test one(Double(0.0, 0.0)) == Double(1.0, 0.0)
+
 dxy = dx*dy
 bxy = bx*by
 @test sx*sy == dxy
