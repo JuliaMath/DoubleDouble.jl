@@ -3,7 +3,7 @@ module DoubleDouble
 export Double, Single
 import Base:
     convert,
-    *, +, -, /, sqrt, <,
+    *, +, -, /, sqrt, <, ≤,
     rem, abs, rand, promote_rule,
     show, big
 
@@ -103,9 +103,17 @@ Double(x::Irrational) = convert(Double{Float64}, x)
 
 # <
 
+function <{T}(x::Single{T}, y::Single{T})
+    x.hi < y.hi
+end
+
+≤{T}(x::Single{T}, y::Single{T}) = !(x > y)
+
 function <{T}(x::Double{T}, y::Double{T})
     x.hi + x.lo < y.hi + y.lo
 end
+
+≤{T}(x::Double{T}, y::Double{T}) = !(x > y)
 
 # add12
 function +{T}(x::Single{T},y::Single{T})
