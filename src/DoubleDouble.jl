@@ -136,10 +136,16 @@ end
 
 # Dekker mul12
 function *{T}(x::Single{T},y::Single{T})
-    hx,lx = splitprec(x.hi)
-    hy,ly = splitprec(y.hi)
-    z = x.hi*y.hi
-    Double(z, ((hx*hy-z) + hx*ly + lx*hy) + lx*ly)
+    xs, xe = frexp(x.hi)
+    ys, ye = frexp(y.hi)
+    z = xs*ys
+    zexp = ldexp(z, xe+ye)
+    if (iszero(zexp) | !isfinite(zexp))
+        return Double(zexp, zexp)
+    end
+    hx,lx = splitprec(xs)
+    hy,ly = splitprec(ys)
+    Double(zexp, ldexp(((hx*hy-z) + hx*ly + lx*hy) + lx*ly, xe+ye))
 end
 
 # Dekker mul2
