@@ -77,3 +77,7 @@ end
 function Base.show(io::IO, x::Double{T,E}) where  {T<:SysFloat, E<:Emphasis}
     print(io, string(x))
 end
+
+include("convert.jl")
+
+end # module
