@@ -31,7 +31,8 @@ struct Double{T<:SysFloat, E<:Emphasis} <: AbstractDouble{T}
     lo::T
 end
 
-Double(hi::T, lo::T) where T<:SysFloat = Double(EMPHASIS, hi, lo)
+@inline Double(x::S, y::S) where S<:SysFloat = Double(EMPHASIS, x, y)
+@inline Double(x::S) where S<:SysFloat = Double(EMPHASIS, x, zero(S))
 
 function Double(::Type{E}, hi::T, lo::T) where {T<:SysFloat, E<:Emphasis}
     s = hi + lo
@@ -68,9 +69,7 @@ function Double(::Type{E}, hi::T) where {T<:Rational, E<:Emphasis}
     return Double(E, BigFloat(hi))
 end
 
-Double(x::S) where S<:SysFloat = Double(EMPHASIS, x)
 Double(x::R) where R<:SysReal  = Double(EMPHASIS, x)
-Double(x::S, y::S) where S<:SysFloat = Double(EMPHASIS, x)
 Double(x::R, y::R) where R<:SysReal  = Double(EMPHASIS, x, y)
 
 FastDouble(x::R) where R<:SysReal       = Double(Performance, x)
