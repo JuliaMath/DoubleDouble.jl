@@ -4,6 +4,7 @@ module DoubleDouble
 export Double, FastDouble
 
 const SysFloat = Union{Float16, Float32, Float64}
+const SysReal  = Union{Signed, BigInt, AbstractFloat, Rational, Irrational}
 
 # Algorithmic choice is a Trait
 abstract type Trait end
@@ -43,12 +44,12 @@ function Double(::Type{E}, hi::T) where {T<:Signed, E<:Emphasis}
     return Double(E, float(hi), float(zero(T)))
 end
 
-function Double(::Type{E}, hi::T, lo::T) where {T<:Real, E<:Emphasis}
+function Double(::Type{E}, hi::T, lo::T) where {T<:SysReal, E<:Emphasis}
     s = Float64(hi + lo)
     e = Float64((hi - T(s)) + lo)
     return Double{Float64,E}(s,e)
 end
-function Double(::Type{E}, hi::T) where {T<:Real, E<:Emphasis}
+function Double(::Type{E}, hi::T) where {T<:SysReal, E<:Emphasis}
     s = Float64(hi)
     e = Float64(hi - T(s))
     return Double{Float64,E}(s,e)
@@ -62,12 +63,12 @@ function Double(::Type{E}, hi::T) where {T<:Rational, E<:Emphasis}
 end
 
 Double(x::S) where S<:SysFloat = Double(EMPHASIS, x)
-Double(x::R) where R<:Real = Double(EMPHASIS, x)
+Double(x::R) where R<:SysReal  = Double(EMPHASIS, x)
 Double(x::S, y::S) where S<:SysFloat = Double(EMPHASIS, x)
-Double(x::R, y::R) where R<:Real = Double(EMPHASIS, x, y)
+Double(x::R, y::R) where R<:SysReal  = Double(EMPHASIS, x, y)
 
-FastDouble(x::R) where R<:Real       = Double(Performance, x)
-FastDouble(x::R, y::R) where R<:Real = Double(Performance, x, y)
+FastDouble(x::R) where R<:SysReal       = Double(Performance, x)
+FastDouble(x::R, y::R) where R<:SysReal = Double(Performance, x, y)
 
 
 function Base.string(x::Double{T,EMPHASIS}) where T<:SysFloat
