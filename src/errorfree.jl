@@ -1,3 +1,10 @@
+#=
+    All functions present in this file should be errorfree tranformations.
+    Nearly errorfree transformations (`one_inv`, `one_sqrt`, `two_divide`, ..)
+        are collected in "errorbest.jl".  They should be within 2ulp of exact.
+=#
+
+
 """
     two_sum_sorted(a, b)
 
@@ -22,7 +29,6 @@ Computes `s = fl(a+b)` and `e = err(a+b)`.
     e = (a - (s - v)) + (b - v)
     return s, e
 end
-
 
 """
     two_diff_sorted(a, b)
@@ -71,8 +77,6 @@ Computes `s = fl(a*a)` and `e = err(a*a)`.
     e = fma(a, a, -p)
     p, e
 end
-
-
 
 """
     three_sum_sorted(a, b, c)
