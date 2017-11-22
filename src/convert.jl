@@ -1,3 +1,5 @@
+# !!TODO!! remove as much of this as possible while keeping case coverage
+
 import Base: promote_rule, convert
 
 promote_rule(::Type{Double{T,Accuracy}}, ::Type{Double{T,Performance}}) where T<:SysFloat = Double{T,Accuracy}
