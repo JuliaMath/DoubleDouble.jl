@@ -87,5 +87,9 @@ function Base.show(io::IO, x::Double{T,E}) where  {T<:SysFloat, E<:Emphasis}
 end
 
 include("convert.jl")
+include("errorfree.jl")
+include("errorbest.jl")
+include("dd_arith.jl")
+
 
 end # module
