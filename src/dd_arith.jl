@@ -24,7 +24,7 @@ function (+)(a::T, b::Double{T,E}) where {T<:SysFloat,E<:Emphasis}
     return Double(E, hi, lo)
 end
 
-function (+)(a::Double{T,E}, b::Double{T,E}) where {T,E}
+function (+)(a::Double{T,E}, b::Double{T,E}) where {T<:SysFloat,E<:Emphasis}
     hihi, hilo = two_sum(a.hi, b.hi)
     hi, lo = two_sum(a.lo, b.lo)
     hilo += hi
