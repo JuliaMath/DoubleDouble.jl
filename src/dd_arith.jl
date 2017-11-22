@@ -11,7 +11,7 @@ end
 function (+)(a::Double{T,E}, b::T) where {T<:SysFloat,E<:Emphasis}
     hi, lo = two_sum(a.hi, b)
     lo += a.lo
-    hi, lo = two_sum_ordered(hi, lo)
+    hi, lo = two_sum_sorted(hi, lo)
 
     return Double(E, hi, lo)
 end
@@ -19,7 +19,7 @@ end
 function (+)(a::T, b::Double{T,E}) where {T<:SysFloat,E<:Emphasis}
     hi, lo = two_sum(a, b.hi)
     lo += b.lo
-    hi, lo = two_sum_ordered(hi, lo)
+    hi, lo = two_sum_sorted(hi, lo)
 
     return Double(E, hi, lo)
 end
