@@ -4,6 +4,9 @@ module DoubleDouble
 export Double, FastDouble
 
 const SysFloat = Union{Float16, Float32, Float64}
+# this is present to help avoid things that should not be handled
+# when the package is somewhat stable, we should try replacing this
+# with `const SysReal = Real` and see if everything continues well
 const SysReal  = Union{Signed, BigInt, AbstractFloat, Rational, Irrational}
 
 # Algorithmic choice is a Trait
