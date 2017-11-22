@@ -53,4 +53,32 @@ end
 (+)(a::Double{T,E}, b::R) where {R<:SysReal,T<:SysFloat,E<:Emphasis} = a + Double(E, b)
 (+)(a::R, b::Double{T,E}) where {R<:SysReal,T<:SysFloat,E<:Emphasis} = b + Double(E, a)
 
-    
+
+
+function (-)(a::Double{T,E}, b::T) where {T<:SysFloat,E<:Emphasis}
+    hi, lo = two_diff(a.hi, b)
+    lo += a.lo
+    hi, lo = two_sum_sorted(hi, lo)
+
+    return Double(E, hi, lo)
+end
+
+function (-)(a::T, b::Double{T,E}) where {T<:SysFloat,E<:Emphasis}
+    hi, lo = two_diff(a, b.hi)
+    lo -= b.lo
+    hi, lo = two_sum_sorted(hi, lo)
+
+    return Double(E, hi, lo)
+end
+
+function (-)(a::Double{T,E}, b::Double{T,E}) where {T<:SysFloat,E<:Emphasis}
+    hihi, hilo = two_diff(a.hi, b.hi)
+    hi, lo = two_diff(a.lo, b.lo)
+    hilo += hi
+    hi = hihi + hilo
+    hilo -= hi - hihi
+    lo += hilo
+    hi,lo = two_sum(hi, lo)
+    return Double(E, hi, lo)
+end
+
