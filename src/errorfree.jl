@@ -133,3 +133,15 @@ function three_diff(a::T,b::T,c::T) where T<: SysFloat
     x, y = two_sum_sorted(x, y)
     return x, y, z
 end
+
+"""
+    three_prod(a, b, c)
+    
+Computes `s = fl(a*b*c)` and `e1 = err(a*b*c), e2 = err(e1)`.
+"""
+function three_prod(a::T, b::T, c::T) where T<:SysFloat
+    p, e = two_prod(a, b)
+    x, p = two_prod(p, c)
+    y, z = two_prod(e, c)
+    return x, y, z
+end
