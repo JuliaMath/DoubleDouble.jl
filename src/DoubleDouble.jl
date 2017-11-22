@@ -3,6 +3,9 @@ module DoubleDouble
 
 export Double, FastDouble
 
+# these imports are used broadly, other imports reside within source files
+import Base: (+), (-), (*), (/)
+
 const SysFloat = Union{Float16, Float32, Float64}
 # this is present to help avoid things that should not be handled
 # when the package is somewhat stable, we should try replacing this
