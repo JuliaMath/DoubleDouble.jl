@@ -44,12 +44,11 @@ function (+)(a::Double{T1,E}, b::T2) where {T1<:SysFloat,T2<:SysFloat,E<:Emphasi
 end
 
 (+)(a::T2, b::Double{T1,E}) where {T1<:SysFloat,T2<:SysFloat,E<:Emphasis} = b + a
-(+)(a::Double{Float64,E}, b::Float32) where {E<:Emphasis} = a + Float64(b)
-(+)(a::Float32, b::Double{Float64,E}) where {E<:Emphasis} = b + Float64(a)
-(+)(a::Double{Float64,E}, b::Float32) where {E<:Emphasis} = a + Float64(b)
-(+)(a::Float32, b::Double{Float64,E}) where {E<:Emphasis} = b + Float64(a)
-(+)(a::Double{T,E}, b::S) where {S<:Signed,T<:SysFloat,E<:Emphasis} = a + promote_type(T,S)(b)
-(+)(a::S, b::Double{T,E}) where {S<:Signed,T<:SysFloat,E<:Emphasis} = b + promote_type(T,S)(a)
+@inline (+)(a::Double{Float64,E}, b::Float32) where {E<:Emphasis} = a + Float64(b)
+@inline (+)(a::Float32, b::Double{Float64,E}) where {E<:Emphasis} = b + Float64(a)
+
+(+)(a::Double{T,E}, b::S) where {S<:Signed,T<:SysFloat,E<:Emphasis}  = a + promote_type(T,S)(b)
+(+)(a::S, b::Double{T,E}) where {S<:Signed,T<:SysFloat,E<:Emphasis}  = b + promote_type(T,S)(a)
 (+)(a::Double{T,E}, b::R) where {R<:SysReal,T<:SysFloat,E<:Emphasis} = a + Double(E, b)
 (+)(a::R, b::Double{T,E}) where {R<:SysReal,T<:SysFloat,E<:Emphasis} = b + Double(E, a)
 
@@ -82,3 +81,35 @@ function (-)(a::Double{T,E}, b::Double{T,E}) where {T<:SysFloat,E<:Emphasis}
     return Double(E, hi, lo)
 end
 
+@inline (-)(a::Double{Float64,E}, b::Float32) where {E<:Emphasis} = a - Float64(b)
+@inline (-)(a::Float32, b::Double{Float64,E}) where {E<:Emphasis} = b - Float64(a)
+(-)(a::Double{T,E}, b::S) where {S<:Signed,T<:SysFloat,E<:Emphasis}  = a - promote_type(T,S)(b)
+(-)(a::S, b::Double{T,E}) where {S<:Signed,T<:SysFloat,E<:Emphasis}  = b - promote_type(T,S)(a)
+(-)(a::Double{T,E}, b::R) where {R<:SysReal,T<:SysFloat,E<:Emphasis} = a - Double(E, b)
+(-)(a::R, b::Double{T,E}) where {R<:SysReal,T<:SysFloat,E<:Emphasis} = b - Double(E, a)
+
+
+
+function (*)(a::Double{T,E}, b::T) where {T<:SysFloat,E<:Emphasis}
+    hi, lo = two_prod(a.hi, b)
+    lo += a.lo * b
+    hi, lo = two_sum_sorted(hi, lo)
+
+    return Double(E, hi, lo)
+end
+@inline (*)(a::T, b::Double{T,E}) where {T<:SysFloat,E<:Emphasis} = b * a
+
+function (*)(a::Double{T,E}, b::Double{T,E}) where {T<:SysFloat,E<:Emphasis}
+    hi, lo = two_prod(a.hi, b.hi)
+    lo += a.hi*b.lo + a.lo*b.hi
+    hi, lo = two_sum_sorted(hi, lo)
+
+    return Double(E, hi, lo)
+end
+
+@inline (*)(a::Double{Float64,E}, b::Float32) where {E<:Emphasis} = a * Float64(b)
+@inline (*)(a::Float32, b::Double{Float64,E}) where {E<:Emphasis} = b *\ Float64(a)
+(*)(a::Double{T,E}, b::S) where {S<:Signed,T<:SysFloat,E<:Emphasis}  = a * promote_type(T,S)(b)
+(*)(a::S, b::Double{T,E}) where {S<:Signed,T<:SysFloat,E<:Emphasis}  = b * promote_type(T,S)(a)
+(*)(a::Double{T,E}, b::R) where {R<:SysReal,T<:SysFloat,E<:Emphasis} = a * Double(E, b)
+(*)(a::R, b::Double{T,E}) where {R<:SysReal,T<:SysFloat,E<:Emphasis} = b * Double(E, a)
