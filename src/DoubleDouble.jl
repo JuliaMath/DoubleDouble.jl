@@ -1,7 +1,7 @@
 
 module DoubleDouble
 
-export Double, FastDouble
+export Double, FastDouble, Emphasis, Accuracy, Performance
 
 # these imports are used broadly, other imports reside within source files
 import Base: (+), (-), (*), (/)
@@ -31,50 +31,6 @@ struct Double{T<:SysFloat, E<:Emphasis} <: AbstractDouble{T}
     lo::T
 end
 
-@inline Double(x::S, y::S) where S<:SysFloat = Double(EMPHASIS, x, y)
-@inline Double(x::S) where S<:SysFloat = Double(EMPHASIS, x, zero(S))
-
-function Double(::Type{E}, hi::T, lo::T) where {T<:SysFloat, E<:Emphasis}
-    s = hi + lo
-    e = (hi - s) + lo
-    return Double{T,E}(s, e)
-end
-
-function Double(::Type{E}, hi::T) where {T<:SysFloat, E<:Emphasis}
-    return Double{T,E}(hi, zero(T))
-end
-
-function Double(::Type{E}, hi::T, lo::T) where {T<:Signed, E<:Emphasis}
-    return Double(E, float(hi), float(lo))
-end
-function Double(::Type{E}, hi::T) where {T<:Signed, E<:Emphasis}
-    return Double(E, float(hi), float(zero(T)))
-end
-
-function Double(::Type{E}, hi::T, lo::T) where {T<:SysReal, E<:Emphasis}
-    s = Float64(hi + lo)
-    e = Float64((hi - T(s)) + lo)
-    return Double{Float64,E}(s,e)
-end
-function Double(::Type{E}, hi::T) where {T<:SysReal, E<:Emphasis}
-    s = Float64(hi)
-    e = Float64(hi - T(s))
-    return Double{Float64,E}(s,e)
-end
-
-function Double(::Type{E}, hi::T, lo::T) where {T<:Rational, E<:Emphasis}
-    return Double(E, BigFloat(hi), BigFloat(lo))
-end
-function Double(::Type{E}, hi::T) where {T<:Rational, E<:Emphasis}
-    return Double(E, BigFloat(hi))
-end
-
-Double(x::R) where R<:SysReal  = Double(EMPHASIS, x)
-Double(x::R, y::R) where R<:SysReal  = Double(EMPHASIS, x, y)
-
-FastDouble(x::R) where R<:SysReal       = Double(Performance, x)
-FastDouble(x::R, y::R) where R<:SysReal = Double(Performance, x, y)
-
 
 function Base.string(x::Double{T,EMPHASIS}) where T<:SysFloat
     return string(EMPHASIS_STR,"Double(",x.hi,", ",x.lo,")")
@@ -86,6 +42,7 @@ function Base.show(io::IO, x::Double{T,E}) where  {T<:SysFloat, E<:Emphasis}
     print(io, string(x))
 end
 
+include("constructors.jl")
 include("convert.jl")
 include("errorfree.jl")
 include("errorbest.jl")

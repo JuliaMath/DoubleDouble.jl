@@ -21,7 +21,7 @@ function (+)(::Type{E}, ahi::T, alo::T, b::T) where  {T<:SysFloat,E<:Emphasis}
     hi, lo = two_sum(ahi, b)
     lo += alo
     hi, lo = two_sum_sorted(hi, lo)
-    
+
     return Double(E, hi, lo)
 end
 @inline (+)(a::T, b::Double{T,E}) where {T<:SysFloat, E<:Emphasis} = (+)(E, b.hi, b.lo, a)
@@ -34,7 +34,7 @@ function (+)(::Type{E}, ahi::T, alo::T, bhi::T, blo::T) where {T<:SysFloat,E<:Em
     hilo -= hi - hihi
     lo += hilo
     hi,lo = two_sum(hi, lo)
-    
+
     return Double(E, hi, lo)
 end
 @inline (+)(a::Double{T,E}, b::Double{T,E}) where {T<:SysFloat,E<:Emphasis} = (+)(E, a.hi, a.lo, b.hi, b.lo)
@@ -113,7 +113,7 @@ function (*)(a::Double{T,E}, b::Double{T,E}) where {T<:SysFloat,E<:Emphasis}
 end
 
 @inline (*)(a::Double{Float64,E}, b::Float32) where {E<:Emphasis} = a * Float64(b)
-@inline (*)(a::Float32, b::Double{Float64,E}) where {E<:Emphasis} = b *\ Float64(a)
+@inline (*)(a::Float32, b::Double{Float64,E}) where {E<:Emphasis} = b * Float64(a)
 (*)(a::Double{T,E}, b::S) where {S<:Signed,T<:SysFloat,E<:Emphasis}  = a * promote_type(T,S)(b)
 (*)(a::S, b::Double{T,E}) where {S<:Signed,T<:SysFloat,E<:Emphasis}  = b * promote_type(T,S)(a)
 (*)(a::Double{T,E}, b::R) where {R<:SysReal,T<:SysFloat,E<:Emphasis} = a * Double(E, b)
@@ -161,7 +161,7 @@ function (/)(a::T, b::Double{T,Accuracy}) where {T<:SysFloat}
     lw = hi3 / b.hi
     hi, lo = two_sum_sorted(hi, lo)
     hi, lo = Double(Accuracy, hi, lo) + lo
-    
+
     return Double(Accuracy, hi, lo)
 end
 
@@ -185,4 +185,3 @@ end
 (/)(a::S, b::Double{T,E}) where {S<:Signed,T<:SysFloat,E<:Emphasis}  = b / promote_type(T,S)(a)
 (/)(a::Double{T,E}, b::R) where {R<:SysReal,T<:SysFloat,E<:Emphasis} = a / Double(E, b)
 (/)(a::R, b::Double{T,E}) where {R<:SysReal,T<:SysFloat,E<:Emphasis} = b / Double(E, a)
-
