@@ -1,7 +1,7 @@
 #=
 
    aa = ldexp(pi+0.0,10); bb = ldexp(1.0/pi,-20);
-   cc = ldexp(sqrt(pi),-50)
+   cc = ldexp(sqrt(pi),-50); dd = aa*cc
 
 
    # to find the cannonical doubledouble form for (aa, bb) and (bb, cc)
@@ -20,10 +20,12 @@
    tripdoub = (x, y, z) 
 
    # to find the cannonical tripledouble result of sqrt( tripdoub )
-
-   fn_ddd( o->sqrt(o), tripdoub...)
+   fn1arg_ddd( o->sqrt(o), tripdoub...)
    (56.71852323165257, -4.670650518938076e-17, 1.868095270344935e-33)
 
+   # to find the cannonical doubledouble result of hypot( doubdoub, doubdoub )
+   fn2arg_dd((x,y)->hypot(x,y), a, b, o->sqrt(o), tripdoub...)
+   (56.71852323165257, -4.670650518938076e-17, 1.868095270344935e-33)
 
 =#
 
