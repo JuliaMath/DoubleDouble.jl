@@ -104,6 +104,24 @@ function (*)(a::Double{T,E}, b::T) where {T<:SysFloat,E<:Emphasis}
 end
 @inline (*)(a::T, b::Double{T,E}) where {T<:SysFloat,E<:Emphasis} = b * a
 
+#=
+theoretical relerr <= 5*(u^2)
+experimental relerr ldexp(3.936,-106) == ldexp(1.968, -107)
+=#
+
+function dd_prod(xhi::T, xlo::T, yhi::T, ylo::T) where T<:SysFloat
+    hi, lo = two_prod(xhi, yhi)
+    t = xlo * ylo
+    t = fma(xhi, ylo, t)
+    t = fma(xlo, yhi, t)
+    t = lo + t
+    hi, lo = two_sum_hilo(hi, t0)
+    return hi, lo
+end
+
+(*)(a::Double{T,E}, b::Double{T,E}) where {T<:SysFloat,E<:Emphasis} =
+    Double(E, dd_prod(a.hi, a.lo, b.hi, b.lo))
+    
 function (*)(a::Double{T,E}, b::Double{T,E}) where {T<:SysFloat,E<:Emphasis}
     hi, lo = two_prod(a.hi, b.hi)
     lo += a.hi*b.lo + a.lo*b.hi
