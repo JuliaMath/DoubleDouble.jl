@@ -95,7 +95,6 @@ end
 dddd(w, x, y, z) = dddd(Float64, w, x, y, z)
 
 function fn1arg_d(::Type{T}, fn, x) where T
-   a = d(T, x)
    b = bigflt(a)
    result = fn(b)   
    return big2double(result)
@@ -111,7 +110,6 @@ fn2arg_d(fn, x, y) = fn1arg_d(Float64, fn, x, y)
 
 
 function fn1arg_dd(::Type{T}, fn, hi, lo=zero(T)) where T
-   hi, lo = dd(T, hi, lo)
    b = bigflt(hi, lo)
    result = fn(b)   
    return big2doubledouble(result)
@@ -119,8 +117,6 @@ end
 fn1arg_dd(fn, hi, lo) = fn1arg_dd(Float64, fn, hi, lo)
 
 function fn2arg_dd(::Type{T}, fn, xhi, xlo=zero(T), yhi=zero(T), ylo=zero(T)) where T
-   xhi, xlo = dd(xhi, xlo)
-   yhi, ylo = dd(yhi, ylo)
    bx = bigfloat(xhi, xlo)
    by = bigfloat(yhi, ylo)
    result = fn(bx, by)
@@ -129,18 +125,40 @@ end
 fn2arg_dd(fn, xhi, xlo, yhi, ylo) = fn2arg_dd(Float64, fn, xhi, xlo, yhi, ylo)
 
 
-function fn_ddd(::Type{T}, fn, x, y=zero(T), z=zero(T)) where T
-   ahi, amd, alo = ddd(x,y,z)
-   b = bigflt(ahi, amd, alo)
-   result = fn(b)   
+function fn1arg_ddd(::Type{T}, fn, hi, md=zero(T), lo=zero(T)) where T
+   b = bigflt(hi, md, lo)
+   result = fn(b)
    return big2tripledouble(result)
 end
-fn_ddd(fn, x, y, z) = fn_ddd(Float64, fn, x, y, z)
+fn1arg_ddd(fn, hi, md, lo) = fn1arg_ddd(Float64, fn, hi, md, lo)
 
-function fn_dddd(::Type{T}, fn, w, x=zero(T), y=zero(T), z=zero(T)) where T
-   ahi, amhi, amlo, alo = dddd(w,x,y,z)
+function fn2arg_ddd(::Type{T}, fn, xhi, xmd=zero(T), xlo=ero(T), yhi=zero(T), ymd=zero(T), ylo=zero(T)) where T
+   a = bigflt(xhi, xmd, xlo)
+   b = bigflt(yhi, ymd, ylo)
+   result = fn(a, b)   
+   return big2tripledouble(result)
+end
+fn2arg_ddd(fn, xhi, xmd, xlo, yhi, ymd, ylo) = fn2arg_ddd(Float64, fn, xhi, xmd, xlo, yhi, ymd, ylo)
+
+
+
+function fn1arg_dddd(::Type{T}, fn, ahi, amhi=zero(T), amlo=zero(T), alo=zero(T)) where T
    b = bigflt(ahi, amhi, amlo, alo)
    result = fn(b)   
    return big2quaddouble(result)
 end
-fn_dddd(fn, w, x, y, z) = fn_dddd(Float64, fn, w, x, y, z)
+fn1arg_dddd(fn, ahi, amhi, amlo, alo) = fn1arg_dddd(Float64, fn, ahi, amhi, amlo, alo)
+
+function fn2arg_dddd(::Type{T}, fn, ahi, amhi=zero(T), amlo=zero(T), alo=zero(T),
+                                    bhi, bmhi=zero(T), bmlo=zero(T), blo=zero(T) ) where T
+   a = bigflt(ahi, amhi, amlo, alo)
+   b = bigflt(bhi, bmhi, bmlo, blo)
+   result = fn(a, b)   
+   return big2quaddouble(result)
+end
+fn2arg_dddd(fn, ahi, amhi=zero(T), amlo=zero(T), alo=zero(T),
+                bhi, bmhi=zero(T), bmlo=zero(T), blo=zero(T)) =
+    fn2arg_dddd(Float64, fn, ahi, amhi=zero(T), amlo=zero(T), alo=zero(T),
+                         bhi, bmhi=zero(T), bmlo=zero(T), blo=zero(T))
+
+
