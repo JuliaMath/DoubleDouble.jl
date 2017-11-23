@@ -11,7 +11,7 @@ end
 function (+)(a::Double{T,E}, b::T) where {T<:SysFloat,E<:Emphasis}
     hi, lo = two_sum(a.hi, b)
     lo += a.lo
-    hi, lo = two_sum_sorted(hi, lo)
+    hi, lo = two_sum_hilo(hi, lo)
 
     return Double(E, hi, lo)
 end
@@ -20,7 +20,7 @@ end
 function (+)(::Type{E}, ahi::T, alo::T, b::T) where  {T<:SysFloat,E<:Emphasis}
     hi, lo = two_sum(ahi, b)
     lo += alo
-    hi, lo = two_sum_sorted(hi, lo)
+    hi, lo = two_sum_hilo(hi, lo)
 
     return Double(E, hi, lo)
 end
@@ -62,7 +62,7 @@ end
 function (-)(a::Double{T,E}, b::T) where {T<:SysFloat,E<:Emphasis}
     hi, lo = two_diff(a.hi, b)
     lo += a.lo
-    hi, lo = two_sum_sorted(hi, lo)
+    hi, lo = two_sum_hilo(hi, lo)
 
     return Double(E, hi, lo)
 end
@@ -70,7 +70,7 @@ end
 function (-)(a::T, b::Double{T,E}) where {T<:SysFloat,E<:Emphasis}
     hi, lo = two_diff(a, b.hi)
     lo -= b.lo
-    hi, lo = two_sum_sorted(hi, lo)
+    hi, lo = two_sum_hilo(hi, lo)
 
     return Double(E, hi, lo)
 end
@@ -98,7 +98,7 @@ end
 function (*)(a::Double{T,E}, b::T) where {T<:SysFloat,E<:Emphasis}
     hi, lo = two_prod(a.hi, b)
     lo += a.lo * b
-    hi, lo = two_sum_sorted(hi, lo)
+    hi, lo = two_sum_hilo(hi, lo)
 
     return Double(E, hi, lo)
 end
@@ -107,7 +107,7 @@ end
 function (*)(a::Double{T,E}, b::Double{T,E}) where {T<:SysFloat,E<:Emphasis}
     hi, lo = two_prod(a.hi, b.hi)
     lo += a.hi*b.lo + a.lo*b.hi
-    hi, lo = two_sum_sorted(hi, lo)
+    hi, lo = two_sum_hilo(hi, lo)
 
     return Double(E, hi, lo)
 end
@@ -159,7 +159,7 @@ function (/)(a::T, b::Double{T,Accuracy}) where {T<:SysFloat}
     hi2, lo2 = b * lo
     hi3, lo3 = Double(Accuracy,hi3, lo3) - Double(Accuracy, hi2, lo2)
     lw = hi3 / b.hi
-    hi, lo = two_sum_sorted(hi, lo)
+    hi, lo = two_sum_hilo(hi, lo)
     hi, lo = Double(Accuracy, hi, lo) + lo
 
     return Double(Accuracy, hi, lo)
