@@ -29,27 +29,25 @@
 
 setprecision(BigFloat, 1500)
 
+# sum of hi, .., lo as BigFloats
+bigflt(xs...) = sum(map(BigFloat,xs))
 
-bigflt(x) = BigFloat(x)
-bigflt(x,y) = BigFloat(x) + BigFloat(y)
-bigflt(x,y,z) = BigFloat(x) + BigFloat(y) + BigFloat(z)
-bigflt(w,x,y,z) = BigFloat(w) + BigFloat(x) + BigFloat(y) + BigFloat(z)
 
-function big2d(::Type{T}, b) where T
+function big2double(::Type{T}, b) where T
    hi = T(b)
    return hi
 end
-big2d(b) = big2d(Float64, b)
+big2double(b) = big2double(Float64, b)
 
-function big2dd(::Type{T}, b) where T
+function big2doubledouble(::Type{T}, b) where T
    hi = T(b)
    bf = b - BigFloat(hi)
    lo = T(bf)
    return hi, lo
 end
-big2dd(b) = big2dd(Float64, b)
+big2doubledouble(b) = big2doubledouble(Float64, b)
 
-function big2ddd(::Type{T}, b) where T
+function big2tripledouble(::Type{T}, b) where T
    hi = T(b)
    bf = b - BigFloat(hi)
    md = T(bf)
@@ -57,10 +55,9 @@ function big2ddd(::Type{T}, b) where T
    lo = T(bf)
    return hi, md, lo
 end
-big2ddd(b) = big2ddd(Float64, b)
+big2tripledouble(b) = big2tripledouble(Float64, b)
 
-
-function big2dddd(::Type{T}, b) where T
+function big2quaddouble(::Type{T}, b) where T
    hi = T(b)
    bf = b - BigFloat(hi)
    mhi = T(bf)
@@ -70,54 +67,73 @@ function big2dddd(::Type{T}, b) where T
    lo = T(bf)
    return hi, mhi, mlo, lo
 end
-big2dddd(b) = big2dddd(Float64, b)
+big2quaddouble(b) = big2quaddouble(Float64, b)
 
 
 function d(::Type{T}, x) where T
    bf = bigflt(x)
-   return big2d(bf)
+   return big2double(bf)
 end
 d(x) = d(Float64, x)
 
 function dd(::Type{T}, x, y=zero(T)) where T
    bf = bigflt(x, y)
-   return big2dd(bf)
+   return big2doubledouble(bf)
 end
 dd(x, y) = dd(Float64, x, y)
 
 function ddd(::Type{T}, x, y=zero(T), z=zero(T)) where T
    bf = bigflt(x, y, z)
-   return big2ddd(bf)
+   return big2tripledouble(bf)
 end
 ddd(x, y, z) = ddd(Float64, x, y, z)
 
 function dddd(::Type{T}, w, x=zero(T), y=zero(T), z=zero(T)) where T
    bf = bigflt(w, x, y, z)
-   return big2dddd(bf)
+   return big2quaddouble(bf)
 end
 dddd(w, x, y, z) = dddd(Float64, w, x, y, z)
 
-function fn_d(::Type{T}, fn, x) where T
+function fn1arg_d(::Type{T}, fn, x) where T
    a = d(T, x)
    b = bigflt(a)
    result = fn(b)   
-   return big2d(result)
+   return big2double(result)
 end
-fn_d(fn, x) = fn_d(Float64, fn, x)
+fn1arg_d(fn, x) = fn1arg_d(Float64, fn, x)
 
-function fn_dd(::Type{T}, fn, x, y=zero(T)) where T
-   ahi, alo = dd(T, x, y)
-   b = bigflt(ahi, alo)
-   result = fn(b)   
-   return big2dd(result)
+function fn2arg_d(::Type{T}, fn, x, y=zero(T)) where T
+   bx, by = bigflt(x), bigflt(y)
+   result = fn(bx, by)   
+   return big2doubledouble(result)
 end
-fn_dd(fn, x, y) = fn_dd(Float64, fn, x, y)
+fn2arg_d(fn, x, y) = fn1arg_d(Float64, fn, x, y)
+
+
+function fn1arg_dd(::Type{T}, fn, hi, lo=zero(T)) where T
+   hi, lo = dd(T, hi, lo)
+   b = bigflt(hi, lo)
+   result = fn(b)   
+   return big2doubledouble(result)
+end
+fn1arg_dd(fn, hi, lo) = fn1arg_dd(Float64, fn, hi, lo)
+
+function fn2arg_dd(::Type{T}, fn, xhi, xlo=zero(T), yhi=zero(T), ylo=zero(T)) where T
+   xhi, xlo = dd(xhi, xlo)
+   yhi, ylo = dd(yhi, ylo)
+   bx = bigfloat(xhi, xlo)
+   by = bigfloat(yhi, ylo)
+   result = fn(bx, by)
+   return big2doubledouble(result)
+end
+fn2arg_dd(fn, xhi, xlo, yhi, ylo) = fn2arg_dd(Float64, fn, xhi, xlo, yhi, ylo)
+
 
 function fn_ddd(::Type{T}, fn, x, y=zero(T), z=zero(T)) where T
    ahi, amd, alo = ddd(x,y,z)
    b = bigflt(ahi, amd, alo)
    result = fn(b)   
-   return big2ddd(result)
+   return big2tripledouble(result)
 end
 fn_ddd(fn, x, y, z) = fn_ddd(Float64, fn, x, y, z)
 
@@ -125,6 +141,6 @@ function fn_dddd(::Type{T}, fn, w, x=zero(T), y=zero(T), z=zero(T)) where T
    ahi, amhi, amlo, alo = dddd(w,x,y,z)
    b = bigflt(ahi, amhi, amlo, alo)
    result = fn(b)   
-   return big2dddd(result)
+   return big2quaddouble(result)
 end
 fn_dddd(fn, w, x, y, z) = fn_dddd(Float64, fn, w, x, y, z)
