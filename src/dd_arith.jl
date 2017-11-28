@@ -59,9 +59,9 @@ function add_hilofl(ahi::T, alo::T, b::T) where T<:SysFloat
 end
 
 # Algorithm 6 from Tight and rigourous error bounds for basic building blocks of double-word arithmetic
-function add_hilohilo(ahi::T, alo::T, bhi::T, blo::T) where T<:SysFloat
-    hi, lo = two_sum(ahi, bhi)
-    thi, tlo = two_sum(alo, blo)
+function add_hilohilo(xhi::T, xlo::T, yhi::T, ylo::T) where T<:SysFloat
+    hi, lo = two_sum(xhi, yhi)
+    thi, tlo = two_sum(xlo, ylo)
     c = lo + thi
     hi, lo = two_sum_hilo(hi, c)
     c = tlo + lo
@@ -111,7 +111,8 @@ end
 @inline (-)(a::Float64, b::Double{Float32,E}) where E<:Emphasis = (-)(a, Double(E, Float64(b.hi), Float64(b.lo)))
 
 # Algorithm 6 from Tight and rigourous error bounds for basic building blocks of double-word arithmetic
-function (sub2)(x::Double{T, E}, y::Double{T,E}) where {T<:SysFloat, E<:Emphasis}
+# reworked for subraction
+function (-)(x::Double{T, E}, y::Double{T,E}) where {T<:SysFloat, E<:Emphasis}
     hi, lo = two_diff(x.hi, y.hi)
     thi, tlo = two_diff(x.lo, y.lo)
     c = lo + thi
@@ -121,32 +122,8 @@ function (sub2)(x::Double{T, E}, y::Double{T,E}) where {T<:SysFloat, E<:Emphasis
     return Double(E, hi, lo)
 end
 
-function (-)(a::Double{T, E}, b::Double{T,E}) where {T<:SysFloat, E<:Emphasis}
-    hihi, hilo = two_diff(a.hi, b.hi)
-    hi, lo = two_diff(a.lo, b.lo)
-    hilo += hi
-    hi = hihi + hilo
-    hilo -= hi - hihi
-    lo += hilo
-    hi,lo = two_sum(hi, lo)
-
-    return Double(E, hi, lo)
-end
-
 @inline (-)(a::Double{Float64,E}, b::Double{Float32,E}) where E<:Emphasis = (-)(a, Double(E, Float64(b.hi), Float64(b.lo)))
 @inline (-)(a::Double{Float32,E}, b::Double{Float64,E}) where E<:Emphasis = (-)(Double(E, Float64(a.hi), Float64(b.hi)), b)
-
-function (-)(::Type{E}, ahi::T, alo::T, bhi::T, blo::T) where  {T<:SysFloat, E<:Emphasis}
-    hihi, hilo = two_sum(ahi, bhi)
-    hi, lo = two_sum(alo, blo)
-    hilo += hi
-    hi = hihi + hilo
-    hilo -= hi - hihi
-    lo += hilo
-    hi,lo = two_sum(hi, lo)
-
-    return Double(E, hi, lo)
-end
 
 function sub_hilofl(ahi::T, alo::T, b::T) where T<:SysFloat
     hi, lo = two_diff(ahi, b)
@@ -155,18 +132,19 @@ function sub_hilofl(ahi::T, alo::T, b::T) where T<:SysFloat
     return hi, lo
 end
 
-function sub_hilohilo(ahi::T, alo::T, bhi::T, blo::T) where T<:SysFloat
-    hihi, hilo = two_diff(ahi, bhi)
-    hi, lo = two_diff(alo, blo)
-    hilo += hi
-    hi = hihi + hilo
-    hilo -= hi - hihi
-    lo += hilo
-    hi,lo = two_sum(hi, lo)
+# Algorithm 6 from Tight and rigourous error bounds for basic building blocks of double-word arithmetic
+# reworked for subraction
+function sub_hilohilo(xhi::T, xlo::T, yhi::T, ylo::T) where T<:SysFloat
+    hi, lo = two_diff(xhi, yhi)
+    thi, tlo = two_diff(xlo, ylo)
+    c = lo + thi
+    hi, lo = two_sum_hilo(hi, c)
+    c = tlo + lo
+    hi, lo = two_sum_hilo(hi, c)
     return hi, lo
 end
 
-
+# Algorithm 9 from Tight and rigourous error bounds for basic building blocks of double-word arithmetic
 function (*)(a::Double{T,E}, b::T) where {T<:SysFloat,E<:Emphasis}
     hi, lo = two_prod(a.hi, b)
     lo += a.lo * b
@@ -176,11 +154,19 @@ function (*)(a::Double{T,E}, b::T) where {T<:SysFloat,E<:Emphasis}
 end
 @inline (*)(a::T, b::Double{T,E}) where {T<:SysFloat,E<:Emphasis} = b * a
 
+function prod_hilofl(ahi, alo, b)
+    hi, lo = two_prod(a.hi, b)
+    lo += a.lo * b
+    hi, lo = two_sum_hilo(hi, lo)
+    return hi, lo
+end    
+
 #=
 theoretical relerr <= 5*(u^2)
 experimental relerr ldexp(3.936,-106) == ldexp(1.968, -107)
 =#
 
+# Algorithm 12 from Tight and rigourous error bounds for basic building blocks of double-word arithmetic
 function prod_hilohilo(xhi::T, xlo::T, yhi::T, ylo::T) where T<:SysFloat
     hi, lo = two_prod(xhi, yhi)
     t = xlo * ylo
@@ -191,14 +177,14 @@ function prod_hilohilo(xhi::T, xlo::T, yhi::T, ylo::T) where T<:SysFloat
     return hi, lo
 end
 
-(*)(a::Double{T,E}, b::Double{T,E}) where {T<:SysFloat,E<:Emphasis} =
-    Double(E, dd_prod(a.hi, a.lo, b.hi, b.lo))
-    
-function (*)(a::Double{T,E}, b::Double{T,E}) where {T<:SysFloat,E<:Emphasis}
-    hi, lo = two_prod(a.hi, b.hi)
-    lo += a.hi*b.lo + a.lo*b.hi
-    hi, lo = two_sum_hilo(hi, lo)
-
+# Algorithm 12 from Tight and rigourous error bounds for basic building blocks of double-word arithmetic
+(*)(x::Double{T,E}, y::Double{T,E}) where {T<:SysFloat,E<:Emphasis} =
+    hi, lo = two_prod(x.hi, y.hi)
+    t = x.lo * y.lo
+    t = fma(x.hi, y.lo, t)
+    t = fma(x.lo, y.hi, t)
+    t = lo + t
+    hi, lo = two_sum_hilo(hi, t)
     return Double(E, hi, lo)
 end
 
@@ -209,14 +195,7 @@ end
 (*)(a::Double{T,E}, b::R) where {R<:SysReal,T<:SysFloat,E<:Emphasis} = a * Double(E, b)
 (*)(a::R, b::Double{T,E}) where {R<:SysReal,T<:SysFloat,E<:Emphasis} = b * Double(E, a)
 
-function prod_hilofl(ahi::T, alo::T, b::T) where {T<:SysFloat}
-    hi, lo = two_prod(ahi, b)
-    lo += alo*b
-    hi, lo = two_sum_hilo(hi, lo)
-    return hi, lo
-end
-
-function (/)(a::T, b::Double{T,Performance}) where {T<:SysFloat}
+function (/)(::T, b::Double{T,Performance}) where {T<:SysFloat}
     hi1 = a / b.hi
     hi, lo = prod_hilofl(b.hi, b.lo, hi1)
     xhi, xlo = two_sum(a, -hi)
@@ -225,7 +204,16 @@ function (/)(a::T, b::Double{T,Performance}) where {T<:SysFloat}
     hi, lo = two_sum(hi1, hi2)
     return Double(hi, lo)
 end
-@inline (/)(a::Double{T,Performance}, b::T) where {T<:SysFloat} = (/)(a, Double(Performance, b))
+
+function (/)(a::Double{T,Performance}, b::T) where {T<:SysFloat}
+    hi1 = a.hi / b
+    hi, lo = prod_hilofl(a.hi, a.lo, hi1)
+    xhi, xlo = two_sum(b, -hi)
+    xlo -= lo
+    hi2 = (xhi + xlo) / a.hi
+    hi, lo = two_sum(hi1, hi2)
+    return Double(hi, lo)
+end
 
 function (/)(a::Double{T,Performance}, b::Double{T,Performance}) where {T<:SysFloat}
     hi1 = a.hi / b.hi
@@ -238,7 +226,7 @@ function (/)(a::Double{T,Performance}, b::Double{T,Performance}) where {T<:SysFl
     return Double(hi, lo)
 end
 
-# Algorithm 17 from "Towards fast and certified multiple-precision libraries"
+# Algorithm 15 from Tight and rigourous error bounds for basic building blocks of double-word arithmetic
 function (/)(x::Double{T,Accuracy}, y::T) where {T<:SysFloat}
     hi = x.hi / y
     phi, plo = two_prod(hi, y)
@@ -252,7 +240,7 @@ end
 
 @inline (/)(a::T, b::Double{T,Accuracy}) where {T<:SysFloat} = (/)(Double(Accuracy, a), v)
 
-# Algorithm 20 from "Towards fast and certified multiple-precision libraries"
+# Algorithm 18 from Tight and rigourous error bounds for basic building blocks of double-word arithmetic
 function (/)(x::Double{T,Accuracy}, y::Double{T,Accuracy}) where {T<:SysFloat}
     hi = x.hi / y.hi
     rhi = fma(-y.hi, hi, one(T))
