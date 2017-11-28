@@ -34,8 +34,8 @@ end
 
 @inline (+)(a::Double{Float64,E}, b::Float32) where E<:Emphasis = (+)(a, Float64(b))
 @inline (+)(a::Float32, b::Double{Float64,E}) where E<:Emphasis = (+)(Float64(a), b)
-@inline (+)(a::Double{Float32,E}, b::Float64) where E<:Emphasis = (+)(Double(E, Float64(a.hi, Float64(a.lo)), b)
-@inline (+)(a::Float64, b::Double{Float32,E}) where E<:Emphasis = (+)(a, Double(E, Float64(b.hi, Float64(b.lo)))
+@inline (+)(a::Double{Float32,E}, b::Float64) where E<:Emphasis = (+)(Double(E, Float64(a.hi), Float64(a.lo)), b)
+@inline (+)(a::Float64, b::Double{Float32,E}) where E<:Emphasis = (+)(a, Double(E, Float64(b.hi), Float64(b.lo)))
 
 function (+)(a::Double{T, E}, b::Double{T,E}) where {T<:SysFloat, E<:Emphasis}
     hihi, hilo = two_sum(a.hi, b.hi)
@@ -102,8 +102,8 @@ end
 
 @inline (-)(a::Double{Float64,E}, b::Float32) where E<:Emphasis = (-)(a, Float64(b))
 @inline (-)(a::Float32, b::Double{Float64,E}) where E<:Emphasis = (-)(Float64(a), b)
-@inline (-)(a::Double{Float32,E}, b::Float64) where E<:Emphasis = (-)(Double(E, Float64(a.hi, Float64(a.lo)), b)
-@inline (-)(a::Float64, b::Double{Float32,E}) where E<:Emphasis = (-)(a, Double(E, Float64(b.hi, Float64(b.lo)))
+@inline (-)(a::Double{Float32,E}, b::Float64) where E<:Emphasis = (-)(Double(E, Float64(a.hi), Float64(a.lo)), b)
+@inline (-)(a::Float64, b::Double{Float32,E}) where E<:Emphasis = (-)(a, Double(E, Float64(b.hi), Float64(b.lo)))
 
 function (-)(a::Double{T, E}, b::Double{T,E}) where {T<:SysFloat, E<:Emphasis}
     hihi, hilo = two_diff(a.hi, b.hi)
