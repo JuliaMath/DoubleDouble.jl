@@ -1,7 +1,8 @@
 
 module DoubleDouble
 
-export Double, FastDouble, Emphasis, Accuracy, Performance
+export Double, FastDouble, Emphasis, Accuracy, Performance,
+       square
 
 # these imports are used broadly, other imports reside within source files
 import Base: (+), (-), (*), (/)
