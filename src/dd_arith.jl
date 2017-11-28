@@ -238,7 +238,7 @@ function (/)(x::Double{T,Accuracy}, y::T) where {T<:SysFloat}
     return Double(hi, lo)
 end
 
-@inline (/)(a::T, b::Double{T,Accuracy}) where {T<:SysFloat} = (/)(Double(Accuracy, a), v)
+@inline (/)(a::T, b::Double{T,Accuracy}) where {T<:SysFloat} = (/)(Double(Accuracy, a), b)
 
 # Algorithm 18 from Tight and rigourous error bounds for basic building blocks of double-word arithmetic
 function (/)(x::Double{T,Accuracy}, y::Double{T,Accuracy}) where {T<:SysFloat}
