@@ -219,27 +219,25 @@ function prod_hilofl(ahi::T, alo::T, b::T) where {T<:SysFloat}
 end
 
 function (/)(a::T, b::Double{T,Performance}) where {T<:SysFloat}
-    hi = a / b.hi
-    hi2, lo2 =  b * hi
-    lo2 = two_prod(a.hi, b)
-    hi2, hi  = two_diff(a, hi2)
-    hi -= lo2
-    lo = (hi2 + hi) / b.hi
-    hi, lo = two_sum(hi, lo)
-
-    return Double(Performance, hi, lo)
+    hi1 = a / b.hi
+    hi, lo = prod_hilofl(b.hi, b.lo, hi1)
+    xhi, xlo = two_sum(a, -hi)
+    xlo -= lo
+    hi2 = (xhi + xlo) / b.hi
+    hi, lo = two_sum(hi1, hi2)
+    return Double(hi, lo)
 end
 @inline (/)(a::Double{T,Performance}, b::T) where {T<:SysFloat} = (/)(a, Double(Performance, b))
 
 function (/)(a::Double{T,Performance}, b::Double{T,Performance}) where {T<:SysFloat}
-    hi = a.hi / b.hi
-    hi2, lo2 =  b * hi
-    hi2, lo = two_diff(a.hi, hi2)
-    lo -= lo2
-    lo += a.hi
-    lo = (hi3 + lo) / b.hi
-    hi, lo = two_sum(hi, lo)
-    return Double(Performance, hi, lo)
+    hi1 = a.hi / b.hi
+    hi, lo = prod_hilofl(b.hi, b.lo, hi1)
+    xhi, xlo = two_sum(a.hi, -hi)
+    xlo -= lo
+    xlo += a.lo
+    hi2 = (xhi + xlo) / b.hi
+    hi, lo = two_sum(hi1, hi2)
+    return Double(hi, lo)
 end
 
 function (/)(a::T, b::Double{T,Accuracy}) where {T<:SysFloat}
@@ -253,7 +251,7 @@ function (/)(a::T, b::Double{T,Accuracy}) where {T<:SysFloat}
     hi, lo = two_sum_hilo(hi1, hi2)
     hi, lo = sum_hilofl(hi1, hi2, hi3)
     return Double(hi, lo)
-end    
+end
 
 @inline (/)(a::Double{T,Accuracy}, b::T) where {T<:SysFloat} = (/)(a, Double(Accuracy, b))
 
