@@ -13,8 +13,7 @@ function (+)(::Type{E}, a::T, b::T) where {T<:SysFloat, E<:Emphasis}
    return Double(E, hi, lo)
 end
 
-@inline (+)(::Type{E}, a::Float64, b::Float32) where E<:Emphasis = (+)(E, a, Float64(b))
-@inline (+)(::Type{E}, a::Float32, b::Float64) where E<:Emphasis = (+)(E, Float64(a), b)
+@inline (+)(::Type{E}, a::F1, b::F2) where {E<:Emphasis, F1<:SysFloat, F2<:SysFloat} = (+)(E, promote(a, b)...)
 
 function (+)(a::Double{T,E}, b::T) where {T<:SysFloat, E<:Emphasis}
     hi, lo = two_sum(a.hi, b)
@@ -47,9 +46,6 @@ function (+)(x::Double{T, E}, y::Double{T,E}) where {T<:SysFloat, E<:Emphasis}
     hi, lo = two_sum_hilo(hi, c)
     return Double(E, hi, lo)
 end
-
-@inline (+)(a::Double{Float64,E}, b::Double{Float32,E}) where E<:Emphasis = (+)(a, Double(E, Float64(b.hi), Float64(b.lo)))
-@inline (+)(a::Double{Float32,E}, b::Double{Float64,E}) where E<:Emphasis = (+)(Double(E, Float64(a.hi), Float64(b.hi)), b)
 
 function add_hilofl(ahi::T, alo::T, b::T) where T<:SysFloat
     hi, lo = two_sum(ahi, b)
@@ -86,8 +82,7 @@ function (-)(::Type{E}, a::T, b::T) where {T<:SysFloat, E<:Emphasis}
    return Double(E, hi, lo)
 end
 
-@inline (-)(::Type{E}, a::Float64, b::Float32) where E<:Emphasis = (-)(E, a, Float64(b))
-@inline (-)(::Type{E}, a::Float32, b::Float64) where E<:Emphasis = (-)(E, Float64(a), b)
+@inline (-)(::Type{E}, a::F1, b::F2) where {E<:Emphasis, F1<:SysFloat, F2<:SysFloat} = (-)(E, promote(a, b)...)
 
 function (-)(a::Double{T,E}, b::T) where {T<:SysFloat, E<:Emphasis}
     hi, lo = two_diff(a.hi, b)
@@ -121,6 +116,8 @@ function (-)(x::Double{T, E}, y::Double{T,E}) where {T<:SysFloat, E<:Emphasis}
     hi, lo = two_sum_hilo(hi, c)
     return Double(E, hi, lo)
 end
+                    
+@inline (-)(a::Double{F1,E} b::Double{F2,E}) where {E<:Emphasis, F1<:SysFloat, F2<:SysFloat} = (-)(E, promote(a, b)...)
 
 @inline (-)(a::Double{Float64,E}, b::Double{Float32,E}) where E<:Emphasis = (-)(a, Double(E, Float64(b.hi), Float64(b.lo)))
 @inline (-)(a::Double{Float32,E}, b::Double{Float64,E}) where E<:Emphasis = (-)(Double(E, Float64(a.hi), Float64(b.hi)), b)
