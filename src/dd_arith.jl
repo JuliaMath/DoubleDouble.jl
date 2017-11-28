@@ -244,7 +244,7 @@ end
 function (/)(x::Double{T,Accuracy}, y::Double{T,Accuracy}) where {T<:SysFloat}
     hi = inv(y.hi)
     rhi = fma(-y.hi, hi, one(T))
-    rlo = -y.lo * hi
+    rlo = y.lo * hi
     rhi, rlo = two_sum_hilo(rhi, rlo)
     rhi, rlo = prod_hilofl(rhi, rlo, hi)
     rhi, rlo = add_hilofl(rhi, rlo, hi)
