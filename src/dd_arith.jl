@@ -252,6 +252,19 @@ function (/)(x::Double{T,Accuracy}, y::Double{T,Accuracy}) where {T<:SysFloat}
     return Double(hi, lo)
 end
 
+function (divide)(a::Double{T,Accuracy}, b::Double{T,Accuracy}) where {T<:SysFloat}
+    q1 = a.hi / b.hi
+    th,tl = prod_hilofl(b.hi,b.lo,q1)
+    rh,rl = add_hilohilo(a.hi, a.lo, -th,-tl)
+    q2 = rh / b.hi
+    th,tl = prod_hilofl(b.hi,b.lo,q2)
+    rh,rl = add_hilohilo(rh, rl, -th,-tl)
+    q3 = rh / b.hi
+    q1, q2 = two_sum_hilo(q1, q2)
+    rh,rl = add_hilofl(q1, q2, q3)
+    return Double(rh, rl)
+end
+
 @inline (/)(a::Double{Float64,E}, b::Float32) where {E<:Emphasis} = a / Float64(b)
 @inline (/)(a::Float32, b::Double{Float64,E}) where {E<:Emphasis} = b / Float64(a)
 (/)(a::Double{T,E}, b::S) where {S<:Signed,T<:SysFloat,E<:Emphasis}  = a / promote_type(T,S)(b)
