@@ -1,4 +1,4 @@
-import Base: signbit, sign, abs, (+) # (-), (*), (/), square, inv, div, rem, cld, fld, mod, divrem, fldmod, sqrt,
+import Base: signbit, sign, abs, (+), (-), (*), (/), inv #square, inv, div, rem, cld, fld, mod, divrem, fldmod, sqrt,
 
 @inline signbit(a::Double{T,E}) where {T<:SysFloat, E<:Emphasis} = signbit(a.hi)
 @inline sign(a::Double{T,E}) where {T<:SysFloat, E<:Emphasis} = sign(a.hi)
@@ -273,3 +273,5 @@ end
 (/)(a::S, b::Double{T,E}) where {S<:Signed,T<:SysFloat,E<:Emphasis}  = b / promote_type(T,S)(a)
 (/)(a::Double{T,E}, b::R) where {R<:SysReal,T<:SysFloat,E<:Emphasis} = a / Double(E, b)
 (/)(a::R, b::Double{T,E}) where {R<:SysReal,T<:SysFloat,E<:Emphasis} = b / Double(E, a)
+
+inv(x::Double{Float64, E}) = 1.0/x
