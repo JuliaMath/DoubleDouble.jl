@@ -185,7 +185,7 @@ function (/)(a::T, b::Double{T,Performance}) where {T<:SysFloat}
     lo = (hi2 + hi) / b.hi
     hi, lo = two_sum(hi, lo)
 
-    return Double(E, hi, lo)
+    return Double(Performance, hi, lo)
 end
 @inline (/)(a::Double{T,Performance}, b::T) where {T<:SysFloat} = (/)(a, Double(Performance, b))
 
@@ -197,14 +197,10 @@ function (/)(a::Double{T,Performance}, b::Double{T,Performance}) where {T<:SysFl
     lo += a.hi
     lo = (hi3 + lo) / b.hi
     hi, lo = two_sum(hi, lo)
-    return Double(E, hi, lo)
+    return Double(Performance, hi, lo)
 end
 
-
-
-
 function (/)(a::T, b::Double{T,Accuracy}) where {T<:SysFloat}
-
     hi = a / b.hi
     hi2, lo2 =  -(b * hi)
     hi3, lo3 = Double(Accuracy, hi2, lo2) + a
@@ -214,7 +210,6 @@ function (/)(a::T, b::Double{T,Accuracy}) where {T<:SysFloat}
     lw = hi3 / b.hi
     hi, lo = two_sum_hilo(hi, lo)
     hi, lo = Double(Accuracy, hi, lo) + lo
-
     return Double(Accuracy, hi, lo)
 end
 
