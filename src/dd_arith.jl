@@ -37,6 +37,17 @@ end
 @inline (+)(a::Double{Float32,E}, b::Float64) where E<:Emphasis = (+)(Double(E, Float64(a.hi), Float64(a.lo)), b)
 @inline (+)(a::Float64, b::Double{Float32,E}) where E<:Emphasis = (+)(a, Double(E, Float64(b.hi), Float64(b.lo)))
 
+# Algorithm 6 from Tight and rigourous error bounds for basic building blocks of double-word arithmetic
+function (add2)(x::Double{T, E}, y::Double{T,E}) where {T<:SysFloat, E<:Emphasis}
+    hi, lo = two_sum(x.hi, y.hi)
+    thi, tlo = two_sum(x.lo, y.lo)
+    c = lo + thi
+    hi, lo = two_sum_hilo(hi, c)
+    c = tlo + lo
+    hi, lo = two_sum_hilo(hi, c)
+    return Double(E, hi, lo)
+end
+
 function (+)(a::Double{T, E}, b::Double{T,E}) where {T<:SysFloat, E<:Emphasis}
     hihi, hilo = two_sum(a.hi, b.hi)
     hi, lo = two_sum(a.lo, b.lo)
@@ -217,17 +228,6 @@ function prod_hilofl(ahi::T, alo::T, b::T) where {T<:SysFloat}
     hi, lo = two_sum_hilo(hi, lo)
     return hi, lo
 end
-
-# Algorithm 15 from "Towards fast and certified multiple-precision libraries" (corrected)
-function prod_hilohilo1(xhi::T, xlo::T, yhi::T, ylo::T) where {T<:SysFloat}
-    hi, lo = two_prod(xhi, yhi)
-    t0 = xlo * ylo
-    t1 = fma(xhi, ylo, t0)
-    t2 = fma(xlo, yhi, t1)
-    t3 = t1 + t2
-    hi, lo = two_sum_hilo(hi, t3)
-    return hi, lo
-end    
 
 function (/)(a::T, b::Double{T,Performance}) where {T<:SysFloat}
     hi1 = a / b.hi
