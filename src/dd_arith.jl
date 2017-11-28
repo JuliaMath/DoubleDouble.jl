@@ -155,8 +155,8 @@ end
 @inline (*)(a::T, b::Double{T,E}) where {T<:SysFloat,E<:Emphasis} = b * a
 
 function prod_hilofl(ahi, alo, b)
-    hi, lo = two_prod(a.hi, b)
-    lo += a.lo * b
+    hi, lo = two_prod(ahi, b)
+    lo += alo * b
     hi, lo = two_sum_hilo(hi, lo)
     return hi, lo
 end    
