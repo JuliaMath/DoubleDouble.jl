@@ -5,12 +5,12 @@ import Base: signbit, sign, abs, (+), (-), (*), (/), inv #square, inv, div, rem,
 @inline abs(a::Double{T,E}) where {T<:SysFloat, E<:Emphasis} = signbit(a) ? Double(E, -a.hi, -a.lo) : a
 
 @inline function (-)(a::Double{T,E}) where {T<:SysFloat, E<:Emphasis}
-    return Double(E, -a.hi, -a.lo)
+    return Double{T,E}(-a.hi, -a.lo)
 end
 
 function (+)(::Type{E}, a::T, b::T) where {T<:SysFloat, E<:Emphasis}
    hi, lo = two_sum(a, b)
-   return Double(E, hi, lo)
+   return Double{T,E}(hi, lo)
 end
 
 @inline (+)(::Type{E}, a::F1, b::F2) where {E<:Emphasis, F1<:SysFloat, F2<:SysFloat} = (+)(E, promote(a, b)...)
@@ -20,7 +20,7 @@ function (+)(a::Double{T,E}, b::T) where {T<:SysFloat, E<:Emphasis}
     lo += a.lo
     hi, lo = two_sum_hilo(hi, lo)
 
-    return Double(E, hi, lo)
+    return Double{T,E}(hi, lo)
 end
 
 function (+)(a::T, b::Double{T,E}) where {T<:SysFloat, E<:Emphasis}
@@ -28,7 +28,7 @@ function (+)(a::T, b::Double{T,E}) where {T<:SysFloat, E<:Emphasis}
     lo += b.lo
     hi, lo = two_sum_hilo(hi, lo)
 
-    return Double(E, hi, lo)
+    return Double{T,E}(hi, lo)
 end
 
 @inline (-)(a::Double{T,E}, b::S) where {S<:SysFloat,T<:SysFloat,E<:Emphasis}  = a - promote_type(T,S)(b)
@@ -48,7 +48,7 @@ function (+)(x::Double{T, E}, y::Double{T,E}) where {T<:SysFloat, E<:Emphasis}
     hi, lo = two_sum_hilo(hi, c)
     c = tlo + lo
     hi, lo = two_sum_hilo(hi, c)
-    return Double(E, hi, lo)
+    return Double{T,E}(hi, lo)
 end
 
 function add_hilofl(ahi::T, alo::T, b::T) where T<:SysFloat
@@ -83,7 +83,7 @@ end
 
 function (-)(::Type{E}, a::T, b::T) where {T<:SysFloat, E<:Emphasis}
    hi, lo = two_diff(a, b)
-   return Double(E, hi, lo)
+   return Double{T,E}(hi, lo)
 end
 
 
@@ -92,7 +92,7 @@ function (-)(a::Double{T,E}, b::T) where {T<:SysFloat, E<:Emphasis}
     lo += a.lo
     hi, lo = two_sum_hilo(hi, lo)
 
-    return Double(E, hi, lo)
+    return Double{T,E}(hi, lo)
 end
 
 function (-)(a::T, b::Double{T,E}) where {T<:SysFloat, E<:Emphasis}
@@ -100,7 +100,7 @@ function (-)(a::T, b::Double{T,E}) where {T<:SysFloat, E<:Emphasis}
     lo += b.lo
     hi, lo = two_sum_hilo(hi, lo)
 
-    return Double(E, hi, lo)
+    return Double{T,E}(hi, lo)
 end
 
 @inline (-)(a::Double{T,E}, b::S) where {S<:SysFloat,T<:SysFloat,E<:Emphasis}  = a - promote_type(T,S)(b)
@@ -121,7 +121,7 @@ function (-)(x::Double{T, E}, y::Double{T,E}) where {T<:SysFloat, E<:Emphasis}
     hi, lo = two_sum_hilo(hi, c)
     c = tlo + lo
     hi, lo = two_sum_hilo(hi, c)
-    return Double(E, hi, lo)
+    return Double{T,E}(hi, lo)
 end
                     
 function sub_hilofl(ahi::T, alo::T, b::T) where T<:SysFloat
@@ -149,7 +149,7 @@ function (*)(a::Double{T,E}, b::T) where {T<:SysFloat,E<:Emphasis}
     lo += a.lo * b
     hi, lo = two_sum_hilo(hi, lo)
 
-    return Double(E, hi, lo)
+    return Double{T,E}(hi, lo)
 end
 @inline (*)(a::T, b::Double{T,E}) where {T<:SysFloat,E<:Emphasis} = b * a
 
@@ -184,7 +184,7 @@ function (*)(x::Double{T,E}, y::Double{T,E}) where {T<:SysFloat,E<:Emphasis}
     t = fma(x.lo, y.hi, t)
     t = lo + t
     hi, lo = two_sum_hilo(hi, t)
-    return Double(E, hi, lo)
+    return Double{T,E}(hi, lo)
 end
 
 @inline (*)(a::Double{T,E}, b::S) where {S<:SysFloat,T<:SysFloat,E<:Emphasis}  = a * promote_type(T,S)(b)
@@ -204,7 +204,7 @@ function (/)(::T, b::Double{T,Performance}) where {T<:SysFloat}
     xlo -= lo
     hi2 = (xhi + xlo) / b.hi
     hi, lo = two_sum(hi1, hi2)
-    return Double(hi, lo)
+    return Double{T,Performance}(hi, lo)
 end
 
 function (/)(a::Double{T,Performance}, b::T) where {T<:SysFloat}
@@ -214,7 +214,7 @@ function (/)(a::Double{T,Performance}, b::T) where {T<:SysFloat}
     xlo -= lo
     hi2 = (xhi + xlo) / a.hi
     hi, lo = two_sum(hi1, hi2)
-    return Double(hi, lo)
+    return Double{T,Performance}(hi, lo)
 end
 
 function (/)(a::Double{T,Performance}, b::Double{T,Performance}) where {T<:SysFloat}
@@ -225,7 +225,7 @@ function (/)(a::Double{T,Performance}, b::Double{T,Performance}) where {T<:SysFl
     xlo += a.lo
     hi2 = (xhi + xlo) / b.hi
     hi, lo = two_sum(hi1, hi2)
-    return Double(hi, lo)
+    return Double{T,Performance}(hi, lo)
 end
 
 #=
@@ -251,7 +251,7 @@ function (/)(x::Double{T,Accuracy}, y::T) where {T<:SysFloat}
     d = dhi + dlo
     lo = d / y
     hi, lo = two_sum(hi, lo)
-    return Double(hi, lo)
+    return Double{T,Accuracy}(hi, lo)
 end
 
 @inline (/)(a::T, b::Double{T,Accuracy}) where {T<:SysFloat} = (/)(Double(Accuracy, a), b)
@@ -266,7 +266,7 @@ function (/)(a::Double{T,Accuracy}, b::Double{T,Accuracy}) where {T<:SysFloat}
     q3 = rh / b.hi
     q1, q2 = two_sum_hilo(q1, q2)
     rh,rl = add_hilofl(q1, q2, q3)
-    return Double(rh, rl)
+    return Double{T,Accuracy}(rh, rl)
 end
 
 
