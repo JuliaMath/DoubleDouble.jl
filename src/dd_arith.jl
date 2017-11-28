@@ -226,6 +226,20 @@ function (/)(a::Double{T,Performance}, b::Double{T,Performance}) where {T<:SysFl
     return Double(hi, lo)
 end
 
+#=
+# Algorithm 18 from Tight and rigourous error bounds for basic building blocks of double-word arithmetic
+function (/)(x::Double{T,Accuracy}, y::Double{T,Accuracy}) where {T<:SysFloat}
+    hi = inv(y.hi)
+    rhi = fma(-y.hi, hi, one(T))
+    rlo = y.lo * hi
+    rhi, rlo = two_sum_hilo(rhi, rlo)
+    rhi, rlo = prod_hilofl(rhi, rlo, hi)
+    rhi, rlo = add_hilofl(rhi, rlo, hi)
+    hi, lo = prod_hilohilo(x.hi, x.lo, rhi, rlo)
+    return Double(hi, lo)
+end
+
+=#
 # Algorithm 15 from Tight and rigourous error bounds for basic building blocks of double-word arithmetic
 function (/)(x::Double{T,Accuracy}, y::T) where {T<:SysFloat}
     hi = x.hi / y
@@ -240,19 +254,7 @@ end
 
 @inline (/)(a::T, b::Double{T,Accuracy}) where {T<:SysFloat} = (/)(Double(Accuracy, a), b)
 
-# Algorithm 18 from Tight and rigourous error bounds for basic building blocks of double-word arithmetic
-function (/)(x::Double{T,Accuracy}, y::Double{T,Accuracy}) where {T<:SysFloat}
-    hi = inv(y.hi)
-    rhi = fma(-y.hi, hi, one(T))
-    rlo = y.lo * hi
-    rhi, rlo = two_sum_hilo(rhi, rlo)
-    rhi, rlo = prod_hilofl(rhi, rlo, hi)
-    rhi, rlo = add_hilofl(rhi, rlo, hi)
-    hi, lo = prod_hilohilo(x.hi, x.lo, rhi, rlo)
-    return Double(hi, lo)
-end
-
-function (divide)(a::Double{T,Accuracy}, b::Double{T,Accuracy}) where {T<:SysFloat}
+function (/)(a::Double{T,Accuracy}, b::Double{T,Accuracy}) where {T<:SysFloat}
     q1 = a.hi / b.hi
     th,tl = prod_hilofl(b.hi,b.lo,q1)
     rh,rl = add_hilohilo(a.hi, a.lo, -th,-tl)
