@@ -183,7 +183,7 @@ theoretical relerr <= 5*(u^2)
 experimental relerr ldexp(3.936,-106) == ldexp(1.968, -107)
 =#
 
-function dd_prod(xhi::T, xlo::T, yhi::T, ylo::T) where T<:SysFloat
+function prod_hilohilo(xhi::T, xlo::T, yhi::T, ylo::T) where T<:SysFloat
     hi, lo = two_prod(xhi, yhi)
     t = xlo * ylo
     t = fma(xhi, ylo, t)
