@@ -8,13 +8,6 @@ import Base: signbit, sign, abs, (+), (-), (*), (/), inv #square, inv, div, rem,
     return Double{T,E}(-a.hi, -a.lo)
 end
 
-function (+)(::Type{E}, a::T, b::T) where {T<:SysFloat, E<:Emphasis}
-   hi, lo = two_sum(a, b)
-   return Double{T,E}(hi, lo)
-end
-
-@inline (+)(::Type{E}, a::F1, b::F2) where {E<:Emphasis, F1<:SysFloat, F2<:SysFloat} = (+)(E, promote(a, b)...)
-
 function (+)(a::Double{T,E}, b::T) where {T<:SysFloat, E<:Emphasis}
     hi, lo = two_sum(a.hi, b)
     lo += a.lo
@@ -31,14 +24,10 @@ function (+)(a::T, b::Double{T,E}) where {T<:SysFloat, E<:Emphasis}
     return Double{T,E}(hi, lo)
 end
 
-@inline (-)(a::Double{T,E}, b::S) where {S<:SysFloat,T<:SysFloat,E<:Emphasis}  = a - promote_type(T,S)(b)
-@inline (-)(a::S, b::Double{T,E}) where {S<:SysFloat,T<:SysFloat,E<:Emphasis}  = promote_type(T,S)(a) - b
-
-@inline (+)(::Type{E}, a::F1, b::F2) where {E<:Emphasis, F1<:SysFloat, F2<:SysFloat} = (+)(E, promote(a, b)...)
-@inline (+)(a::Double{F1,E}, b::Double{F2,E}) where {E<:Emphasis, F1<:SysFloat, F2<:SysFloat} = (+)(E, a, b)
-
-@inline (+)(a::Double{Float64,E}, b::Double{Float32,E}) where E<:Emphasis = (+)(a, Double(E, Float64(b.hi), Float64(b.lo)))
-@inline (+)(a::Double{Float32,E}, b::Double{Float64,E}) where E<:Emphasis = (+)(Double(E, Float64(a.hi), Float64(b.hi)), b)
+@inline (+)(a::Double{T,E}, b::S) where {S<:SysFloat,T<:SysFloat,E<:Emphasis}  = a + promote_type(T,S)(b)
+@inline (+)(a::S, b::Double{T,E}) where {S<:SysFloat,T<:SysFloat,E<:Emphasis}  = promote_type(T,S)(a) + b
+@inline (+)(a::Double{F1,E}, b::Double{F2,E}) where {E<:Emphasis, F1<:SysFloat, F2<:SysFloat} =
+    (+)(E, promote(a, b)...)
 
 # Algorithm 6 from Tight and rigourous error bounds for basic building blocks of double-word arithmetic
 function (+)(x::Double{T, E}, y::Double{T,E}) where {T<:SysFloat, E<:Emphasis}
@@ -81,12 +70,6 @@ function (+)(a::Double{T1,E}, b::T2) where {T1<:SysFloat, T2<:SysFloat, E<:Empha
 end
 =#
 
-function (-)(::Type{E}, a::T, b::T) where {T<:SysFloat, E<:Emphasis}
-   hi, lo = two_diff(a, b)
-   return Double{T,E}(hi, lo)
-end
-
-
 function (-)(a::Double{T,E}, b::T) where {T<:SysFloat, E<:Emphasis}
     hi, lo = two_diff(a.hi, b)
     lo += a.lo
@@ -105,12 +88,8 @@ end
 
 @inline (-)(a::Double{T,E}, b::S) where {S<:SysFloat,T<:SysFloat,E<:Emphasis}  = a - promote_type(T,S)(b)
 @inline (-)(a::S, b::Double{T,E}) where {S<:SysFloat,T<:SysFloat,E<:Emphasis}  = promote_type(T,S)(a) - b
-
-@inline (-)(::Type{E}, a::F1, b::F2) where {E<:Emphasis, F1<:SysFloat, F2<:SysFloat} = (-)(E, promote(a, b)...)
-@inline (-)(a::Double{F1,E}, b::Double{F2,E}) where {E<:Emphasis, F1<:SysFloat, F2<:SysFloat} = (-)(E, a, b)
-
-@inline (-)(a::Double{Float64,E}, b::Double{Float32,E}) where E<:Emphasis = (-)(a, Double(E, Float64(b.hi), Float64(b.lo)))
-@inline (-)(a::Double{Float32,E}, b::Double{Float64,E}) where E<:Emphasis = (-)(Double(E, Float64(a.hi), Float64(b.hi)), b)
+@inline (-)(a::Double{F1,E}, b::Double{F2,E}) where {E<:Emphasis, F1<:SysFloat, F2<:SysFloat} =
+    (-)(E, promote(a, b)...)
 
 # Algorithm 6 from Tight and rigourous error bounds for basic building blocks of double-word arithmetic
 # reworked for subraction
@@ -201,11 +180,9 @@ end
 @inline (*)(a::Double{T,E}, b::S) where {S<:SysFloat,T<:SysFloat,E<:Emphasis}  = a * promote_type(T,S)(b)
 @inline (*)(a::S, b::Double{T,E}) where {S<:SysFloat,T<:SysFloat,E<:Emphasis}  = promote_type(T,S)(a) * b
 
-@inline (*)(::Type{E}, a::F1, b::F2) where {E<:Emphasis, F1<:SysFloat, F2<:SysFloat} = (*)(E, promote(a, b)...)
 @inline (*)(a::Double{F1,E}, b::Double{F2,E}) where {E<:Emphasis, F1<:SysFloat, F2<:SysFloat} = (*)(E, a, b)
-
-@inline (*)(a::Double{Float64,E}, b::Double{Float32,E}) where E<:Emphasis = (*)(a, Double(E, Float64(b.hi), Float64(b.lo)))
-@inline (*)(a::Double{Float32,E}, b::Double{Float64,E}) where E<:Emphasis = (*)(Double(E, Float64(a.hi), Float64(b.hi)), b)
+@inline (*)(a::Double{F1,E}, b::Double{F2,E}) where {E<:Emphasis, F1<:SysFloat, F2<:SysFloat} =
+    (*)(E, promote(a, b)...)
 
 
 function (/)(::T, b::Double{T,Performance}) where {T<:SysFloat}
@@ -283,12 +260,9 @@ end
 
 @inline (/)(a::Double{T,E}, b::S) where {S<:SysFloat,T<:SysFloat,E<:Emphasis}  = a / promote_type(T,S)(b)
 @inline (/)(a::S, b::Double{T,E}) where {S<:SysFloat,T<:SysFloat,E<:Emphasis}  = promote_type(T,S)(a) / b
-
-@inline (/)(::Type{E}, a::F1, b::F2) where {E<:Emphasis, F1<:SysFloat, F2<:SysFloat} = (/)(E, promote(a, b)...)
 @inline (/)(a::Double{F1,E}, b::Double{F2,E}) where {E<:Emphasis, F1<:SysFloat, F2<:SysFloat} = (/)(E, a, b)
-
-@inline (/)(a::Double{Float64,E}, b::Double{Float32,E}) where E<:Emphasis = (/)(a, Double(E, Float64(b.hi), Float64(b.lo)))
-@inline (/)(a::Double{Float32,E}, b::Double{Float64,E}) where E<:Emphasis = (/)(Double(E, Float64(a.hi), Float64(b.hi)), b)
+@inline (/)(a::Double{F1,E}, b::Double{F2,E}) where {E<:Emphasis, F1<:SysFloat, F2<:SysFloat} =
+    (/)(E, promote(a, b)...)
 
 
 inv(x::Double{T, E}) where {T<:SysFloat, E<:Emphasis} = one(T)/x
