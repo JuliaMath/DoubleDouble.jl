@@ -178,7 +178,7 @@ function prod_hilohilo(xhi::T, xlo::T, yhi::T, ylo::T) where T<:SysFloat
 end
 
 # Algorithm 12 from Tight and rigourous error bounds for basic building blocks of double-word arithmetic
-(*)(x::Double{T,E}, y::Double{T,E}) where {T<:SysFloat,E<:Emphasis} =
+function (*)(x::Double{T,E}, y::Double{T,E}) where {T<:SysFloat,E<:Emphasis}
     hi, lo = two_prod(x.hi, y.hi)
     t = x.lo * y.lo
     t = fma(x.hi, y.lo, t)
