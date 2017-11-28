@@ -211,7 +211,7 @@ end
 (*)(a::Double{T,E}, b::R) where {R<:SysReal,T<:SysFloat,E<:Emphasis} = a * Double(E, b)
 (*)(a::R, b::Double{T,E}) where {R<:SysReal,T<:SysFloat,E<:Emphasis} = b * Double(E, a)
 
-function prod_hilofl(ahi::T, alo::T, b::T) where T<:{SysFloat}
+function prod_hilofl(ahi::T, alo::T, b::T) where {T<:SysFloat}
     hi, lo = two_prod(ahi, b)
     lo += alo*b
     hi, lo = two_sum_hilo(hi, lo)
