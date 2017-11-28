@@ -189,19 +189,19 @@ function (*)(x::Double{T,E}, y::Double{T,E}) where {T<:SysFloat,E<:Emphasis}
     return Double(E, hi, lo)
 end
 
-@inline (*)(a::Double{Float64,E}, b::Float32) where {E<:Emphasis} = a * Float64(b)
-@inline (*)(a::Float32, b::Double{Float64,E}) where {E<:Emphasis} = b * Float64(a)
-(*)(a::Double{T,E}, b::S) where {S<:Signed,T<:SysFloat,E<:Emphasis}  = a * promote_type(T,S)(b)
-(*)(a::S, b::Double{T,E}) where {S<:Signed,T<:SysFloat,E<:Emphasis}  = b * promote_type(T,S)(a)
-(*)(a::Double{T,E}, b::R) where {R<:SysReal,T<:SysFloat,E<:Emphasis} = a * Double(E, b)
-(*)(a::R, b::Double{T,E}) where {R<:SysReal,T<:SysFloat,E<:Emphasis} = b * Double(E, a)
+@inline (*)(a::Double{T,E}, b::S) where {S<:SysFloat,T<:SysFloat,E<:Emphasis}  = a * promote_type(T,S)(b)
+@inline (*)(a::S, b::Double{T,E}) where {S<:SysFloat,T<:SysFloat,E<:Emphasis}  = b * promote_type(T,S)(a)
 
 @inline (*)(a::Double{Float64,E}, b::Float32) where E<:Emphasis = (*)(a, Float64(b))
 @inline (*)(a::Float32, b::Double{Float64,E}) where E<:Emphasis = (*)(Float64(a), b)
 @inline (*)(a::Double{Float32,E}, b::Float64) where E<:Emphasis = (*)(Double(E, Float64(a.hi), Float64(a.lo)), b)
 @inline (*)(a::Float64, b::Double{Float32,E}) where E<:Emphasis = (*)(a, Double(E, Float64(b.hi), Float64(b.lo)))
+@inline (*)(::Type{E}, a::F1, b::F2) where {E<:Emphasis, F1<:SysFloat, F2<:SysFloat} = (*)(E, promote(a, b)...)
+@inline (*)(a::Double{F1,E}, b::Double{F2,E}) where {E<:Emphasis, F1<:SysFloat, F2<:SysFloat} = (*)(E, a, b)
+
 @inline (*)(a::Double{Float64,E}, b::Double{Float32,E}) where E<:Emphasis = (*)(a, Double(E, Float64(b.hi), Float64(b.lo)))
 @inline (*)(a::Double{Float32,E}, b::Double{Float64,E}) where E<:Emphasis = (*)(Double(E, Float64(a.hi), Float64(b.hi)), b)
+
 
 function (/)(::T, b::Double{T,Performance}) where {T<:SysFloat}
     hi1 = a / b.hi
