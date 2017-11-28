@@ -189,7 +189,7 @@ function prod_hilohilo(xhi::T, xlo::T, yhi::T, ylo::T) where T<:SysFloat
     t = fma(xhi, ylo, t)
     t = fma(xlo, yhi, t)
     t = lo + t
-    hi, lo = two_sum_hilo(hi, t0)
+    hi, lo = two_sum_hilo(hi, t)
     return hi, lo
 end
 
