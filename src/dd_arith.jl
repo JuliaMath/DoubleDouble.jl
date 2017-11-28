@@ -64,6 +64,24 @@ function (+)(::Type{E}, ahi::T, alo::T, bhi::T, blo::T) where  {T<:SysFloat, E<:
     return Double(E, hi, lo)
 end
 
+function add_hilofl(ahi::T, alo::T, b::T) where T<:SysFloat
+    hi, lo = two_sum(ahi, b)
+    lo += alo
+    hi, lo = two_sum_hilo(hi, lo)
+    return hi, lo
+end
+
+function add_hilohilo(ahi::T, alo::T, bhi::T, blo::T) where T<:SysFloat
+    hihi, hilo = two_sum(ahi, bhi)
+    hi, lo = two_sum(alo, blo)
+    hilo += hi
+    hi = hihi + hilo
+    hilo -= hi - hihi
+    lo += hilo
+    hi,lo = two_sum(hi, lo)
+    return hi, lo
+end
+
 #=
  @inline (+)(a::Double{T,E}, b::Double{T,E}) where {T<:SysFloat, E<:Emphasis} = (+)(E, a.hi, a.lo, b.hi, b.lo)
 
@@ -132,6 +150,24 @@ function (-)(::Type{E}, ahi::T, alo::T, bhi::T, blo::T) where  {T<:SysFloat, E<:
     return Double(E, hi, lo)
 end
 
+function sub_hilofl(ahi::T, alo::T, b::T) where T<:SysFloat
+    hi, lo = two_diff(ahi, b)
+    lo += alo
+    hi, lo = two_sum_hilo(hi, lo)
+    return hi, lo
+end
+
+function sub_hilohilo(ahi::T, alo::T, bhi::T, blo::T) where T<:SysFloat
+    hihi, hilo = two_diff(ahi, bhi)
+    hi, lo = two_diff(alo, blo)
+    hilo += hi
+    hi = hihi + hilo
+    hilo -= hi - hihi
+    lo += hilo
+    hi,lo = two_sum(hi, lo)
+    return hi, lo
+end
+
 
 function (*)(a::Double{T,E}, b::T) where {T<:SysFloat,E<:Emphasis}
     hi, lo = two_prod(a.hi, b)
@@ -175,6 +211,12 @@ end
 (*)(a::Double{T,E}, b::R) where {R<:SysReal,T<:SysFloat,E<:Emphasis} = a * Double(E, b)
 (*)(a::R, b::Double{T,E}) where {R<:SysReal,T<:SysFloat,E<:Emphasis} = b * Double(E, a)
 
+function prod_hilofl(ahi::T, alo::T, b::T) where T<:{SysFloat}
+    hi, lo = two_prod(ahi, b)
+    lo += alo*b
+    hi, lo = two_sum_hilo(hi, lo)
+    return hi, lo
+end
 
 function (/)(a::T, b::Double{T,Performance}) where {T<:SysFloat}
     hi = a / b.hi
@@ -201,31 +243,32 @@ function (/)(a::Double{T,Performance}, b::Double{T,Performance}) where {T<:SysFl
 end
 
 function (/)(a::T, b::Double{T,Accuracy}) where {T<:SysFloat}
-    hi = a / b.hi
-    hi2, lo2 =  -(b * hi)
-    hi3, lo3 = Double(Accuracy, hi2, lo2) + a
-    lo = hi3 / b.hi
-    hi2, lo2 = b * lo
-    hi3, lo3 = Double(Accuracy,hi3, lo3) - Double(Accuracy, hi2, lo2)
-    lw = hi3 / b.hi
-    hi, lo = two_sum_hilo(hi, lo)
-    hi, lo = Double(Accuracy, hi, lo) + lo
-    return Double(Accuracy, hi, lo)
-end
+    hi1 = a / b.hi
+    hi, lo = prod_hilofl(b.hi, b.lo, hi1)
+    xhi, xlo = add_hilofl(-hi, -lo, a)
+    hi2 = xhi / b.hi
+    hi, lo = prod_hilofl(b.hi, b.lo, hi2)
+    xhi, xlo = sub_hilohilo(xhi, xlo, hi, lo)
+    hi3 = xhi / b.hi
+    hi, lo = two_sum_hilo(hi1, hi2)
+    hi, lo = sum_hilofl(hi1, hi2, hi3)
+    return Double(hi, lo)
+end    
 
 @inline (/)(a::Double{T,Accuracy}, b::T) where {T<:SysFloat} = (/)(a, Double(Accuracy, b))
 
 function (/)(a::Double{T,Accuracy}, b::Double{T,Accuracy}) where {T<:SysFloat}
-    hi = a.hi / b.hi
-    hi2, lo2 =  b * hi
-    hi2, lo = two_diff(a.hi, hi2)
-    lo -= lo2
-    lo += a.hi
-    lo = (hi3 + lo) / b.hi
-    hi, lo = two_sum(hi, lo)
-    return Double(E, hi, lo)
+    hi1 = a.hi / b.hi
+    hi, lo = prod_hilofl(b.hi, b.lo, hi1)
+    xhi, xlo = sub_hilohilo(a.hi, a.lo, hi, lo)
+    hi2 = xhi / b.hi
+    hi, lo = prod_hilofl(b.hi, b.lo, hi2)
+    xhi, xlo = sub_hilohilo(a.hi, a.lo, hi, lo)
+    hi3 = xhi / b.hi
+    hi, lo = two_sum_hilo(hi1, hi2)
+    hi, lo = add_hilofl(hi, lo, hi3)
+    return Double(hi, lo)
 end
-
 
 @inline (/)(a::Double{Float64,E}, b::Float32) where {E<:Emphasis} = a / Float64(b)
 @inline (/)(a::Float32, b::Double{Float64,E}) where {E<:Emphasis} = b / Float64(a)
