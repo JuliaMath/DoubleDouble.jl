@@ -277,7 +277,7 @@ end
 @inline (/)(a::Double{F1,E}, b::Double{F2,E}) where {E<:Emphasis, F1<:SysFloat, F2<:SysFloat} = (/)(E, a, b)
 
 @inline (/)(a::Double{Float64,E}, b::Double{Float32,E}) where E<:Emphasis = (/)(a, Double(E, Float64(b.hi), Float64(b.lo)))
-@inline (/)(a::Double{Float32,E}, b::Double{Float64,E}) where E<:Emphasis = (/)(Double(E, Float64(a.hi), Float64(b.hi)), b))
+@inline (/)(a::Double{Float32,E}, b::Double{Float64,E}) where E<:Emphasis = (/)(Double(E, Float64(a.hi), Float64(b.hi)), b)
 
 
 inv(x::Double{T, E}) where {T<:SysFloat, E<:Emphasis} = one(T)/x
