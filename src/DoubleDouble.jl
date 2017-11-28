@@ -52,7 +52,7 @@ include("constructors.jl")
 include("convert.jl")
 include("errorfree.jl")
 include("errorbest.jl")
+include("float_arith.jl")
 include("dd_arith.jl")
-
 
 end # module
