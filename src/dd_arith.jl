@@ -38,7 +38,7 @@ end
 @inline (+)(a::Float64, b::Double{Float32,E}) where E<:Emphasis = (+)(a, Double(E, Float64(b.hi), Float64(b.lo)))
 
 # Algorithm 6 from Tight and rigourous error bounds for basic building blocks of double-word arithmetic
-function (add2)(x::Double{T, E}, y::Double{T,E}) where {T<:SysFloat, E<:Emphasis}
+function (+)(x::Double{T, E}, y::Double{T,E}) where {T<:SysFloat, E<:Emphasis}
     hi, lo = two_sum(x.hi, y.hi)
     thi, tlo = two_sum(x.lo, y.lo)
     c = lo + thi
@@ -48,32 +48,8 @@ function (add2)(x::Double{T, E}, y::Double{T,E}) where {T<:SysFloat, E<:Emphasis
     return Double(E, hi, lo)
 end
 
-function (+)(a::Double{T, E}, b::Double{T,E}) where {T<:SysFloat, E<:Emphasis}
-    hihi, hilo = two_sum(a.hi, b.hi)
-    hi, lo = two_sum(a.lo, b.lo)
-    hilo += hi
-    hi = hihi + hilo
-    hilo -= hi - hihi
-    lo += hilo
-    hi,lo = two_sum(hi, lo)
-
-    return Double(E, hi, lo)
-end
-
 @inline (+)(a::Double{Float64,E}, b::Double{Float32,E}) where E<:Emphasis = (+)(a, Double(E, Float64(b.hi), Float64(b.lo)))
 @inline (+)(a::Double{Float32,E}, b::Double{Float64,E}) where E<:Emphasis = (+)(Double(E, Float64(a.hi), Float64(b.hi)), b)
-
-function (+)(::Type{E}, ahi::T, alo::T, bhi::T, blo::T) where  {T<:SysFloat, E<:Emphasis}
-    hihi, hilo = two_sum(ahi, bhi)
-    hi, lo = two_sum(alo, blo)
-    hilo += hi
-    hi = hihi + hilo
-    hilo -= hi - hihi
-    lo += hilo
-    hi,lo = two_sum(hi, lo)
-
-    return Double(E, hi, lo)
-end
 
 function add_hilofl(ahi::T, alo::T, b::T) where T<:SysFloat
     hi, lo = two_sum(ahi, b)
@@ -82,14 +58,14 @@ function add_hilofl(ahi::T, alo::T, b::T) where T<:SysFloat
     return hi, lo
 end
 
+# Algorithm 6 from Tight and rigourous error bounds for basic building blocks of double-word arithmetic
 function add_hilohilo(ahi::T, alo::T, bhi::T, blo::T) where T<:SysFloat
-    hihi, hilo = two_sum(ahi, bhi)
-    hi, lo = two_sum(alo, blo)
-    hilo += hi
-    hi = hihi + hilo
-    hilo -= hi - hihi
-    lo += hilo
-    hi,lo = two_sum(hi, lo)
+    hi, lo = two_sum(ahi, bhi)
+    thi, tlo = two_sum(alo, blo)
+    c = lo + thi
+    hi, lo = two_sum_hilo(hi, c)
+    c = tlo + lo
+    hi, lo = two_sum_hilo(hi, c)
     return hi, lo
 end
 
@@ -133,6 +109,17 @@ end
 @inline (-)(a::Float32, b::Double{Float64,E}) where E<:Emphasis = (-)(Float64(a), b)
 @inline (-)(a::Double{Float32,E}, b::Float64) where E<:Emphasis = (-)(Double(E, Float64(a.hi), Float64(a.lo)), b)
 @inline (-)(a::Float64, b::Double{Float32,E}) where E<:Emphasis = (-)(a, Double(E, Float64(b.hi), Float64(b.lo)))
+
+# Algorithm 6 from Tight and rigourous error bounds for basic building blocks of double-word arithmetic
+function (sub2)(x::Double{T, E}, y::Double{T,E}) where {T<:SysFloat, E<:Emphasis}
+    hi, lo = two_diff(x.hi, y.hi)
+    thi, tlo = two_diff(x.lo, y.lo)
+    c = lo + thi
+    hi, lo = two_sum_hilo(hi, c)
+    c = tlo + lo
+    hi, lo = two_sum_hilo(hi, c)
+    return Double(E, hi, lo)
+end
 
 function (-)(a::Double{T, E}, b::Double{T,E}) where {T<:SysFloat, E<:Emphasis}
     hihi, hilo = two_diff(a.hi, b.hi)
