@@ -187,6 +187,17 @@ function (*)(x::Double{T,E}, y::Double{T,E}) where {T<:SysFloat,E<:Emphasis}
     return Double{T,E}(hi, lo)
 end
 
+function (square)(x::Double{T,E}) where {T<:SysFloat,E<:Emphasis}
+    hi, lo = two_prod(x.hi, x.hi)
+    t = x.lo * x.lo
+    t = fma(x.hi, x.lo, t)
+    t = fma(x.lo, x.hi, t)
+    t = lo + t
+    hi, lo = two_sum_hilo(hi, t)
+    return Double{T,E}(hi, lo)
+end
+
+
 @inline (*)(a::Double{T,E}, b::S) where {S<:SysFloat,T<:SysFloat,E<:Emphasis}  = a * promote_type(T,S)(b)
 @inline (*)(a::S, b::Double{T,E}) where {S<:SysFloat,T<:SysFloat,E<:Emphasis}  = promote_type(T,S)(a) * b
 
