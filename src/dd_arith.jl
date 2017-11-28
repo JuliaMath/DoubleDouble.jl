@@ -218,14 +218,14 @@ function prod_hilofl(ahi::T, alo::T, b::T) where {T<:SysFloat}
     return hi, lo
 end
 
-# Algorithm 15 from "Towards fast and certified multiple-precision libraries"
+# Algorithm 15 from "Towards fast and certified multiple-precision libraries" (corrected)
 function prod_hilohilo(xhi::T, xlo::T, yhi::T, ylo::T) where {T<:SysFloat}
     hi, lo = two_prod(xhi, yhi)
-    tlo0 = xlo * ylo
-    tlo1 = fma(xhi, ylo, tlo0)
-    clo2 = fma(xlo, yhi, tlo1)
-    clo3 = clo1 + clo2
-    hi, lo = two_sum_hilo(hi, clo3)
+    t0 = xlo * ylo
+    t1 = fma(xhi, ylo, t0)
+    t2 = fma(xlo, yhi, t1)
+    t3 = t1 + t2
+    hi, lo = two_sum_hilo(hi, t3)
     return hi, lo
 end    
 
