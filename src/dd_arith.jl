@@ -8,13 +8,13 @@ import Base: signbit, sign, abs, (+) # (-), (*), (/), square, inv, div, rem, cld
     return Double(E, -a.hi, -a.lo)
 end
 
-function (+)(E, a::T, b::T) where {T<:SysFloat, E<:Emphasis}
+function (+)(::Type{E}, a::T, b::T) where {T<:SysFloat, E<:Emphasis}
    hi, lo = two_sum(a, b)
    return Double(E, hi, lo)
 end
 
-@inline (+)(E, a::Float64, b::Float32) where E<:Emphasis = (+)(E, a, Float64(b))
-@inline (+)(E, a::Float32, b::Float64) where E<:Emphasis = (+)(E, Float64(a), b)
+@inline (+)(::Type{E}, a::Float64, b::Float32) where E<:Emphasis = (+)(E, a, Float64(b))
+@inline (+)(::Type{E}, a::Float32, b::Float64) where E<:Emphasis = (+)(E, Float64(a), b)
 
 function (+)(a::Double{T,E}, b::T) where {T<:SysFloat, E<:Emphasis}
     hi, lo = two_sum(a.hi, b)
@@ -76,13 +76,13 @@ function (+)(a::Double{T1,E}, b::T2) where {T1<:SysFloat, T2<:SysFloat, E<:Empha
 end
 =#
 
-function (-)(E, a::T, b::T) where {T<:SysFloat, E<:Emphasis}
+function (-)(::Type{E}, a::T, b::T) where {T<:SysFloat, E<:Emphasis}
    hi, lo = two_diff(a, b)
    return Double(E, hi, lo)
 end
 
-@inline (-)(E, a::Float64, b::Float32) where E<:Emphasis = (-)(E, a, Float64(b))
-@inline (-)(E, a::Float32, b::Float64) where E<:Emphasis = (-)(E, Float64(a), b)
+@inline (-)(::Type{E}, a::Float64, b::Float32) where E<:Emphasis = (-)(E, a, Float64(b))
+@inline (-)(::Type{E}, a::Float32, b::Float64) where E<:Emphasis = (-)(E, Float64(a), b)
 
 function (-)(a::Double{T,E}, b::T) where {T<:SysFloat, E<:Emphasis}
     hi, lo = two_diff(a.hi, b)
