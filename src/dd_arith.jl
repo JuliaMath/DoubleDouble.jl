@@ -274,4 +274,4 @@ end
 (/)(a::Double{T,E}, b::R) where {R<:SysReal,T<:SysFloat,E<:Emphasis} = a / Double(E, b)
 (/)(a::R, b::Double{T,E}) where {R<:SysReal,T<:SysFloat,E<:Emphasis} = b / Double(E, a)
 
-inv(x::Double{Float64, E}) = 1.0/x
+inv(x::Double{T, E}) where {T<:SysFloat, E<:Emphasis} = one(T)/x
