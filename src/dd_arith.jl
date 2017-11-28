@@ -242,7 +242,7 @@ end
 
 # Algorithm 18 from Tight and rigourous error bounds for basic building blocks of double-word arithmetic
 function (/)(x::Double{T,Accuracy}, y::Double{T,Accuracy}) where {T<:SysFloat}
-    hi = x.hi / y.hi
+    hi = inv(y.hi)
     rhi = fma(-y.hi, hi, one(T))
     rlo = -y.lo * hi
     rhi, rlo = two_sum_hilo(rhi, rlo)
