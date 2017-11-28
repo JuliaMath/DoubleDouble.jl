@@ -272,7 +272,7 @@ function (/)(x::Double{T,Accuracy}, y::Double{T,Accuracy}) where {T<:SysFloat}
     rlo = -y.lo * hi
     rhi, rlo = two_sum_hilo(rhi, rlo)
     rhi, rlo = prod_hilofl(rhi, rlo, hi)
-    rhi, rlo = add_hilofl(rhi, rhlo, hi)
+    rhi, rlo = add_hilofl(rhi, rlo, hi)
     hi, lo = prod_hilohilo(x.hi, x.lo, rhi, rlo)
     return Double(hi, lo)
 end
