@@ -36,6 +36,10 @@ end
 @inline (+)(a::Double{Float32,E}, b::Float64) where E<:Emphasis = (+)(Double(E, Float64(a.hi), Float64(a.lo)), b)
 @inline (+)(a::Float64, b::Double{Float32,E}) where E<:Emphasis = (+)(a, Double(E, Float64(b.hi), Float64(b.lo)))
 @inline (+)(::Type{E}, a::F1, b::F2) where {E<:Emphasis, F1<:SysFloat, F2<:SysFloat} = (+)(E, promote(a, b)...)
+@inline (+)(a::Double{F1,E} b::Double{F2,E}) where {E<:Emphasis, F1<:SysFloat, F2<:SysFloat} = (+)(E, a, b)
+
+@inline (+)(a::Double{Float64,E}, b::Double{Float32,E}) where E<:Emphasis = (+)(a, Double(E, Float64(b.hi), Float64(b.lo)))
+@inline (+)(a::Double{Float32,E}, b::Double{Float64,E}) where E<:Emphasis = (+)(Double(E, Float64(a.hi), Float64(b.hi)), b)
 
 # Algorithm 6 from Tight and rigourous error bounds for basic building blocks of double-word arithmetic
 function (+)(x::Double{T, E}, y::Double{T,E}) where {T<:SysFloat, E<:Emphasis}
@@ -105,6 +109,10 @@ end
 @inline (-)(a::Double{Float32,E}, b::Float64) where E<:Emphasis = (-)(Double(E, Float64(a.hi), Float64(a.lo)), b)
 @inline (-)(a::Float64, b::Double{Float32,E}) where E<:Emphasis = (-)(a, Double(E, Float64(b.hi), Float64(b.lo)))
 @inline (-)(::Type{E}, a::F1, b::F2) where {E<:Emphasis, F1<:SysFloat, F2<:SysFloat} = (-)(E, promote(a, b)...)
+@inline (-)(a::Double{F1,E} b::Double{F2,E}) where {E<:Emphasis, F1<:SysFloat, F2<:SysFloat} = (-)(E, a, b)
+
+@inline (-)(a::Double{Float64,E}, b::Double{Float32,E}) where E<:Emphasis = (-)(a, Double(E, Float64(b.hi), Float64(b.lo)))
+@inline (-)(a::Double{Float32,E}, b::Double{Float64,E}) where E<:Emphasis = (-)(Double(E, Float64(a.hi), Float64(b.hi)), b)
 
 # Algorithm 6 from Tight and rigourous error bounds for basic building blocks of double-word arithmetic
 # reworked for subraction
@@ -118,11 +126,6 @@ function (-)(x::Double{T, E}, y::Double{T,E}) where {T<:SysFloat, E<:Emphasis}
     return Double(E, hi, lo)
 end
                     
-@inline (-)(a::Double{F1,E} b::Double{F2,E}) where {E<:Emphasis, F1<:SysFloat, F2<:SysFloat} = (-)(promote(a, b)...)
-
-@inline (-)(a::Double{Float64,E}, b::Double{Float32,E}) where E<:Emphasis = (-)(a, Double(E, Float64(b.hi), Float64(b.lo)))
-@inline (-)(a::Double{Float32,E}, b::Double{Float64,E}) where E<:Emphasis = (-)(Double(E, Float64(a.hi), Float64(b.hi)), b)
-
 function sub_hilofl(ahi::T, alo::T, b::T) where T<:SysFloat
     hi, lo = two_diff(ahi, b)
     lo += alo
