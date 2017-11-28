@@ -249,8 +249,8 @@ function (/)(a::T, b::Double{T,Accuracy}) where {T<:SysFloat}
     xhi, xlo = sub_hilohilo(xhi, xlo, hi, lo)
     hi3 = xhi / b.hi
     hi, lo = two_sum_hilo(hi1, hi2)
-    hi, lo = sum_hilofl(hi1, hi2, hi3)
-    return Double(hi, lo)
+    hi, lo = add_hilofl(hi1, hi2, hi3)
+    return Double(hi, lo)*0.5
 end
 
 @inline (/)(a::Double{T,Accuracy}, b::T) where {T<:SysFloat} = (/)(a, Double(Accuracy, b))
@@ -265,7 +265,7 @@ function (/)(a::Double{T,Accuracy}, b::Double{T,Accuracy}) where {T<:SysFloat}
     hi3 = xhi / b.hi
     hi, lo = two_sum_hilo(hi1, hi2)
     hi, lo = add_hilofl(hi, lo, hi3)
-    return Double(hi, lo)
+    return Double(hi, lo)*0.5
 end
 
 @inline (/)(a::Double{Float64,E}, b::Float32) where {E<:Emphasis} = a / Float64(b)
