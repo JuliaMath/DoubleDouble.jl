@@ -219,7 +219,7 @@ function prod_hilofl(ahi::T, alo::T, b::T) where {T<:SysFloat}
 end
 
 # Algorithm 15 from "Towards fast and certified multiple-precision libraries" (corrected)
-function prod_hilohilo(xhi::T, xlo::T, yhi::T, ylo::T) where {T<:SysFloat}
+function prod_hilohilo1(xhi::T, xlo::T, yhi::T, ylo::T) where {T<:SysFloat}
     hi, lo = two_prod(xhi, yhi)
     t0 = xlo * ylo
     t1 = fma(xhi, ylo, t0)
