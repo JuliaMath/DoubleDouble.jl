@@ -218,6 +218,17 @@ function prod_hilofl(ahi::T, alo::T, b::T) where {T<:SysFloat}
     return hi, lo
 end
 
+# Algorithm 15 from "Towards fast and certified multiple-precision libraries"
+function prod_hilohilo(xhi::T, xlo::T, yhi::T, ylo::T) where {T<:SysFloat}
+    hi, lo = two_prod(xhi, yhi)
+    tlo0 = xlo * ylo
+    tlo1 = fma(xhi, ylo, tlo0)
+    clo2 = fma(xlo, yhi, tlo1)
+    clo3 = clo1 + clo2
+    hi, lo = two_sum_hilo(hi, clo3)
+    return hi, lo
+end    
+
 function (/)(a::T, b::Double{T,Performance}) where {T<:SysFloat}
     hi1 = a / b.hi
     hi, lo = prod_hilofl(b.hi, b.lo, hi1)
@@ -240,32 +251,30 @@ function (/)(a::Double{T,Performance}, b::Double{T,Performance}) where {T<:SysFl
     return Double(hi, lo)
 end
 
-function (/)(a::T, b::Double{T,Accuracy}) where {T<:SysFloat}
-    hi1 = a / b.hi
-    hi, lo = prod_hilofl(b.hi, b.lo, hi1)
-    xhi, xlo = add_hilofl(-hi, -lo, a)
-    hi2 = xhi / b.hi
-    hi, lo = prod_hilofl(b.hi, b.lo, hi2)
-    xhi, xlo = sub_hilohilo(xhi, xlo, hi, lo)
-    hi3 = xhi / b.hi
-    hi, lo = two_sum_hilo(hi1, hi2)
-    hi, lo = add_hilofl(hi1, hi2, hi3)
-    return Double(hi, lo)*0.5
+# Algorithm 17 from "Towards fast and certified multiple-precision libraries"
+function (/)(x::Double{T,Accuracy}, y::T) where {T<:SysFloat}
+    hi = x.hi / y
+    phi, plo = two_prod(hi, y)
+    dhi = x.hi - phi
+    dlo = x.lo - plo
+    d = dhi + dlo
+    lo = d / y
+    hi, lo = two_sum(hi, lo)
+    return Double(hi, lo)
 end
 
-@inline (/)(a::Double{T,Accuracy}, b::T) where {T<:SysFloat} = (/)(a, Double(Accuracy, b))
+@inline (/)(a::T, b::Double{T,Accuracy}) where {T<:SysFloat} = (/)(Double(Accuracy, a), v)
 
-function (/)(a::Double{T,Accuracy}, b::Double{T,Accuracy}) where {T<:SysFloat}
-    hi1 = a.hi / b.hi
-    hi, lo = prod_hilofl(b.hi, b.lo, hi1)
-    xhi, xlo = sub_hilohilo(a.hi, a.lo, hi, lo)
-    hi2 = xhi / b.hi
-    hi, lo = prod_hilofl(b.hi, b.lo, hi2)
-    xhi, xlo = sub_hilohilo(a.hi, a.lo, hi, lo)
-    hi3 = xhi / b.hi
-    hi, lo = two_sum_hilo(hi1, hi2)
-    hi, lo = add_hilofl(hi, lo, hi3)
-    return Double(hi, lo)*0.5
+# Algorithm 20 from "Towards fast and certified multiple-precision libraries"
+function (/)(x::Double{T,Accuracy}, y::Double{T,Accuracy}) where {T<:SysFloat}
+    hi = x.hi / y.hi
+    rhi = fma(-y.hi, hi, one(T))
+    rlo = -y.lo * hi
+    rhi, rlo = two_sum_hilo(rhi, rlo)
+    rhi, rlo = prod_hilofl(rhi, rlo, hi)
+    rhi, rlo = add_hilofl(rhi, rhlo, hi)
+    hi, lo = prod_hilohilo(x.hi, x.lo, rhi, rlo)
+    return Double(hi, lo)
 end
 
 @inline (/)(a::Double{Float64,E}, b::Float32) where {E<:Emphasis} = a / Float64(b)
