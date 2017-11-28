@@ -36,6 +36,7 @@ end
 @inline Base.isnan(x::Double{T,E}) where {T<:SysFloat, E<:Emphasis} = isnan(x.hi)
 Base.eps(x::Double{T,E}) where {T<:SysFloat, E<:Emphasis} = iszero(x.lo) ? eps(x.hi) : eps(x.lo)
 
+
 function Base.string(x::Double{T,EMPHASIS}) where T<:SysFloat
     return string(EMPHASIS_STR,"Double(",x.hi,", ",x.lo,")")
 end
