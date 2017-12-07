@@ -48,10 +48,11 @@ function Base.show(io::IO, x::Double{T,E}) where  {T<:SysFloat, E<:Emphasis}
     print(io, string(x))
 end
 
+include("float/eps_ufp_ulp.jl")
+include("float/errorfree.jl")
+include("float/errorbest.jl")
 include("constructors.jl")
 include("convert.jl")
-include("errorfree.jl")
-include("errorbest.jl")
 include("float_arith.jl")
 include("dd_arith.jl")
 
