@@ -103,8 +103,8 @@ function sub_dd_fl(ahi::T, alo::T, b::T) where T<:SysFloat
 end
 
 # Algorithm 6 from Tight and rigourous error bounds for basic building blocks of double-word arithmetic
-# reworked for subraction
-function sub__dd_dd(xhi::T, xlo::T, yhi::T, ylo::T) where T<:SysFloat
+# reworked for subtraction
+function sub_dd_dd(xhi::T, xlo::T, yhi::T, ylo::T) where T<:SysFloat
     hi, lo = two_diff(xhi, yhi)
     thi, tlo = two_diff(xlo, ylo)
     c = lo + thi
