@@ -8,19 +8,6 @@
     They should provide results that are either exact or correctly rounded.
 =#
 
-
-"""
-    one_square(a)
-
-Computes `s = fl(square(a))` and `e = err(square(a))`.
-"""
-function one_square(a::T) where T<:SysFloat
-    x = a * a
-    y = fma(a, a, -x)
-    return x, y
-end
-
-
 """
     one_inv(a)
 
