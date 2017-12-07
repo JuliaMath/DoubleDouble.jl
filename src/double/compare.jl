@@ -46,14 +46,14 @@ import Base: (==), (!=), (<=), (<), (>=), (>), isless, isequal
 @inline isequal(x::Double{T1,E}, y::Double{T2,E}) where {T1,T2,E} = isequal(promote(x, y)...)
 @inline isless(x::Double{T1,E}, y::Double{T2,E}) where {T1,T2,E} = isless(promote(x, y)...)
 
-@inline (==)(x::Double{T1,E1}, y::Double{T2,E2}) where {T1,T2,E1,E2} = (==)(Double(EMPHASIS, hi(x), lo(x)), Double(EMPHASIS, hi(y), lo(y))
-@inline (!=)(x::Double{T1,E1}, y::Double{T2,E2}) where {T1,T2,E1,E2} = (!=)(Double(EMPHASIS, hi(x), lo(x)), Double(EMPHASIS, hi(y), lo(y))
-@inline (<)(x::Double{T1,E1}, y::Double{T2,E2}) where {T1,T2,E1,E2} = (<)(Double(EMPHASIS, hi(x), lo(x)), Double(EMPHASIS, hi(y), lo(y))
-@inline (>)(x::Double{T1,E1}, y::Double{T2,E2}) where {T1,T2,E1,E2} = (>)(Double(EMPHASIS, hi(x), lo(x)), Double(EMPHASIS, hi(y), lo(y))
-@inline (<=)(x::Double{T1,E1}, y::Double{T2,E2}) where {T1,T2,E1,E2} = (<=)(Double(EMPHASIS, hi(x), lo(x)), Double(EMPHASIS, hi(y), lo(y))
-@inline (>=)(x::Double{T1,E1}, y::Double{T2,E2}) where {T1,T2,E1,E2} = (>=)(Double(EMPHASIS, hi(x), lo(x)), Double(EMPHASIS, hi(y), lo(y))
-@inline isequal(x::Double{T1,E1}, y::Double{T2,E2}) where {T1,T2,E1,E2} = isequal(Double(EMPHASIS, hi(x), lo(x)), Double(EMPHASIS, hi(y), lo(y))
-@inline isless(x::Double{T1,E1}, y::Double{T2,E2}) where {T1,T2,E1,E2} = isless(Double(EMPHASIS, hi(x), lo(x)), Double(EMPHASIS, hi(y), lo(y))
+@inline (==)(x::Double{T1,E1}, y::Double{T2,E2}) where {T1,T2,E1,E2} = (==)(Double(EMPHASIS, hi(x), lo(x)), Double(EMPHASIS, hi(y), lo(y)))
+@inline (!=)(x::Double{T1,E1}, y::Double{T2,E2}) where {T1,T2,E1,E2} = (!=)(Double(EMPHASIS, hi(x), lo(x)), Double(EMPHASIS, hi(y), lo(y)))
+@inline (<)(x::Double{T1,E1}, y::Double{T2,E2}) where {T1,T2,E1,E2} = (<)(Double(EMPHASIS, hi(x), lo(x)), Double(EMPHASIS, hi(y), lo(y)))
+@inline (>)(x::Double{T1,E1}, y::Double{T2,E2}) where {T1,T2,E1,E2} = (>)(Double(EMPHASIS, hi(x), lo(x)), Double(EMPHASIS, hi(y), lo(y)))
+@inline (<=)(x::Double{T1,E1}, y::Double{T2,E2}) where {T1,T2,E1,E2} = (<=)(Double(EMPHASIS, hi(x), lo(x)), Double(EMPHASIS, hi(y), lo(y)))
+@inline (>=)(x::Double{T1,E1}, y::Double{T2,E2}) where {T1,T2,E1,E2} = (>=)(Double(EMPHASIS, hi(x), lo(x)), Double(EMPHASIS, hi(y), lo(y)))
+@inline isequal(x::Double{T1,E1}, y::Double{T2,E2}) where {T1,T2,E1,E2} = isequal(Double(EMPHASIS, hi(x), lo(x)), Double(EMPHASIS, hi(y), lo(y)))
+@inline isless(x::Double{T1,E1}, y::Double{T2,E2}) where {T1,T2,E1,E2} = isless(Double(EMPHASIS, hi(x), lo(x)), Double(EMPHASIS, hi(y), lo(y)))
 
 
 @inline (!=)(x::Double{T,E}, y::Double{T,E}) where {T,E} = (lo(x) !== lo(y)) || (hi(x) !== hi(y))
