@@ -1,7 +1,9 @@
 import Base: zero, one, iszero, isone, (-), signbit, sign, abs, flipsign, copysign, frexp, ldexp
 
-zero(Double{T,E}) where {T<:SysFloat,E<:Emphasis} = Double(E, zero(T), zero(T))
-one(Double{T,E}) where {T<:SysFloat,E<:Emphasis} = Double(E, one(T), zero(T))
+zero(::Type{Double{T,E}}) where {T<:SysFloat,E<:Emphasis} = Double(E, zero(T), zero(T))
+one(::Type{Double{T,E}}) where {T<:SysFloat,E<:Emphasis} = Double(E, one(T), zero(T))
+zero(x::Double{T,E}) where {T<:SysFloat,E<:Emphasis} = Double(E, zero(T), zero(T))
+one(x::Double{T,E}) where {T<:SysFloat,E<:Emphasis} = Double(E, one(T), zero(T))
 iszero(x::Double{T,E}) where {T,E} = x === zero(Double{T,E})
 isone(x::Double{T,E}) where {T,E} = x === one(Double{T,E})
 
