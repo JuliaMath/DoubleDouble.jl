@@ -1,4 +1,3 @@
-
 module DoubleDouble
 
 export Double, FastDouble, Emphasis, Accuracy, Performance,
