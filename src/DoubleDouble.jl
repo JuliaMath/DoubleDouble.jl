@@ -51,9 +51,11 @@ end
 include("float/eps_ufp_ulp.jl")
 include("float/errorfree.jl")
 include("float/errorbest.jl")
-include("constructors.jl")
-include("convert.jl")
-include("float_arith.jl")
-include("dd_arith.jl")
+
+include("double/ZeroInfNan.jl")
+include("double/constructors.jl")
+include("double/convert.jl")
+include("double/float_arith.jl")
+include("double.arith.jl")
 
 end # module
