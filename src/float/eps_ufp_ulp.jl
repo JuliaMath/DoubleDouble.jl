@@ -58,11 +58,11 @@ ulp(Float64) = ldexp(0.5, -51)
    shift over last place [slip past last place]
 
 where s,e = frexp(x)    
-slp(x) = e + typeof(x)==Float64 ? -52 : -23
+slp(x) = e + typeof(x)==Float64 ? -53 : -24
 """
 @inline function slp(x::Float32)
-    return frexp(x)[2] - 23
+    return frexp(x)[2] - 24
 end
 @inline function slp(x::Float64)
-    return frexp(x)[2] - 52
+    return frexp(x)[2] - 53
 end
