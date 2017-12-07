@@ -69,14 +69,29 @@ Computes `s = fl(a*b)` and `e = err(a*b)`.
 end
 
 """
-    two_square(a)
+    one_square(a)
 
 Computes `s = fl(a*a)` and `e = err(a*a)`.
 """
-@inline function two_square(a::T) where T<:SysFloat
+@inline function one_square(a::T) where T<:SysFloat
     p = a * a
     e = fma(a, a, -p)
     p, e
+end
+
+"""
+    one_cube(a)
+
+Computes `s = fl(a*a*a)` and `e = err(a*a*a)`.
+"""
+function one_cube(a::T) where T<:SysFloat
+    hi, lo = one_square(a)
+    hihi, hilo = two_prod(hi, a)
+    lohi, lolo = two_prod(lo, a)
+    hilo, lohi = two_sum_hilo(hilo, lohi)
+    hi, lo = two_sum_hilo(hihi, hilo)
+    lo += lohi + lolo
+    return hi, lo
 end
 
 """
