@@ -34,8 +34,11 @@ end
 ufp(x) = 2.0^floor(log2(abs(x)))
 """
 @inline function ufp(x::T) where T<:AbstractFloat
-    return iszero(x) : x : ldexp(0.5, frexp(x)[2])
+    return iszero(x) ? x : ldexp(0.5, frexp(x)[2])
 end
+
+ufp(Float32) = ldexp(0.5, 1)
+ufp(Float64) = ldexp(0.5f0, 1)
 
 """
    ulp(x)
@@ -47,3 +50,5 @@ ulp(x) = 2.0 * eps_ieee(1.0) * ufp(x)
     return iszero(x) ? x : eps(T) * ldexp(0.5, frexp(x)[2])
 end
 
+ulp(Float32) = ldexp(0.5, -22)
+ulp(Float64) = ldexp(0.5, -51)
