@@ -60,8 +60,9 @@ ulp(Float64) = ldexp(0.5, -51)
 where s,e = frexp(x)    
 slp(x) = e + typeof(x)==Float64 ? -54 : -25
 """
-slp(Float64) = -54
-slp(Float32) = -25
-@inline function slp(x::T) where T<:AbstractFloat
-    return frexp(x)[2] + slp(T)
+@inline function slp(x::Float32)
+    return frexp(x)[2] - 25
+end
+@inline function slp(x::Float64)
+    return frexp(x)[2] - 54
 end
