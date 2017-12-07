@@ -94,6 +94,7 @@ Computes `s = fl(a*a*a)` and `e = err(a*a*a)`.
     return hi, lo
 end
 
+
 """
     three_sum_hilo(a, b, c)
     
@@ -150,6 +151,7 @@ function three_diff(a::T,b::T,c::T) where T<: SysFloat
     return x, y, z
 end
 
+#= !!FIXME!!
 """
     three_prod(a, b, c)
     
@@ -161,3 +163,4 @@ function three_prod(a::T, b::T, c::T) where T<:SysFloat
     y, z = two_prod(e, c)
     return x, y, z
 end
+=#
