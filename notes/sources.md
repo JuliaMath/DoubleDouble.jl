@@ -23,6 +23,13 @@ http://www.ti3.tu-harburg.de/paper/rump/Ru06a.pdf
 
 Of Interest
 
+[Rump, Zimmermann, Boldo, Melquiond 2009]
+Siegfried M. Rump, Paul Zimmermann, Sylvie Boldo, Guillaume Melquiond.
+Interval operations in rounding to nearest.
+( gives nextfloat, prevfloat for fast interval bounds )
+http://www.ti3.tu-harburg.de/paper/rump/RuZiBoMe09.pdf
+
+[van der Hoeven 2017]
 Multiple precision foating-point arithmetic on SIMD processors
 Joris van der Hoeven April 26, 2017
 http://www.texmacs.org/joris/fpsimd/fpsimd.pdf
