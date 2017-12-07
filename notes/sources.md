@@ -9,6 +9,16 @@ building blocks of double-word arithmetic. ACM Transactions on Mathematical Soft
 for Computing Machinery, 2017, 44 (2), pp.1 - 27. <10.1145/3121432>. <hal-01351529v3>
 https://hal.archives-ouvertes.fr/hal-01351529/file/a15res-joldes.pdf
 
+Useful References
+
+[Rump, Ogita, Oishi 2006]
+Siegfried M. Rump, takeshi Ogita, Shin'ichi Oichi. Accurate Floating-Point Summation.
+(introduces ufp, "unit first place")
+http://www.ti3.tu-harburg.de/paper/rump/RuOgOi06.pdf
+
+[Rump 2006]
+Siegfried M. Rump. Predecessor and Successor in Rounding To Nearest
+http://www.ti3.tu-harburg.de/paper/rump/Ru06a.pdf
 
 Of Interest
 
