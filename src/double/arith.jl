@@ -40,7 +40,7 @@ function add_dd_fl(ahi::T, alo::T, b::T) where T<:SysFloat
 end
 
 # Algorithm 6 from Tight and rigourous error bounds for basic building blocks of double-word arithmetic
-function add__dd_dd(xhi::T, xlo::T, yhi::T, ylo::T) where T<:SysFloat
+function add_dd_dd(xhi::T, xlo::T, yhi::T, ylo::T) where T<:SysFloat
     hi, lo = two_sum(xhi, yhi)
     thi, tlo = two_sum(xlo, ylo)
     c = lo + thi
@@ -50,17 +50,6 @@ function add__dd_dd(xhi::T, xlo::T, yhi::T, ylo::T) where T<:SysFloat
     return hi, lo
 end
 
-#=
- @inline (+)(a::Double{T,E}, b::Double{T,E}) where {T<:SysFloat, E<:Emphasis} = (+)(E, a.hi, a.lo, b.hi, b.lo)
-
-function (+)(a::Double{T1,E}, b::T2) where {T1<:SysFloat, T2<:SysFloat, E<:Emphasis}
-    if sizeof(T2) > sizeof(T1)
-       Double(E, T2(a.hi), T2(a.lo)) + b
-    else
-       a + T1(b)
-   end
-end
-=#
 
 function (-)(a::Double{T,E}, b::T) where {T<:SysFloat, E<:Emphasis}
     hi, lo = two_diff(a.hi, b)
@@ -137,7 +126,7 @@ experimental relerr ldexp(3.936,-106) == ldexp(1.968, -107)
 =#
 
 # Algorithm 12 from Tight and rigourous error bounds for basic building blocks of double-word arithmetic
-function prod__dd_dd(xhi::T, xlo::T, yhi::T, ylo::T) where T<:SysFloat
+function prod_dd_dd(xhi::T, xlo::T, yhi::T, ylo::T) where T<:SysFloat
     hi, lo = two_prod(xhi, yhi)
     t = xlo * ylo
     t = fma(xhi, ylo, t)
@@ -239,10 +228,10 @@ end
 function (/)(a::Double{T,Accuracy}, b::Double{T,Accuracy}) where {T<:SysFloat}
     q1 = a.hi / b.hi
     th,tl = prod_dd_fl(b.hi,b.lo,q1)
-    rh,rl = add__dd_dd(a.hi, a.lo, -th,-tl)
+    rh,rl = add_dd_dd(a.hi, a.lo, -th,-tl)
     q2 = rh / b.hi
     th,tl = prod_dd_fl(b.hi,b.lo,q2)
-    rh,rl = add__dd_dd(rh, rl, -th,-tl)
+    rh,rl = add_dd_dd(rh, rl, -th,-tl)
     q3 = rh / b.hi
     q1, q2 = two_sum_hilo(q1, q2)
     rh,rl = add_dd_fl(q1, q2, q3)
