@@ -1,12 +1,4 @@
-import Base: signbit, sign, abs, (+), (-), (*), (/), inv #square, inv, div, rem, cld, fld, mod, divrem, fldmod, sqrt,
-
-@inline signbit(a::Double{T,E}) where {T<:SysFloat, E<:Emphasis} = signbit(a.hi)
-@inline sign(a::Double{T,E}) where {T<:SysFloat, E<:Emphasis} = sign(a.hi)
-@inline abs(a::Double{T,E}) where {T<:SysFloat, E<:Emphasis} = signbit(a) ? Double(E, -a.hi, -a.lo) : a
-
-@inline function (-)(a::Double{T,E}) where {T<:SysFloat, E<:Emphasis}
-    return Double{T,E}(-a.hi, -a.lo)
-end
+import Base: (+), (-), (*), (/), inv #square, inv, div, rem, cld, fld, mod, divrem, fldmod, sqrt,
 
 function (+)(a::Double{T,E}, b::T) where {T<:SysFloat, E<:Emphasis}
     hi, lo = two_sum(a.hi, b)
