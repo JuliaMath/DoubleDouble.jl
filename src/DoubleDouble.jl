@@ -56,6 +56,6 @@ include("double/ZeroInfNan.jl")
 include("double/constructors.jl")
 include("double/convert.jl")
 include("double/float_arith.jl")
-include("double.arith.jl")
+include("double/arith.jl")
 
 end # module
