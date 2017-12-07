@@ -84,7 +84,7 @@ end
 
 Computes `s = fl(a*a*a)` and `e = err(a*a*a)`.
 """
-function one_cube(a::T) where T<:SysFloat
+@inline function one_cube(a::T) where T<:SysFloat
     hi, lo = one_square(a)
     hihi, hilo = two_prod(hi, a)
     lohi, lolo = two_prod(lo, a)
