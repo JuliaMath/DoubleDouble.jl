@@ -32,6 +32,11 @@ end
     signbit(y) ? -(abs(x)) : abs(x)
 end
 
+
+function ldexp(x::Double{T,E}, exponent::I) where {T,E,I<:Integer}
+    return Double(E, ldexp(hi(x), exponent), ldexp(lo(x), exponent)
+end
+
 function frexp(::Type{E}, x::Double{T,E}) where {T<:SysFloat, E<:Emphasis}
     frhi, exphi = frexp(hi(x))
     frlo, explo = frexp(lo(x))
