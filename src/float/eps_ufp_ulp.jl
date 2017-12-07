@@ -58,11 +58,12 @@ ulp(Float64) = ldexp(0.5, -51)
    shift over last place [slip past last place]
 
 where s,e = frexp(x)    
-slp(x) = e + typeof(x)==Float64 ? -53 : -24
+slp(x) = e + typeof(x)==Float64 ? -53-1 : -24-1    
+slp(x) provides the correct power of two with respect to the least significant bit
 """
 @inline function slp(x::Float32)
-    return frexp(x)[2] - 24
+    return frexp(x)[2] - 25
 end
 @inline function slp(x::Float64)
-    return frexp(x)[2] - 53
+    return frexp(x)[2] - 54
 end
