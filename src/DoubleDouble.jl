@@ -56,6 +56,7 @@ include("double/constructors.jl")
 include("double/convert.jl")
 include("double/float_arith.jl")
 include("double/primitive.jl")
-include("double/arith.jl")
+include("double/arith_dd_fl.jl")
+include("double/arith_dd_dd.jl")
 
 end # module
