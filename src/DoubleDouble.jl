@@ -32,7 +32,6 @@ struct Double{T<:SysFloat, E<:Emphasis} <: AbstractDouble{T}
     lo::T
 end
 
-@inline Base.iszero(x::Double{T,E}) where {T<:SysFloat, E<:Emphasis} = iszero(x.hi)
 @inline Base.isinf(x::Double{T,E}) where {T<:SysFloat, E<:Emphasis} = isinf(x.hi)
 @inline Base.isnan(x::Double{T,E}) where {T<:SysFloat, E<:Emphasis} = isnan(x.hi)
 Base.eps(x::Double{T,E}) where {T<:SysFloat, E<:Emphasis} = iszero(x.lo) ? eps(x.hi) : eps(x.lo)
@@ -56,6 +55,7 @@ include("double/ZeroInfNan.jl")
 include("double/constructors.jl")
 include("double/convert.jl")
 include("double/float_arith.jl")
+include("double/primitive.jl")
 include("double/arith.jl")
 
 end # module
