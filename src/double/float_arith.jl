@@ -3,6 +3,11 @@ function square(::Type{E}, a::T) where {T<:SysFloat, E<:Emphasis}
    return Double{T,E}(hi, lo)
 end
 
+function cube(::Type{E}, a::T) where {T<:SysFloat, E<:Emphasis}
+   hi, lo = one_cube(a)
+   return Double{T,E}(hi, lo)
+end
+
 function Base.inv(::Type{E}, a::T) where {T<:SysFloat, E<:Emphasis}
    hi, lo = one_inv(a)
    return Double{T,E}(hi, lo)
