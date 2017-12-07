@@ -13,11 +13,12 @@ Useful References
 
 [Rump, Ogita, Oishi 2006]
 Siegfried M. Rump, takeshi Ogita, Shin'ichi Oichi. Accurate Floating-Point Summation.
-(introduces ufp, "unit first place")
+( introduces ufp, "unit first place" )
 http://www.ti3.tu-harburg.de/paper/rump/RuOgOi06.pdf
 
 [Rump 2006]
 Siegfried M. Rump. Predecessor and Successor in Rounding To Nearest
+( gives ufp = 2.0^(floor(log2(abs(x))) )
 http://www.ti3.tu-harburg.de/paper/rump/Ru06a.pdf
 
 Of Interest
