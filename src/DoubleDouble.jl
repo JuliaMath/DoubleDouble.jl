@@ -2,7 +2,7 @@
 module DoubleDouble
 
 export Double, FastDouble, Emphasis, Accuracy, Performance,
-       square, cube, ufp, ulp
+       square, cube, ufp, ulp, slp
 
 # these imports are used broadly, other imports reside within source files
 import Base: (+), (-), (*), (/)
