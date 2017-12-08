@@ -35,9 +35,3 @@ Multiple precision foating-point arithmetic on SIMD processors
 Joris van der Hoeven April 26, 2017    
 http://www.texmacs.org/joris/fpsimd/fpsimd.pdf
 
-[Yamada, Ina, Sasa, Idomura, Machida, Imamura 2017]
-Quadruple-precision BLAS using Bailey's arithmetic with FMA instruction: its performance and applications.
-Susumu Yamada,Takuya Ina, Narimasa Sasa, Yasuhiro Idomura, Masahiko Machida, Toshiyuki Imamura
-Parallel and Distributed Processing Symposium Workshops (IPDPSW), 2017 IEEE International
-pp. 1418-1425, 2017, doi:10.1109/IPDPSW.2017.42
-http://www.iwapt.org/2017/pdfs/iwapt17_yamada.pdf
