@@ -40,8 +40,10 @@ function trunc(x::Double{T,E}) where {T,E}
 end
 
 """
-spread is the opposite of trunc()
-it extends to the nearest integer away from zero
+     spread(x)
+
+spread complements trunc()    
+the nearest integer to x, away from zero
 """
 function spread(x::Double{T,E}) where {T,E}
     return signbit(x) ? floor(x) : ceil(x)
