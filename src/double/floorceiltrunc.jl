@@ -39,29 +39,25 @@ function trunc(x::Double{T,E}) where {T,E}
     end
 end
 
-function fld(x::Double{T,E}, y::T) where {T,E}y
-    z = x / y
-    return floor(z)
+"""
+    tld(x, y)
+
+Truncate the result of x/y.
+""" tld
+
+for (F,G) in ((:fld, :floor), (:cld, :ceil), (:tld, :trunc))
+    @eval begin
+        function $F(x::Double{T,E}, y::T) where {T<:SysFloat, E}
+            z = x / y
+            return $G(z)
+        end
+        function $F(x::T, y::Double{T,E}) where {T<:SysFloat, E}
+            z = x / y
+            return $G(z)
+        end
+        function $F(x::Double{T,E}, y::Double{T,E}) where {T<:SysFloat, E}
+            z = x / y
+            return $G(z)
+        end
+    end
 end
-
-function fld(x::Double{T,E}, Double{T,E}::T) where {T,E}
-    z = x / y
-    return floor(z)
-end
-
-function cld(x::Double{T,E}, y::T) where {T,E}
-    z = x / y
-    return ceil(z)
-end
-
-function cld(x::Double{T,E}, Double{T,E}::T) where {T,E}
-    z = x / y
-    return trunc(z)
-end
-
-function tld(x::Double{T,E}, y::T) where {T,E}
-    z = x / y
-    return trunc(z)
-end
-
-
