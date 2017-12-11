@@ -40,12 +40,26 @@ function trunc(x::Double{T,E}) where {T,E}
 end
 
 """
+spread is the opposite of trunc()
+it extends to the nearest integer away from zero
+"""
+function spread(x::Double{T,E}) where {T,E}
+    return signbit(x) ? floor(x) : ceil(x)
+end
+
+"""
     tld(x, y)
 
 Truncate the result of x/y.
 """ tld
 
-for (F,G) in ((:fld, :floor), (:cld, :ceil), (:tld, :trunc))
+"""
+    sld(x, y)
+
+Spread the result of x/y.
+""" sld
+
+for (F,G) in ((:fld, :floor), (:cld, :ceil), (:tld, :trunc), (:sld, :spread))
     @eval begin
         function $F(x::Double{T,E}, y::T) where {T<:SysFloat, E}
             z = x / y
