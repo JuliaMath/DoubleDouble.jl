@@ -1,7 +1,7 @@
 module DoubleDouble
 
 export Double, FastDouble, Emphasis, Accuracy, Performance,
-       square, cube, ufp, ulp, slp
+       square, cube, tld, rld, ufp, ulp, slp
 
 # these imports are used broadly, other imports reside within source files
 import Base: (+), (-), (*), (/)
@@ -59,5 +59,6 @@ include("double/compare.jl")
 include("double/arith_dd_fl.jl")
 include("double/arith_dd_dd.jl")
 include("double/floorceiltrunc.jl")
+include("double/round.jl")
 
 end # module
