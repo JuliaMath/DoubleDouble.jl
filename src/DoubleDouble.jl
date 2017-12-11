@@ -58,5 +58,6 @@ include("double/primitive.jl")
 include("double/compare.jl")
 include("double/arith_dd_fl.jl")
 include("double/arith_dd_dd.jl")
+include("double/floorceiltrunc.jl")
 
 end # module
