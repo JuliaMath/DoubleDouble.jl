@@ -1,11 +1,18 @@
-import Base: zero, one, iszero, isone, (-), signbit, sign, abs, flipsign, copysign, frexp, ldexp
+import Base: zero, one, iszero, isone, isinf, isnan, isfinite, 
+             (-), signbit, sign, abs, flipsign, copysign, frexp, ldexp
 
 zero(::Type{Double{T,E}}) where {T<:SysFloat,E<:Emphasis} = Double(E, zero(T), zero(T))
 one(::Type{Double{T,E}}) where {T<:SysFloat,E<:Emphasis} = Double(E, one(T), zero(T))
 zero(x::Double{T,E}) where {T<:SysFloat,E<:Emphasis} = Double(E, zero(T), zero(T))
 one(x::Double{T,E}) where {T<:SysFloat,E<:Emphasis} = Double(E, one(T), zero(T))
-iszero(x::Double{T,E}) where {T,E} = x === zero(Double{T,E})
-isone(x::Double{T,E}) where {T,E} = x === one(Double{T,E})
+
+@inline iszero(x::Double{T,E}) where {T,E} = x === zero(Double{T,E})
+@inline isone(x::Double{T,E}) where {T,E} = x === one(Double{T,E})
+@inline isinf(x::Double{T,E}) where {T,E} = isinf(hi(x))
+@inline isnan(x::Double{T,E}) where {T,E} = isnan(hi(x))
+@inline isfinite(x::Double{T,E}) where {T,E} = isfinite(hi(x))
+@inline notfinite(x::T) where T<:SysFloat = isinf(x) || isnan(x)
+@inline notfinite(x::Double{T,E}) where {T,E} = notfinite(hi(x))
 
 two(Float16) = one(Float16)+one(Float16)
 two(Float32) = one(Float32)+one(Float32)
