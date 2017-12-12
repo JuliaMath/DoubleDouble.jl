@@ -80,25 +80,5 @@ for (F,G) in ((:fld, :floor), (:cld, :ceil), (:tld, :trunc), (:sld, :spread))
             z = x / y
             return $G(z)
         end
-        function $F(x::T, y::Double{T,E}) where {T<:SysFloat, E}
-            z = x / yfunction floor2(x::Double{T,E}) where {T<:SysFloat, E<:Emphasis}
-    (notfinite(x) || isinteger(x)) && return x
-    if isinteger(hi(x))
-        if signbit(lo(x))
-              Double(E, hi(x)-one(T), zero(T))
-        else
-              Double(E, hi(x), zero(T))
-        end
-    else
-        Double(e, floor(hi(x)), zero(T))
-    end
-end
-
-            return $G(z)
-        end
-        function $F(x::Double{T,E}, y::Double{T,E}) where {T<:SysFloat, E}
-            z = x / y
-            return $G(z)
-        end
     end
 end
