@@ -16,7 +16,7 @@ end
     return Double(E, hi(x), nextfloat(lo(x)))
 end
 @inline function round(::Type{Double{T,E}}, x::Double{T,E}, ::Type{RoundToZero}) where {T<:SysFloat, E<:Emphasis}
-    return signbit(x) ? round(Double{T,E}, x, RoundUp} : round(Double{T,E}, x, RoundDown)
+    return signbit(x) ? round(Double{T,E}, x, RoundUp) : round(Double{T,E}, x, RoundDown)
 end
 
 @inline function round(x::Double{T,E}, ::Type{R}) where {R<:RoundingMode, T, E}
