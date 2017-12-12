@@ -1,6 +1,45 @@
 import Base: floor, ceil, trunc, fld, cld
 
-function floor(x::Double{T,E}) where T where E
+function floor0(x::Double{T,E}) where {T,E}
+    (notfinite(x) || isinteger(x)) && return x
+    if isinteger(hi(x))
+        if signbit(lo(x))
+              Double(E, hi(x)-one(T), zero(T))
+        else
+              Double(E, hi(x), zero(T))
+        end
+    else
+        Double(e, floor(hi(x)), zero(T))
+    end
+end
+
+function floor1(x::Double{T,E}) where T where E
+    (notfinite(x) || isinteger(x)) && return x
+    if isinteger(hi(x))
+        if signbit(lo(x))
+              Double(E, hi(x)-one(T), zero(T))
+        else
+              Double(E, hi(x), zero(T))
+        end
+    else
+        Double(e, floor(hi(x)), zero(T))
+    end
+end
+
+function floor2(x::Double{T,E}) where {T<:SysFloat, E<:Emphasis}
+    (notfinite(x) || isinteger(x)) && return x
+    if isinteger(hi(x))
+        if signbit(lo(x))
+              Double(E, hi(x)-one(T), zero(T))
+        else
+              Double(E, hi(x), zero(T))
+        end
+    else
+        Double(e, floor(hi(x)), zero(T))
+    end
+end
+
+function floor3(x::Double{T,E}) where T<:SysFloat where E<:Emphasis
     (notfinite(x) || isinteger(x)) && return x
     if isinteger(hi(x))
         if signbit(lo(x))
@@ -55,7 +94,19 @@ end
 Truncate the result of x/y.
 """ tld
 
-"""
+"""function floor2(x::Double{T,E}) where {T<:SysFloat, E<:Emphasis}
+    (notfinite(x) || isinteger(x)) && return x
+    if isinteger(hi(x))
+        if signbit(lo(x))
+              Double(E, hi(x)-one(T), zero(T))
+        else
+              Double(E, hi(x), zero(T))
+        end
+    else
+        Double(e, floor(hi(x)), zero(T))
+    end
+end
+
     sld(x, y)
 
 Spread the result of x/y.
@@ -68,7 +119,19 @@ for (F,G) in ((:fld, :floor), (:cld, :ceil), (:tld, :trunc), (:sld, :spread))
             return $G(z)
         end
         function $F(x::T, y::Double{T,E}) where {T<:SysFloat, E}
-            z = x / y
+            z = x / yfunction floor2(x::Double{T,E}) where {T<:SysFloat, E<:Emphasis}
+    (notfinite(x) || isinteger(x)) && return x
+    if isinteger(hi(x))
+        if signbit(lo(x))
+              Double(E, hi(x)-one(T), zero(T))
+        else
+              Double(E, hi(x), zero(T))
+        end
+    else
+        Double(e, floor(hi(x)), zero(T))
+    end
+end
+
             return $G(z)
         end
         function $F(x::Double{T,E}, y::Double{T,E}) where {T<:SysFloat, E}
