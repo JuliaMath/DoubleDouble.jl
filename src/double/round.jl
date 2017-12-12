@@ -5,14 +5,14 @@ import Base: round
     return x
 end
 @inline function round(::Type{Double{T,E}}, x::Double{T,E}, ::Type{RoundUp}) where {T<:SysFloat, E<:Emphasis}
-    hi(x) === T(-Inf)) && return Double(E, nextfloat(hi(x)), zero(T))
+    (hi(x) === T(-Inf)) && return Double(E, nextfloat(hi(x)), zero(T))
     (notfinite(x) || isinteger(x)) && return x
 
     hi, lo = two_sum_hilo(hi(x), nexfloat(lo(x)))
     return Double(E, hi, lo)
 end
 @inline function round(::Type{Double{T,E}}, x::Double{T,E}, ::Type{RoundDown}) where {T<:SysFloat, E<:Emphasis}
-    hi(x) === T(Inf)) && return Double(E, prevfloat(hi(x)), zero(T))
+    (hi(x) === T(Inf)) && return Double(E, prevfloat(hi(x)), zero(T))
     (notfinite(x) || isinteger(x)) && return x
 
     hi, lo = two_sum_hilo(hi(x), prevfloat(lo(x)))
@@ -28,7 +28,7 @@ end
 
 #+
 function round(x::Double{T,E}) where {T,E}
-    round(Double{T,E}, x, getrounding(Double{T,E}})
+    round(Double{T,E}, x, getrounding(Double{T,E}))
 end
 =#
 
@@ -66,7 +66,8 @@ end
     rld(x, y)
 
 Round the result of x/y.
-""" rld
+"""
+function rld() end
 
 for (F,G) in ((:rld, :round),)
     @eval begin
