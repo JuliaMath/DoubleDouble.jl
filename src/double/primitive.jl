@@ -54,9 +54,9 @@ function frexp(::Type{E}, x::Double{T,E}) where {T<:SysFloat, E<:Emphasis}
 end
 
 function ldexp(::Type{E}, frhi::T, exphi::I, frlo::T, explo::I) where {T<:SysFloat, I<:Integer, E<:Emphasis}
-    hi = ldexp(frhi, exphi)
-    lo = ldexp(frlo, explo)
-    return Double(E, hi, lo)
+    zhi = ldexp(frhi, exphi)
+    zlo = ldexp(frlo, explo)
+    return Double(E, zhi, zlo)
 end
 
 function frexp(x::Double{T,E}) where {T,E}
@@ -66,21 +66,21 @@ function frexp(x::Double{T,E}) where {T,E}
 end
 
 function ldexp(frhi::T, exphi::I, frlo::T, explo::I) where {T<:SysFloat, I<:Integer}
-    hi = ldexp(frhi, exphi)
-    lo = ldexp(frlo, explo)
-    return Double(EMPHASIS, hi, lo)
+    zhi = ldexp(frhi, exphi)
+    zlo = ldexp(frlo, explo)
+    return Double(EMPHASIS, zhi, zlo)
 end
 
 function mulby2(x::Double{T,E}) where {T,E}
-    hi = two(T) * hi(x)
-    lo = two(T) * lo(x)
-    return Double(E, hi, lo)
+    zhi = two(T) * hi(x)
+    zlo = two(T) * lo(x)
+    return Double(E, zhi, zlo)
 end
 
 function divby2(x::Double{T,E}) where {T,E}
-    hi = half(T) * hi(x)
-    lo = half(T) * lo(x)
-    return Double(E, hi, lo)
+    zhi = half(T) * hi(x)
+    zlo = half(T) * lo(x)
+    return Double(E, zhi, zlo)
 end
 
 function mulby2pow(x::Double{T,E}, twopow::I) where {T,E,I<:Integer}
