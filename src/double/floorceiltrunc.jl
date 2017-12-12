@@ -9,7 +9,7 @@ function floor(x::Double{T,E}) where {T,E}
               Double(E, hi(x), zero(T))
         end
     else
-        Double(e, floor(hi(x)), zero(T))
+        Double(E, floor(hi(x)), zero(T))
     end
 end
 
@@ -23,7 +23,7 @@ function ceil(x::Double{T,E}) where {T,E}
               Double(E, hi(x)+one(T), zero(T))
         end
     else
-        Double(e, ceil(hi(x)), zero(T))
+        Double(E, ceil(hi(x)), zero(T))
     end
 end
 
@@ -36,7 +36,7 @@ function trunc(x::Double{T,E}) where {T,E}
               signbit(hi(x)) ? Double(E, hi(x)+one(T), zero(T)) : Double(E, hi(x), zero(T))
         end
     else
-        signbit(hi(x)) ? Double(e, ceil(hi(x)), zero(T)) :  Double(e, floor(hi(x)), zero(T))
+        signbit(hi(x)) ? Double(E, ceil(hi(x)), zero(T)) :  Double(e, floor(hi(x)), zero(T))
     end
 end
 
@@ -56,19 +56,7 @@ end
 Truncate the result of x/y.
 """ tld
 
-"""function floor2(x::Double{T,E}) where {T<:SysFloat, E<:Emphasis}
-    (notfinite(x) || isinteger(x)) && return x
-    if isinteger(hi(x))
-        if signbit(lo(x))
-              Double(E, hi(x)-one(T), zero(T))
-        else
-              Double(E, hi(x), zero(T))
-        end
-    else
-        Double(e, floor(hi(x)), zero(T))
-    end
-end
-
+"""
     sld(x, y)
 
 Spread the result of x/y.
