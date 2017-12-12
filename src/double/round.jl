@@ -1,19 +1,22 @@
 import Base: round
         
-function round(x::Double{T,E}) where {T,E}
-    (notfinite(x) || isinteger(x)) && return x
-    result =  isinteger(hi(x)) ? Double(E, hi(x), zero(T)) : Double(E, round(hi(x)), zero(T))
-    return result
-end
-
 @inline function round(::Type{Double{T,E}}, x::Double{T,E}, ::Type{RoundNearest}) where {T<:SysFloat, E<:Emphasis}
+    (notfinite(x) || isinteger(x)) && return x
     return x
 end
 @inline function round(::Type{Double{T,E}}, x::Double{T,E}, ::Type{RoundUp}) where {T<:SysFloat, E<:Emphasis}
-    return Double(E, hi(x), nextfloat(lo(x)))
+    hi(x) === T(-Inf)) && return Double(E, nextfloat(hi(x)), zero(T))
+    (notfinite(x) || isinteger(x)) && return x
+
+    hi, lo = two_sum_hilo(hi(x), nexfloat(lo(x)))
+    return Double(E, hi, lo)
 end
 @inline function round(::Type{Double{T,E}}, x::Double{T,E}, ::Type{RoundDown}) where {T<:SysFloat, E<:Emphasis}
-    return Double(E, hi(x), prevfloat(lo(x)))
+    hi(x) === T(Inf)) && return Double(E, prevfloat(hi(x)), zero(T))
+    (notfinite(x) || isinteger(x)) && return x
+
+    hi, lo = two_sum_hilo(hi(x), prevfloat(lo(x)))
+    return Double(E, hi, lo)
 end
 @inline function round(::Type{Double{T,E}}, x::Double{T,E}, ::Type{RoundToZero}) where {T<:SysFloat, E<:Emphasis}
     return signbit(x) ? round(Double{T,E}, x, RoundUp) : round(Double{T,E}, x, RoundDown)
@@ -22,6 +25,12 @@ end
 @inline function round(x::Double{T,E}, ::Type{R}) where {R<:RoundingMode, T, E}
     return round(Double{T,E}, x, R)
 end
+
+#+
+function round(x::Double{T,E}) where {T,E}
+    round(Double{T,E}, x, getrounding(Double{T,E}})
+end
+=#
 
 for T in (:Float64, :Float32, :Float16)
     @eval begin
