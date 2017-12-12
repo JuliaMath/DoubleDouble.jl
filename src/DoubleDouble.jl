@@ -31,8 +31,12 @@ struct Double{T<:SysFloat, E<:Emphasis} <: AbstractDouble{T}
     lo::T
 end
 
-@inline Base.isinf(x::Double{T,E}) where {T<:SysFloat, E<:Emphasis} = isinf(x.hi)
-@inline Base.isnan(x::Double{T,E}) where {T<:SysFloat, E<:Emphasis} = isnan(x.hi)
+@inline hi(x::Double{T,E}) where {T,E} = x.hi
+@inline lo(x::Double{T,E}) where {T,E} = x.lo
+
+@inline hi(x::T) where T<:SysFloat = x
+@inline lo(x::T) where T<:SysFloat = zero(T)
+
 Base.eps(x::Double{T,E}) where {T<:SysFloat, E<:Emphasis} = iszero(x.lo) ? eps(x.hi) : eps(x.lo)
 
 
