@@ -1,3 +1,5 @@
+import Base: round
+
 function round(x::Double{T,E}) where {T,E}
     (notfinite(x) || isinteger(x)) && return x
     result =  isinteger(hi(x)) ? Double(E, hi(x), zero(T)) : Double(E, round(hi(x)), zero(T))
