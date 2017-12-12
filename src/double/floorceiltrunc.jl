@@ -1,4 +1,4 @@
-import Base: floor, ciel, trunc, fld, cld
+import Base: floor, ceil, trunc, fld, cld
 
 function floor(x::Double{T,E}) where {T,E}
     (notfinite(x) || isinteger(x)) && return x
