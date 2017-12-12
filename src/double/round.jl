@@ -26,7 +26,7 @@ end
     return round(Double{T,E}, x, R)
 end
 
-#+
+#=
 function round(x::Double{T,E}) where {T,E}
     round(Double{T,E}, x, getrounding(Double{T,E}))
 end

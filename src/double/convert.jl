@@ -17,6 +17,7 @@ promote_rule(::Type{Double{T,E}}, ::Type{BigFloat}) where {T<:SysFloat, E<:Empha
 promote_rule(::Type{Double{T,E}}, ::Type{<:Real}) where {T<:SysFloat, E<:Emphasis} = Double{Float64,E}
 promote_rule(::Type{Double{T,E}}, ::Type{<:Union{Float32, Float16}}) where {T<:SysFloat, E<:Emphasis} = Double{Float32,E}
 
+convert(::Type{Double{T, E}}, x::Double{T, E}) where {T<:SysFloat, E<:Emphasis} = x
 convert(::Type{Double{T, Accuracy}}, x::Double{T, Performance}) where T<:SysFloat =
     Double{T, Accuracy}(x.hi, x.lo)
 convert(::Type{Double{T, Performance}}, x::Double{T, Accuracy}) where T<:SysFloat =
