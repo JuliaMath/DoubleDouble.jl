@@ -1,6 +1,6 @@
 import Base: floor, ceil, trunc, fld, cld
 
-function floor(x::Double{T,E}) where {T,E}
+function floor(x::Double{T,E}) where T where E
     (notfinite(x) || isinteger(x)) && return x
     if isinteger(hi(x))
         if signbit(lo(x))
