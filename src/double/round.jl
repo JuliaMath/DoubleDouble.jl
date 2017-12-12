@@ -60,7 +60,7 @@ Round the result of x/y.
 """ rld
 
 for (F,G) in ((:rld, :round),)
-    @eval beginnext
+    @eval begin
         function $F(x::Double{T,E}, y::T) where {T<:SysFloat, E}
             z = x / y
             return $G(z)
