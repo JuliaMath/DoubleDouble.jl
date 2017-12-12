@@ -13,7 +13,7 @@ end
     return Double(E, hi(x), nextfloat(lo(x)))
 end
 @inline function round(::Type{Double{T,E}}, x::Double{T,E}, ::Type{RoundDown}) where {T<:SysFloat, E<:Emphasis}
-    return Double(E, hi(x), nextfloat(lo(x)))
+    return Double(E, hi(x), prevfloat(lo(x)))
 end
 @inline function round(::Type{Double{T,E}}, x::Double{T,E}, ::Type{RoundToZero}) where {T<:SysFloat, E<:Emphasis}
     return signbit(x) ? round(Double{T,E}, x, RoundUp) : round(Double{T,E}, x, RoundDown)
@@ -25,10 +25,14 @@ end
 
 for T in (:Float64, :Float32, :Float16)
     @eval begin
+        @inline round(::Type{$T}, x::$T, ::Type{RoundNearest}) = x
+        @inline round(::Type{$T}, x::$T, ::Type{RoundUp}) = nextfloat(x)
+        @inline round(::Type{$T}, x::$T, ::Type{RoundDown}) = prevfloat(lo(x)))
+        @inline round(::Type{$T}, x::$T, ::Type{RoundToZero}) = signbit(x) ? round($T, x, RoundUp) : round($T, x, RoundDown)
         @inline round(::Type{Double{$T,E}}, x::Double{$T,E}, ::Type{RoundNearest}) where {E} = x
         @inline round(::Type{Double{$T,E}}, x::Double{$T,E}, ::Type{RoundUp}) where {E} = Double(E, hi(x), nextfloat(lo(x)))
-        @inline round(::Type{Double{$T,E}}, x::Double{$T,E}, ::Type{RoundDown}) where {E} = Double(E, hi(x), nextfloat(lo(x)))
-        @inline round(::Type{Double{$T,E}}, x::Double{$T,E}, ::Type{RoundToZero}) where {E} = signbit(x) ? round(Double{T,E}, x, RoundUp) : round(Double{T,E}, x, RoundDown)
+        @inline round(::Type{Double{$T,E}}, x::Double{$T,E}, ::Type{RoundDown}) where {E} = Double(E, hi(x), prevfloat(lo(x)))
+        @inline round(::Type{Double{$T,E}}, x::Double{$T,E}, ::Type{RoundToZero}) where {E} = signbit(x) ? round(Double{$T,E}, x, RoundUp) : round(Double{$T,E}, x, RoundDown)
     end            
 end
 
