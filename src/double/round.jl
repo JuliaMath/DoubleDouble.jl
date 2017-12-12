@@ -6,7 +6,7 @@ end
 
 for M in (:RoundNearest, :RoundNearestTiesAway, :RoundNearestTiesUp, :RoundUp, :RoundDown, :RoundToZero)
     @eval begin
-        function round(x::Double{T,E}, $M)
+        function round(x::Double{T,E}, $M) where {T,E}
             (notfinite(x) || isinteger(x)) && return x
             result =  isinteger(hi(x)) ? Double(E, hi(x), zero(T)) : Double(E, round(hi(x), $M), zero(T))
             return result
