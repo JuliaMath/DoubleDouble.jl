@@ -25,7 +25,7 @@ end
 
 for M in (:RoundNearest, :RoundNearestTiesAway, :RoundNearestTiesUp, :RoundUp, :RoundDown, :RoundToZero)
     @eval begin
-        function round(x::T, $M) where T<:SysFloat = round(T, x, $M)
+        round(x::T, $M) where T<:SysFloat = round(T, x, $M)
     end
 end        
 
