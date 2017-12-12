@@ -36,18 +36,28 @@ function trunc(x::Double{T,E}) where {T,E}
               signbit(hi(x)) ? Double(E, hi(x)+one(T), zero(T)) : Double(E, hi(x), zero(T))
         end
     else
-        signbit(hi(x)) ? Double(E, ceil(hi(x)), zero(T)) :  Double(e, floor(hi(x)), zero(T))
+        signbit(hi(x)) ? Double(E, ceil(hi(x)), zero(T)) :  Double(E, floor(hi(x)), zero(T))
     end
 end
 
 """
      spread(x)
 
-spread complements trunc()    
 the nearest integer to x, away from zero
+
+spread complements trunc()
 """
 function spread(x::Double{T,E}) where {T,E}
-    return signbit(x) ? floor(x) : ceil(x)
+    (notfinite(x) || isinteger(x)) && return x
+    if isinteger(hi(x))
+        if signbit(lo(x))
+              signbit(hi(x)) ? Double(E, hi(x)-one(T), zero(T)) : Double(E, hi(x), zero(T)) 
+        else
+              signbit(hi(x)) ? Double(E, hi(x), zero(T)) : Double(E, hi(x)+one(T), zero(T))
+        end
+    else
+        signbit(hi(x)) ? Double(E, floor(hi(x)), zero(T)) :  Double(E, ceil(hi(x)), zero(T))
+    end
 end
 
 """
