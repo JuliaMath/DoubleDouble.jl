@@ -23,6 +23,15 @@ end
     return round(Double{T,E}, x, R)
 end
 
+for T in (:Float64, :Float32, :Float16)
+    @eval begin
+        @inline round(::Type{Double{$T,E}}, x::Double{$T,E}, ::Type{RoundNearest}) where {E} = x
+        @inline round(::Type{Double{$T,E}}, x::Double{$T,E}, ::Type{RoundUp}) where {E} = Double(E, hi(x), nextfloat(lo(x)))
+        @inline round(::Type{Double{$T,E}}, x::Double{$T,E}, ::Type{RoundDown}) where {E} = Double(E, hi(x), nextfloat(lo(x)))
+        @inline round(::Type{Double{$T,E}}, x::Double{$T,E}, ::Type{RoundToZero}) where {E} = signbit(x) ? round(Double{T,E}, x, RoundUp) : round(Double{T,E}, x, RoundDown)
+    end            
+end
+
 for M in (:RoundNearest, :RoundNearestTiesAway, :RoundNearestTiesUp, :RoundUp, :RoundDown, :RoundToZero)
     @eval begin
         round(x::T, $M) where T<:SysFloat = round(T, x, $M)
