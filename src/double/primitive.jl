@@ -1,4 +1,4 @@
-import Base: zero, one, iszero, isone, isinf, isnan, isfinite, 
+import Base: zero, one, iszero, isone, isinf, isnan, isfinite, isinteger,
              (-), signbit, sign, abs, flipsign, copysign, frexp, ldexp
 
 zero(::Type{Double{T,E}}) where {T<:SysFloat,E<:Emphasis} = Double(E, zero(T), zero(T))
@@ -13,6 +13,7 @@ one(x::Double{T,E}) where {T<:SysFloat,E<:Emphasis} = Double(E, one(T), zero(T))
 @inline isfinite(x::Double{T,E}) where {T,E} = isfinite(hi(x))
 @inline notfinite(x::T) where T<:SysFloat = isinf(x) || isnan(x)
 @inline notfinite(x::Double{T,E}) where {T,E} = notfinite(hi(x))
+@inline isinteger(x::Double{T,E}) where {T,E} = isinteger(lo(x)) && isinteger(hi(x)) # handle 0
 
 two(Float16) = one(Float16)+one(Float16)
 two(Float32) = one(Float32)+one(Float32)
