@@ -1,6 +1,6 @@
 import Base: floor, ceil, trunc, fld, cld
 
-function floor0(x::Double{T,E}) where {T,E}
+function floor(x::Double{T,E}) where {T,E}
     (notfinite(x) || isinteger(x)) && return x
     if isinteger(hi(x))
         if signbit(lo(x))
@@ -13,44 +13,6 @@ function floor0(x::Double{T,E}) where {T,E}
     end
 end
 
-function floor1(x::Double{T,E}) where T where E
-    (notfinite(x) || isinteger(x)) && return x
-    if isinteger(hi(x))
-        if signbit(lo(x))
-              Double(E, hi(x)-one(T), zero(T))
-        else
-              Double(E, hi(x), zero(T))
-        end
-    else
-        Double(e, floor(hi(x)), zero(T))
-    end
-end
-
-function floor2(x::Double{T,E}) where {T<:SysFloat, E<:Emphasis}
-    (notfinite(x) || isinteger(x)) && return x
-    if isinteger(hi(x))
-        if signbit(lo(x))
-              Double(E, hi(x)-one(T), zero(T))
-        else
-              Double(E, hi(x), zero(T))
-        end
-    else
-        Double(e, floor(hi(x)), zero(T))
-    end
-end
-
-function floor3(x::Double{T,E}) where T<:SysFloat where E<:Emphasis
-    (notfinite(x) || isinteger(x)) && return x
-    if isinteger(hi(x))
-        if signbit(lo(x))
-              Double(E, hi(x)-one(T), zero(T))
-        else
-              Double(E, hi(x), zero(T))
-        end
-    else
-        Double(e, floor(hi(x)), zero(T))
-    end
-end
 
 function ceil(x::Double{T,E}) where {T,E}
     (notfinite(x) || isinteger(x)) && return x
