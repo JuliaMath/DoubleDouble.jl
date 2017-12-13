@@ -33,6 +33,20 @@ function one_sqrt(a::T) where T<:SysFloat
     return x, y
 end
 
+#=
+
+
+function sqrt(x::Double{T,E}) where {T,E}
+    r = inv(sqrt(x))
+    h = divby2(x)
+    t0 = fma(r, h*r, -0.5)
+    r += r*t0 
+    t0 = fma(r, h*r, -0.5)
+    r += r*t0 
+    e = fma(r, r, -a)
+    return r, e
+end
+=#
 """
     two_div(a, b)
 
