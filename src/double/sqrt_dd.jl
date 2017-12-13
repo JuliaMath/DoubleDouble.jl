@@ -54,14 +54,6 @@ const whole_square_pow2 = ((Int16).([0, 2, 4,  16,  36,  64,  100,  144,  196,  
      return idx
 end
 
-@inline function find_square_pow2_index(absint)
-     idx = 1 
-     while whole_square_pow2[idx] < absint
-         idx += 1
-     end
-     return idx
-end
-
 # a < 1.0e-18
 function sqrt_small(a::Double{T,E}) where {T,E}
     frhi, xphi, frlo, xplo = frexp(a):
