@@ -15,7 +15,7 @@ function sqrt_midrange(a::Double{T,E}) where {T,E}
     iszero(a) && return a
     signbit(a) && throw(DomainError("attempting sqrt(negative value)"))
     if !(1.0e-18 <= hi(a) <= 1.0e18)
-       return hi(a) < one(T) : sqrt_small(a) : sqrt_large(a)
+       return hi(a) < one(T) ? sqrt_small(a) : sqrt_large(a)
     end
      
     if (hi(a) < 1.0e-7)  # -log2(1.0e-7) < (1/2) Float64 significand bits
