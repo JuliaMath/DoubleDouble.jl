@@ -164,3 +164,21 @@ function three_prod(a::T, b::T, c::T) where T<:SysFloat
     return x, y, z
 end
 =#
+
+
+"""
+    four_sum(a, b, c, d)
+    
+Computes `s = fl(a+b+c+d)` and `e1, e2, e3 = err(a+b+c+d)`.
+"""
+function four_sum(a::T,b::T,c::T,d::T) where T<: SysFloat
+
+    t₀, t₁ = two_sum(a , b)
+    t₀, t₂ = two_sum(t₀, c)
+    a , t₃ = two_sum(t₀, d)
+    t₀, t₁ = two_sum(t₁, t₂)
+    b,  t₂ = two_sum(t₀, t₃)
+    c,  d  = two_sum(t₁, t₂)
+
+    return a, b, c, d
+end
