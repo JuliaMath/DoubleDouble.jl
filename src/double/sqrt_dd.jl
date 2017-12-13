@@ -56,7 +56,7 @@ end
 
 # a < 1.0e-18
 function sqrt_small(a::Double{T,E}) where {T,E}
-    frhi, xphi, frlo, xplo = frexp(a):
+    frhi, xphi, frlo, xplo = frexp(a)
     # xphi is < 0
     absxphi = -xphi
     idx = find_square_pow2_index(absxphi)
