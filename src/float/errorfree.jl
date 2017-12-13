@@ -173,12 +173,12 @@ Computes `s = fl(a+b+c+d)` and `e1, e2, e3 = err(a+b+c+d)`.
 """
 function four_sum(a::T,b::T,c::T,d::T) where T<: SysFloat
 
-    t₀, t₁ = two_sum(a , b)
-    t₀, t₂ = two_sum(t₀, c)
-    a , t₃ = two_sum(t₀, d)
-    t₀, t₁ = two_sum(t₁, t₂)
-    b,  t₂ = two_sum(t₀, t₃)
-    c,  d  = two_sum(t₁, t₂)
+    t0, t1 = two_sum(a ,  b)
+    t0, t2 = two_sum(t0,  c)
+    a,  t3 = two_sum(t0,  d)
+    t0, t1 = two_sum(t1, t2)
+    b,  t2 = two_sum(t0, t3)
+    c,  d  = two_sum(t1, t2)
 
     return a, b, c, d
 end
