@@ -16,12 +16,12 @@ end
 
 
 function DoubleIterator(::Type{T}, ::Type{E}; nslp_rands=4, kwargs...) where {T, E<:Emphasis}
-    slp_rands = [i-1 for i in 1:n for _=1:Int(2^n * 0.5^i)]
+    slp_rands = [i-1 for i in 1:nslp_rands for _=1:Int(2^nslp_rands * 0.5^i)]
     DoubleIterator(FloatIterator(T; kwargs...), E, slp_rands)
 end
 
 function DoubleIterator(::Type{T}, ::Type{E}, every::Integer; nslp_rands=4, kwargs...) where {T, E<:Emphasis}
-    slp_rands = [i-1 for i in 1:n for _=1:Int(2^n * 0.5^i)]
+    slp_rands = [i-1 for i in 1:nslp_rands for _=1:Int(2^nslp_rands * 0.5^i)]
     DoubleIterator(FloatIterator(T, every; kwargs...), E, slp_rands)
 end
 
@@ -32,7 +32,7 @@ function Base.next(iter::DoubleIterator{T}, state) where T
     x, exp = frexp(r2)
     r3 = ldexp(x, exp + slp(r1) - rand(iter.slp_rands))
     d = Double{T, iter.emphasis}(r1, r3)
-    
+
     d, nextstate
 end
 Base.done(iter::DoubleIterator, state) = done(iter.float_iter, state)
