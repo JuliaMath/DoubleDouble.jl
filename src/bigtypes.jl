@@ -20,7 +20,27 @@ minimum_bigfloat_precision(::Type{Double{T,E}}) where {T<:SysFloat, E<:Emphasis}
     nextpow2(cld(7 * precision(T), 2))
     
 bigfloat_precision(::Type{Double{T,E}}) where {T<:SysFloat, E<:Emphasis} =
-    2 * minimum_bigfloat_precision(Double{T,E})
+    round(Int, 1.1minimum_bigfloat_precision(Double{T,E})
 
 setprecision(BigFloat, bigfloat_precision(Double{Float64, Accuracy}))
 
+function Base.convert(::Type{BigFloat}, x::T) where T<:SysFloat
+    x_str = @sprintf "%a" x    # hexidecimal strings are stable in travel 
+    result = parse(BigFloat, x_str)
+    return result
+end
+
+Base.convert(::Type{T}, x::BigFloat) where T<:SysFloat = T(x)
+
+function Base.convert(::Type{BigFloat}, x::T) where {T<:SysFloat}
+    sf_str = @sprintf "%a" x    # hexidecimal strings are stable in travel 
+    result = parse(BigFloat, sf_string)
+    return result
+end
+
+function Base.convert(::Type{BigFloat}, x::Double{T,E})
+    hi_bf = convert(BigFloat, hi(x))
+    lo_bf = convert(BigFloat, lo(x))
+    result = hi_bf + lo_bf
+    return result
+end
