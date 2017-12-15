@@ -19,11 +19,11 @@ abstract type Emphasis <: Trait end
 struct Accuracy    <: Emphasis end
 struct Performance <: Emphasis end
 
-const EMPHASIS     = Accuracy    # this is the default Emphasis
-const ALT_EMPHASIS = Performance
+const EMPHASIS     = Accuracy      # this is the default Emphasis
+const ALT_EMPHASIS = Performance   # this is the other Emphasis 
 
 const EMPHASIS_STR     = ""        # these are used in string()
-const ALT_EMPHASIS_STR = "Fast"
+const ALT_EMPHASIS_STR = "Fast"    # and prepend "Double"
 
 abstract type AbstractDouble{T} <: AbstractFloat end
 
