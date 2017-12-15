@@ -20,4 +20,7 @@ minimum_bigfloat_precision(::Type{Double{T,E}}) where {T<:SysFloat, E<:Emphasis}
     nextpow2(cld(7 * precision(T), 2))
     
 bigfloat_precision(::Type{Double{T,E}}) where {T<:SysFloat, E<:Emphasis} =
-    2 * minimum_bigfloat_precision
+    2 * minimum_bigfloat_precision(Double{T,E})
+
+setprecision(BigFloat, bigfloat_precision(Double{Float64, Accuracy}))
+
