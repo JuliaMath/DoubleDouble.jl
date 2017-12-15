@@ -66,4 +66,6 @@ include("double/arith_dd_dd.jl")
 include("double/floorceiltrunc.jl")
 include("double/round.jl")
 
+#include("interwork/bigfloat.jl")
+
 end # module
