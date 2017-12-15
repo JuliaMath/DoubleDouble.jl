@@ -9,6 +9,10 @@ ACM Transactions on Mathematical Software, Association for Computing Machinery,
 2017, 44 (2), pp.1 - 27. <10.1145/3121432>. <hal-01351529v3>    
 https://hal.archives-ouvertes.fr/hal-01351529/file/a15res-joldes.pdf
 
+[Popescu 2017]
+Valentina Popescu. Towards fast and certified multiple-precision librairies.
+Computer Arithmetic. Université de Lyon, 2017.
+
 ## Useful References
 
 [Lauter 2005]
