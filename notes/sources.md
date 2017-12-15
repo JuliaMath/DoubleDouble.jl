@@ -11,6 +11,11 @@ https://hal.archives-ouvertes.fr/hal-01351529/file/a15res-joldes.pdf
 
 ## Useful References
 
+[Lauter 2005]
+Christoph Quirin Lauter. Basic building blocks for a triple-double intermediate format.
+RR-5702, INRIA. 2005, pp.67.
+
+
 [Rump, Ogita, Oishi 2006]    
 Siegfried M. Rump, takeshi Ogita, Shin'ichi Oichi. Accurate Floating-Point Summation.    
 ( introduces ufp, "unit first place" )    
