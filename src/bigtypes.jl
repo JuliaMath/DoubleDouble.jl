@@ -44,3 +44,22 @@ function Base.convert(::Type{BigFloat}, x::Double{T,E})
     result = hi_bf + lo_bf
     return result
 end
+
+# BigInt
+
+function Base.convert(::Type{BigInt}, x::Double{T,E}) where {T<:SysFloat, E<:Emphasis}
+    (!isinteger(lo(x)) || !isinteger(hi(x))) && throw(InexactError())
+    hi_bi = convert(BigFloat, hi(x))
+    lo_bi = convert(BigFloat, lo(x))
+    result = hi_bi + lo_bi
+    return result
+end
+    
+function Base.convert(::Type{Double{T,E}}, x::BigInt) where {T<:SysFloat, E<:Emphasis}
+    absx = abs(x)
+    stype = signed(T)
+    hi = convert(stype, x)
+    lo = convert(stype, x-convert(BigInt, hi))
+    result = Double(E, T(hi), T(lo))
+    return result
+end
