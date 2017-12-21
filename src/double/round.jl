@@ -47,18 +47,18 @@ end
 
 for M in (:RoundNearest, :RoundNearestTiesAway, :RoundNearestTiesUp, :RoundUp, :RoundDown, :RoundToZero)
     @eval begin
-        round(x::T, $M) where T<:SysFloat = round(T, x, $M)
+        round(x::T, ::Type{$M}) where T<:SysFloat = round(T, x, $M)
     end
 end        
 
 for M in (:RoundNearest, :RoundNearestTiesAway, :RoundNearestTiesUp, :RoundUp, :RoundDown, :RoundToZero)
     @eval begin
-        function round(::Type{Double{T,E}}, x::Double{T,E}, $M) where {T,E}
+        function round(::Type{Double{T,E}}, x::Double{T,E}, ::Type{$M}) where {T<:SysFloat,E<:Emphasis}
             (notfinite(x) || isinteger(x)) && return x
             result =  isinteger(hi(x)) ? Double(E, hi(x), zero(T)) : Double(E, round(hi(x), $M), zero(T))
             return result
         end
-        round(x::Double{T,E}, $M) where {T,E} = round(Double{T,E}, x, $M)
+        round(x::Double{T,E}, $M) where {T<:SysFloat,E<:Emphasis} = round(Double{T,E}, x, $M)
    end
 end
 
@@ -71,15 +71,15 @@ function rld() end
 
 for (F,G) in ((:rld, :round),)
     @eval begin
-        function $F(x::Double{T,E}, y::T) where {T<:SysFloat, E}
+        function $F(x::Double{T,E}, y::T) where {T<:SysFloat, E<:Emphasis}
             z = x / y
             return $G(z)
         end
-        function $F(x::T, y::Double{T,E}) where {T<:SysFloat, E}
+        function $F(x::T, y::Double{T,E}) where {T<:SysFloat, E<:Emphasis}
             z = x / y
             return $G(z)
         end
-        function $F(x::Double{T,E}, y::Double{T,E}) where {T<:SysFloat, E}
+        function $F(x::Double{T,E}, y::Double{T,E}) where {T<:SysFloat, E<:Emphasis}
             z = x / y
             return $G(z)
         end
