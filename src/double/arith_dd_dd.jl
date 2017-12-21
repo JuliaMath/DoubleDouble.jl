@@ -129,12 +129,5 @@ function (/)(a::Double{T,Accuracy}, b::Double{T,Accuracy}) where {T<:SysFloat}
 end
 
 @inline (/)(a::Double{F1,E}, b::Double{F2,E}) where {E<:Emphasis, F1<:SysFloat, F2<:SysFloat} = (/)(E, a, b)
-@inline (/)(a::Double{F1,E}, b::Double{F2,E}) where {E<:Emphasis, F1<:SysFloat, F2<:SysFloat} =
-    (/)(E, promote(a, b)...)
-
 
 inv(x::Double{T, E}) where {T<:SysFloat, E<:Emphasis} = one(T)/x
-
-
-
-
