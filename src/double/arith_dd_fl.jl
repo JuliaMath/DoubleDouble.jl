@@ -70,9 +70,6 @@ end
 @inline (*)(a::S, b::Double{T,E}) where {S<:SysFloat,T<:SysFloat,E<:Emphasis}  = promote_type(T,S)(a) * b
 
 @inline (*)(a::Double{F1,E}, b::Double{F2,E}) where {E<:Emphasis, F1<:SysFloat, F2<:SysFloat} = (*)(E, a, b)
-@inline (*)(a::Double{F1,E}, b::Double{F2,E}) where {E<:Emphasis, F1<:SysFloat, F2<:SysFloat} =
-    (*)(E, promote(a, b)...)
-
 
 function (/)(::T, b::Double{T,Performance}) where {T<:SysFloat}
     hi1 = a / b.hi
