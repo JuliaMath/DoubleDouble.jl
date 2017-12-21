@@ -2,9 +2,13 @@ import Base: zero, one, iszero, isone, isinf, isnan, isfinite, isinteger,
              (-), signbit, sign, abs, flipsign, copysign, frexp, ldexp
 
 zero(::Type{Double{T,E}}) where {T<:SysFloat,E<:Emphasis} = Double(E, zero(T), zero(T))
-one(::Type{Double{T,E}}) where {T<:SysFloat,E<:Emphasis} = Double(E, one(T), zero(T))
 zero(x::Double{T,E}) where {T<:SysFloat,E<:Emphasis} = Double(E, zero(T), zero(T))
+one(::Type{Double{T,E}}) where {T<:SysFloat,E<:Emphasis} = Double(E, one(T), zero(T))
 one(x::Double{T,E}) where {T<:SysFloat,E<:Emphasis} = Double(E, one(T), zero(T))
+two(::Type{Double{T,E}}) where {T<:SysFloat,E<:Emphasis} = Double(E, two(T), zero(T))
+two(x::Double{T,E}) where {T<:SysFloat,E<:Emphasis} = Double(E, two(T), zero(T))
+half(::Type{Double{T,E}}) where {T<:SysFloat,E<:Emphasis} = Double(E, half(T), zero(T))
+half(x::Double{T,E}) where {T<:SysFloat,E<:Emphasis} = Double(E, half(T), zero(T))
 
 @inline iszero(x::Double{T,E}) where {T,E} = x === zero(Double{T,E})
 @inline isone(x::Double{T,E}) where {T,E} = x === one(Double{T,E})
@@ -14,14 +18,6 @@ one(x::Double{T,E}) where {T<:SysFloat,E<:Emphasis} = Double(E, one(T), zero(T))
 @inline notfinite(x::T) where T<:SysFloat = isinf(x) || isnan(x)
 @inline notfinite(x::Double{T,E}) where {T,E} = notfinite(hi(x))
 @inline isinteger(x::Double{T,E}) where {T,E} = isinteger(lo(x)) && isinteger(hi(x)) # handle 0
-
-two(::Type{Float16}) = one(Float16)+one(Float16)
-two(::Type{Float32}) = one(Float32)+one(Float32)
-two(::Type{Float64}) = one(Float64)+one(Float64)
-
-half(::Type{Float16}) = Float16(0.5)
-half(::Type{Float32}) = Float32(0.5)
-half(::Type{Float64}) = Float64(0.5)
 
 @inline signbit(a::Double{T,E}) where {T,E} = signbit(a.hi)
 @inline sign(a::Double{T,E}) where {T,E} = sign(a.hi)
