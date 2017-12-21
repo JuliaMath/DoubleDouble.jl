@@ -15,13 +15,13 @@ one(x::Double{T,E}) where {T<:SysFloat,E<:Emphasis} = Double(E, one(T), zero(T))
 @inline notfinite(x::Double{T,E}) where {T,E} = notfinite(hi(x))
 @inline isinteger(x::Double{T,E}) where {T,E} = isinteger(lo(x)) && isinteger(hi(x)) # handle 0
 
-two(Float16) = one(Float16)+one(Float16)
-two(Float32) = one(Float32)+one(Float32)
-two(Float64) = one(Float64)+one(Float64)
-half(Float16) = Float16(0.5)
-half(Float32) = Float32(0.5)
-half(Float64) = Float64(0.5)
+two(::Type{Float16}) = one(Float16)+one(Float16)
+two(::Type{Float32}) = one(Float32)+one(Float32)
+two(::Type{Float64}) = one(Float64)+one(Float64)
 
+half(::Type{Float16}) = Float16(0.5)
+half(::Type{Float32}) = Float32(0.5)
+half(::Type{Float64}) = Float64(0.5)
 
 @inline signbit(a::Double{T,E}) where {T,E} = signbit(a.hi)
 @inline sign(a::Double{T,E}) where {T,E} = sign(a.hi)
