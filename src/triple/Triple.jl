@@ -16,6 +16,29 @@ end
 @inline Triple(::Type{E}, a::T, b::T) where {T<:SysFloat, E<:Emphasis} = Triple{T,E}(a,b,zero(T))
 @inline Triple(::Type{E}, a::T) where {T<:SysFloat, E<:Emphasis} = Triple{T,E}(a,zero(T),zero(T))
 
+#=
+   algorithm 3.3 from Basic building blocks for a triple-double intermediate format
+
+   preconditions
+   hi, md, lo are normal floating point values
+   |md| <= |hi| * 0.25
+   |lo| <= |md| * 0.25
+   |lo| <= |hi| * 0.0625
+=#
+@inline function renormalize(hi::T, md::T, lo::T) where {T<:SysFloat}
+    hi1, lo1 = two_sum_hilo(md, lo)
+    hi, lo = two_sum_hilo(hi, hi1)
+    md, lo = two_sum_hilo(lo, lo1)
+    return hi, md, lo
+end
+
+function normalize(a::T, b::T, c::T) where {T<:SysFloat}
+    b, c = abs(b) < abs(c) ? (b, c) : (c, b)
+    a, c = abs(a) < abs(c) ? (a, c) : (c, a)
+    a, b = abs(a) < abs(b) ? (a, b) : (b, a)
+    return renormalize(renormalize(c, b, a)...)
+end
+
 function Base.string(x::Triple{T,EMPHASIS}) where T<:SysFloat
     return string(EMPHASIS_STR,"Triple(",x.hi,", ",x.md,", ",x.lo,")")
 end
