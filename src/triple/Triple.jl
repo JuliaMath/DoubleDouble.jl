@@ -36,7 +36,9 @@ function normalize(a::T, b::T, c::T) where {T<:SysFloat}
     b, c = abs(b) < abs(c) ? (b, c) : (c, b)
     a, c = abs(a) < abs(c) ? (a, c) : (c, a)
     a, b = abs(a) < abs(b) ? (a, b) : (b, a)
-    return renormalize(renormalize(c, b, a)...)
+    a, b, c = renormalize(c, b, a) # to meet preconditions
+    a, b, c = renormalize(a, b, c) # final renormalization
+    return a, b, c
 end
 
 function Base.string(x::Triple{T,EMPHASIS}) where T<:SysFloat
