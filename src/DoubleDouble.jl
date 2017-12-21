@@ -25,7 +25,8 @@ const ALT_EMPHASIS = Performance   # this is the other Emphasis
 const EMPHASIS_STR     = ""        # these are used in string()
 const ALT_EMPHASIS_STR = "Fast"    # and prepend "Double"
 
-abstract type AbstractDouble{T} <: AbstractFloat end
+abstract type MultipartFloat{T}    <: AbstractFloat end
+abstract type AbstractDouble{T}    <: MultipartFloat{T} end
 
 struct Double{T<:SysFloat, E<:Emphasis} <: AbstractDouble{T}
     hi::T
