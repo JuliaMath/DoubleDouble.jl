@@ -37,7 +37,7 @@ function normalize(a::T, b::T, c::T) where {T<:SysFloat}
     a, c = abs(a) < abs(c) ? (a, c) : (c, a)
     a, b = abs(a) < abs(b) ? (a, b) : (b, a)
     a, b, c = renormalize(c, b, a) # to meet preconditions
-    a, b, c = renormalize(a, b, c) # final renormalization
+    a, b, c = renormalize(a, b, c) # final renormalization ??is this needed??
     return a, b, c
 end
 
