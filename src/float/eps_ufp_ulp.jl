@@ -1,21 +1,21 @@
-half(Float16) = Float16(0.5)
-half(Float32) = 0.5f0
-half(Float64) = 0.5
+half(::Type{Float16}) = Float16(0.5)
+half(::Type{Float32}) = 0.5f0
+half(::Type{Float64}) = 0.5
 
 """
     eps_ieee(x)
     relative rounding error unit
 """    
-eps_ieee(Float32) = 2.0f0^(-24)
-eps_ieee(Float64) = 2.0^(-53)
+eps_ieee(::Type{Float32}) = 2.0f0^(-24)
+eps_ieee(::Type{Float64}) = 2.0^(-53)
 
 """
     eta(T)
     
 smallest unnormalized floating point number
 """
-eta(Float32) = 2.0f0^(-139)
-eta(Float64) = 2.0^(-1074)
+eta(::Type{Float32}) = 2.0f0^(-139)
+eta(::Type{Float64}) = 2.0^(-1074)
 
 """
     eps_ieee(x)
@@ -37,8 +37,8 @@ ufp(x) = 2.0^floor(log2(abs(x)))
     return iszero(x) ? x : ldexp(0.5, frexp(x)[2])
 end
 
-ufp(Float32) = ldexp(0.5f0, 1)
-ufp(Float64) = ldexp(0.5, 1)
+ufp(::Type{Float32}) = ldexp(0.5f0, 1)
+ufp(::Type{Float64}) = ldexp(0.5, 1)
 
 """
    ulp(x)
@@ -50,8 +50,8 @@ ulp(x) = 2.0 * eps_ieee(1.0) * ufp(x)
     return iszero(x) ? x : eps(T) * ldexp(0.5, frexp(x)[2])
 end
 
-ulp(Float32) = ldexp(0.5f0, -22)
-ulp(Float64) = ldexp(0.5, -51)
+ulp(::Type{Float32}) = ldexp(0.5f0, -22)
+ulp(::Type{Float64}) = ldexp(0.5, -51)
 
 """
    slp(x)
