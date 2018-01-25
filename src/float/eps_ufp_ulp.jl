@@ -1,21 +1,15 @@
-half(::Type{Float16}) = Float16(0.5)
-half(::Type{Float32}) = 0.5f0
+
 half(::Type{Float64}) = 0.5
+half(::Type{Float32}) = 0.5f0
+half(::Type{Float16}) = Float16(0.5)
 
 """
     eps_ieee(x)
     relative rounding error unit
 """    
-eps_ieee(::Type{Float32}) = 2.0f0^(-24)
-eps_ieee(::Type{Float64}) = 2.0^(-53)
-
-"""
-    eta(T)
-    
-smallest unnormalized floating point number
-"""
-eta(::Type{Float32}) = 2.0f0^(-139)
-eta(::Type{Float64}) = 2.0^(-1074)
+eps_ieee(::Type{Float64}) = Float64(1/Int64(2)^53)
+eps_ieee(::Type{Float32}) = Float32(1/2^24)
+eps_ieee(::Type{Float16}) = Float16(1/2^11)
 
 """
     eps_ieee(x)
@@ -26,6 +20,17 @@ eps_ieee(x) = 0.5 * eps(x)
 function eps_ieee(x::T) where T<:AbstractFloat
     return half(T)*eps(x)
 end
+
+
+"""
+    eta(T)
+    
+smallest unnormalized floating point number
+"""
+eta(::Type{Float64}) = 2.0^(-1074)
+eta(::Type{Float32}) = 2.0f0^(-139)
+eta(::Type{Float16}) = Float16(2.0f0^(-24))
+
 
 """
     ufp(x)
