@@ -39,9 +39,6 @@ end
 @inline hi(x::T) where T<:SysFloat = x
 @inline lo(x::T) where T<:SysFloat = zero(T)
 
-Base.eps(x::Double{T,E}) where {T<:SysFloat, E<:Emphasis} = iszero(x.lo) ? eps(x.hi) : eps(x.lo)
-
-
 function Base.string(x::Double{T,EMPHASIS}) where T<:SysFloat
     return string(EMPHASIS_STR,"Double(",x.hi,", ",x.lo,")")
 end
