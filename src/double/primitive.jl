@@ -92,3 +92,5 @@ function divby2pow(x::Double{T,E}, twopow::I) where {T,E,I<:Integer}
     explo -= twopow
     return ldexp(E, frhi, exphi, frlo, explo)
 end
+
+Base.eps(x::Double{T,E}) where {T, E} = iszero(x.lo) ? eps(x.hi) : eps(x.lo)
