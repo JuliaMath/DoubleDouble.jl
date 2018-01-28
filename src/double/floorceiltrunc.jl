@@ -1,7 +1,7 @@
 import Base: floor, ceil, trunc, fld, cld
 
 function floor(x::Double{T,E}) where {T,E}
-    (notfinite(x) || isinteger(x)) && return x
+    (!isfinite(x) || isinteger(x)) && return x
     if isinteger(hi(x))
         if signbit(lo(x))
               Double(E, hi(x)-one(T), zero(T))
@@ -15,7 +15,7 @@ end
 
 
 function ceil(x::Double{T,E}) where {T,E}
-    (notfinite(x) || isinteger(x)) && return x
+    (!isfinite(x) || isinteger(x)) && return x
     if isinteger(hi(x))
         if signbit(lo(x))
               Double(E, hi(x), zero(T))
@@ -28,7 +28,7 @@ function ceil(x::Double{T,E}) where {T,E}
 end
 
 function trunc(x::Double{T,E}) where {T,E}
-    (notfinite(x) || isinteger(x)) && return x
+    (!isfinite(x) || isinteger(x)) && return x
     if isinteger(hi(x))
         if signbit(lo(x))
               signbit(hi(x)) ? Double(E, hi(x), zero(T)) : Double(E, hi(x)-one(T), zero(T))
@@ -48,7 +48,7 @@ the nearest integer to x, away from zero
 spread complements trunc()
 """
 function spread(x::Double{T,E}) where {T,E}
-    (notfinite(x) || isinteger(x)) && return x
+    (!isfinite(x) || isinteger(x)) && return x
     if isinteger(hi(x))
         if signbit(lo(x))
               signbit(hi(x)) ? Double(E, hi(x)-one(T), zero(T)) : Double(E, hi(x), zero(T)) 
