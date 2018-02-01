@@ -14,10 +14,19 @@
 Computes `s = fl(a+b)` and `e = err(a+b)`.
 """
 @inline function two_sum_hilo(a::T, b::T) where T<:SysFloat
-    s = a + b
-    e = b - (s - a)
-    return s, e
+    ab = a + b
+    e = b - (ab - a)
+    return ab, e
 end
+
+@inline function two_sum_inorder(a::T, b::T) where T<:SysFloat
+    ab = a + b
+    p  = ab - a
+    e  = b - p
+    return ab, e
+end
+
+
 
 """
     two_sum(a, b)
