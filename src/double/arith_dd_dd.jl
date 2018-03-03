@@ -52,6 +52,10 @@ function sub_dd_dd(xhi::T, xlo::T, yhi::T, ylo::T) where T<:SysFloat
     return hi, lo
 end
 
+function (-)(x::Double{T, E}) where {T<:SysFloat, E<:Emphasis}
+
+    Double{T, E}(-x.hi, -x.lo)
+end
 #=
 theoretical relerr <= 5*(u^2)
 experimental relerr ldexp(3.936,-106) == ldexp(1.968, -107)

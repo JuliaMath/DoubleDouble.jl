@@ -32,3 +32,8 @@ end
 @test op_test(-, Float64, Accuracy, 1e-31, 1000) |> isempty
 @test op_test(*, Float64, Accuracy, 1e-31, 1000) |> isempty
 @test op_test(/, Float64, Accuracy, 1e-31, 1000, max_argument=1e20) |> isempty
+
+
+x = Double(rand(), 0.00001 * rand())
+@test -lo(x) == lo(-x)
+@test -hi(x) == hi(-x)
