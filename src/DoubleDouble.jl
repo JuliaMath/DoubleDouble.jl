@@ -2,7 +2,7 @@ __precompile__()
 
 module DoubleDouble
 
-export Double, FastDouble, Emphasis, Accuracy, Performance,
+export Double, DoubleF32, DoubleF64, FastDouble, Emphasis, Accuracy, Performance,
        hi, lo,
        square, cube, tld, rld, ufp, ulp, slp
 
@@ -43,6 +43,7 @@ include("double/arith_dd_fl.jl")
 include("double/arith_dd_dd.jl")
 include("double/floorceiltrunc.jl")
 include("double/round.jl")
+include("double/misc.jl")
 
 #include("interwork/bigfloat.jl")
 
