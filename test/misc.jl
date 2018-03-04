@@ -1,9 +1,13 @@
 @testset "misc" begin
-    @test rand(Double{Float64, Accuracy}) isa Double{Float64, Accuracy}
-    @test rand(Double{Float64, Performance}) isa Double{Float64, Performance}
-    @test rand(Double{Float64}) isa Double{Float64, DoubleDouble.EMPHASIS}
-
-    @test rand(Double{Float32, Accuracy}) isa Double{Float32, Accuracy}
-    @test rand(Double{Float32, Performance}) isa Double{Float32, Performance}
-    @test rand(Double{Float32}) isa Double{Float32, DoubleDouble.EMPHASIS}
+    for T in [Float32, Float64]
+        @test rand(Double{T}) isa Double{T, DoubleDouble.EMPHASIS}
+        for E in [Performance, Accuracy]
+            @test rand(Double{T, E}) isa Double{T, E}
+            @test eps(Double{T, E}) isa Double{T, E}
+            @test typemax(Double{T, E}) isa Double{T, E}
+            @test typemin(Double{T, E}) isa Double{T, E}
+            @test realmax(Double{T, E}) isa Double{T, E}
+            @test realmin(Double{T, E}) isa Double{T, E}
+        end
+    end
 end
