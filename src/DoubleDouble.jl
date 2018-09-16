@@ -31,19 +31,16 @@ end
 Double{T<:AbstractFloat}(u::T, v::T) = Double{T}(u, v)
 Double{T<:AbstractFloat}(x::T) = Double(x, zero(T))
 
-
-const half64 = 1.34217729e8
-const half32 = 4097f0
-const half16 = Float16(33.0)
-const halfBig = 3.402823669209384634633746074317682114570000000000000000000000000000000000000000e+38
-# 6.805647338418769269267492148635364229120000000000000000000000000000000000000000e38
-
-# round floats to half-precision
-# TODO: fix overflow for large values
-halfprec(x::Float64) = (p = x*half64; (x-p)+p) # signif(x,26,2) for 26 is 6.7108865e7, this seems like 27
-halfprec(x::Float32) = (p = x*half32; (x-p)+p) # float32(signif(x,12,2))
-halfprec(x::Float16) = (p = x*half16; (x-p)+p) # float16(signif(x,5,2))
-halfprec(x::BigFloat) = (p = x*halfBig; (x-p)+p) # BigFloat(signif(x,128,2))
+# use Veltkamp splitting to remove trailing digits
+# see "Handbook of Floating-point Arithmetic", §4.4.1
+# TODO:
+#  - fix overflow for large values
+#  - use fma when available
+function halfprec{T<:AbstractFloat}(x::T)
+    c = T((1 << cld(precision(T),2)) + 1)
+    p = x*c
+    (x-p)+p
+end
 
 function splitprec(x::AbstractFloat)
     h = halfprec(x)
@@ -139,10 +136,16 @@ end
 
 # Dekker mul12
 function *{T}(x::Single{T},y::Single{T})
-    hx,lx = splitprec(x.hi)
-    hy,ly = splitprec(y.hi)
-    z = x.hi*y.hi
-    Double(z, ((hx*hy-z) + hx*ly + lx*hy) + lx*ly)
+    xs, xe = frexp(x.hi)
+    ys, ye = frexp(y.hi)
+    z = xs*ys
+    zexp = ldexp(z, xe+ye)
+    if (iszero(zexp) | !isfinite(zexp))
+        return Double(zexp, zexp)
+    end
+    hx,lx = splitprec(xs)
+    hy,ly = splitprec(ys)
+    Double(zexp, ldexp(((hx*hy-z) + hx*ly + lx*hy) + lx*ly, xe+ye))
 end
 
 # Dekker mul2

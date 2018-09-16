@@ -64,3 +64,9 @@ a = Double(big"3.1")
 @test Double{Float32}(3) === Double{Float32}(3.0f0, 0.0f0)
 @test Single{Float32}(BigFloat(3)) === Single{Float32}(3.0f0)
 @test Double{Float32}(BigFloat(3)) === Double{Float32}(3.0f0, 0.0f0)
+
+
+# issue #30
+x, y = Single(Float16(0.9775)), Single(Float16(0.5156))
+d = x*y
+@test widen(d.hi) + widen(d.lo) == widen(x.hi) * widen(y.hi)
