@@ -15,6 +15,8 @@ dy = Double(y)
 
 @test x == sx == dx
 @test y == sy == dy
+@test sy ≤ sx
+@test dy ≤ dx
 
 @test zero(Double{Float64}) == Double(0.0, 0.0)
 @test one(Double{Float64}) == Double(1.0, 0.0)
