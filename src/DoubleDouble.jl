@@ -102,9 +102,8 @@ Double(x::BigFloat) = convert(Double{Float64}, x)
 Double(x::Irrational) = convert(Double{Float64}, x)
 
 # <
-
 function <{T}(x::Double{T}, y::Double{T})
-    x.hi + x.lo < y.hi + y.lo
+    x.hi < y.hi || (x.hi == y.hi && x.lo < y.lo)
 end
 
 # add12

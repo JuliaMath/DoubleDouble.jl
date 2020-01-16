@@ -41,6 +41,9 @@ bxy = bx*by
 
 #@test rem(dxy,1.0) == Double(rem(bxy,1.0))
 
+let x = Double(big"3.1")
+    @test Double(x.hi, prevfloat(x.lo)) < x < Double(x.hi, nextfloat(x.lo))
+end
 
 ## New
 @test Double(pi) == Double{Float64}(3.141592653589793, 1.2246467991473532e-16)
